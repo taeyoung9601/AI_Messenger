@@ -7,7 +7,7 @@ import org.zerock.myapp.entity.Member;
 
 
 /**
- * 회원 관리 Repository
+ * 회원 Repository
  */
 
 @Repository

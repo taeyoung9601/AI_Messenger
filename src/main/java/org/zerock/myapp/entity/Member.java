@@ -15,7 +15,7 @@ import lombok.Data;
 
 
 /**
- * 회원 관리
+ * 회원 Entity
  */
 
 @Data

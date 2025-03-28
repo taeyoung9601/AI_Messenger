@@ -15,7 +15,7 @@ import lombok.Data;
 
 
 /**
- * 게시판 - 건의사항
+ * 게시판 - 건의사항 Entity
  */
 
 @Data

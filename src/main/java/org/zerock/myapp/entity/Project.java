@@ -15,7 +15,7 @@ import lombok.Data;
 
 
 /**
- * 프로젝트
+ * 프로젝트 Entity
  */
 
 @Data

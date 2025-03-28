@@ -15,7 +15,7 @@ import lombok.Data;
 
 
 /**
- * 채팅
+ * 채팅 Entity
  */
 
 @Data

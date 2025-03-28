@@ -4,7 +4,6 @@ import java.util.List;
 
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.entity.Chat;
-import org.zerock.myapp.entity.Member;
 
 public interface ChatService {
 	

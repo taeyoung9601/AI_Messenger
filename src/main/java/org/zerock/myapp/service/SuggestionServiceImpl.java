@@ -6,7 +6,6 @@ import java.util.Vector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.SuggestionDTO;
-import org.zerock.myapp.entity.Member;
 import org.zerock.myapp.entity.Suggestion;
 import org.zerock.myapp.persistence.SuggestionRepository;
 

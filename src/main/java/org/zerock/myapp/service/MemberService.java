@@ -1,7 +1,6 @@
 package org.zerock.myapp.service;
 
 import java.util.List;
-import java.util.Optional;
 
 import org.zerock.myapp.domain.MemberDTO;
 import org.zerock.myapp.entity.Member;

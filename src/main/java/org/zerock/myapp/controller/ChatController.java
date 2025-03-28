@@ -12,6 +12,10 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 
+/**
+ * 채팅 Controller
+ */
+
 @Slf4j
 @NoArgsConstructor
 
@@ -27,7 +31,7 @@ public class ChatController {
 	} // list
 	
 	@PostMapping
-	String register() { // 등록
+	String register() { // 등록 처리
 		log.debug("register() invoked.");
 		
 		return "register";
@@ -43,7 +47,7 @@ public class ChatController {
 	} // read
 	
 	@PutMapping(path = "/{id}")
-	String update( // 수정
+	String update( // 수정 처리
 			@PathVariable Long id
 			) { 
 		log.debug("update({}) invoked.",id);
@@ -52,7 +56,7 @@ public class ChatController {
 	} // update
 	
 	@DeleteMapping(path = "/{id}")
-	String delete( // 삭제
+	String delete( // 삭제 처리
 			@PathVariable Long id
 			) {
 		log.debug("delete({}) invoked.",id);

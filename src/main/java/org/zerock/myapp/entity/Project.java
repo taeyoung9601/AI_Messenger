@@ -2,10 +2,7 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.util.Date;
-import java.util.List;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -15,6 +12,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import lombok.Data;
+
 
 /**
  * 프로젝트

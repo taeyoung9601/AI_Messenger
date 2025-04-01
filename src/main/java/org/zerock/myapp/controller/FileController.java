@@ -13,15 +13,15 @@ import lombok.extern.slf4j.Slf4j;
 
 
 /**
- * 게시판 - 건의사항 Controller
+ * 파일 Controller
  */
 
 @Slf4j
 @NoArgsConstructor
 
-@RequestMapping("/suggestion")
+@RequestMapping("/file")
 @RestController
-public class SuggestionController {
+public class FileController {
 	
 	@GetMapping
 	String list() { // 리스트
@@ -38,7 +38,7 @@ public class SuggestionController {
 	} // register
 	
 	@GetMapping(path = "/{id}")
-	String read( // 세부 조회 처리
+	String read( // 세부 조회
 			@PathVariable Long id
 			) {
 		log.debug("read({}) invoked.",id);
@@ -56,7 +56,7 @@ public class SuggestionController {
 	} // update
 	
 	@DeleteMapping(path = "/{id}")
-	String delete( // 삭제
+	String delete( // 삭제 처리
 			@PathVariable Long id
 			) {
 		log.debug("delete({}) invoked.",id);

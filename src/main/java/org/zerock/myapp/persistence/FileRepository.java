@@ -3,14 +3,14 @@ package org.zerock.myapp.persistence;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-import org.zerock.myapp.entity.Suggestion;
+import org.zerock.myapp.entity.File;
 
 
 /**
- * 게시판 - 건의사항 Repository
+ * 파일 Repository
  */
 
 @Repository
-public interface SuggestionRepository extends JpaRepository<Suggestion, Long>, JpaSpecificationExecutor<Suggestion> {
+public interface FileRepository extends JpaRepository<File, Long>, JpaSpecificationExecutor<File> {
 
 } // end interface

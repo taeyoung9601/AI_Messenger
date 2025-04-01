@@ -15,7 +15,7 @@ import lombok.Data;
 
 
 /**
- * 게시판 - 공지사항 Entity
+ * 메시지 Entity
  */
 
 @Data
@@ -27,8 +27,8 @@ import lombok.Data;
 })
 
 @Entity
-@Table(name = "T_NOTICE")
-public class Notice implements Serializable {
+@Table(name = "T_MESSAGE")
+public class Message implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
 	//1. pk

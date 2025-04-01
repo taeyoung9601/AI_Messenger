@@ -13,15 +13,15 @@ import lombok.extern.slf4j.Slf4j;
 
 
 /**
- * 게시판 - 공지사항 Controller
+ * 게시판(공지사항 + 건의사항) Controller
  */
 
 @Slf4j
 @NoArgsConstructor
 
-@RequestMapping("/notice")
+@RequestMapping("/board")
 @RestController
-public class NoticeController {
+public class BoardController {
 	
 	@GetMapping
 	String list() { // 리스트

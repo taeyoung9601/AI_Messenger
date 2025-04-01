@@ -6,11 +6,11 @@ import lombok.Data;
 
 
 /**
- * 게시판 - 공지사항 DTO
+ * 게시판(공지사항 + 건의사항) DTO
  */
 
 @Data
-public class NoticeDTO {
+public class BoardDTO {
 	private Long id;
 
 	

@@ -6,11 +6,11 @@ import lombok.Data;
 
 
 /**
- * 게시판 - 건의사항 DTO
+ * 파일 DTO
  */
 
 @Data
-public class SuggestionDTO {
+public class FileDTO {
 	private Long id;
 
 	

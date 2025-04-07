@@ -13,15 +13,15 @@ import lombok.extern.slf4j.Slf4j;
 
 
 /**
- * 회원 관리 Controller
+ * 사원 관리 Controller
  */
 
 @Slf4j
 @NoArgsConstructor
 
-@RequestMapping("/member")
+@RequestMapping("/employee")
 @RestController
-public class MemberController {
+public class EmployeeController {
 	
 	@GetMapping
 	String list() { // 리스트

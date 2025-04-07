@@ -35,19 +35,23 @@ import lombok.ToString;
 	"udtDate"
 })
 
-// 채팅방 entity
+// 부서 entity
 
 @Entity
-@Table(name="T_CHAT")
-public class Chat implements Serializable {
+@Table(name="T_DEPARTMENT")
+public class Department implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
+	//1. pk
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
 	@Column(name = "ID", unique=true, nullable=false)
-	private Long id; // 채팅방 id
+	private Long id; // 부서 id
 
 	@Column(nullable=false)
-	private String name; // 채팅방명
+	private String name; // 부서명
+
+	@Column(nullable=false)
+	private Integer depth; // 계층 깊이
 
 	@Convert(converter = BooleanToIntegerConverter.class)
 	@Column(nullable=false)
@@ -57,52 +61,53 @@ public class Chat implements Serializable {
 	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Column(name="CRT_DATE", nullable = false)
-	private Date crtDate; // 생성일
+	private Date crtDate;
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
 	@Column(name="UDT_DATE")
-	private Date udtDate; // 수정일
-
-	// join
-	@ManyToOne
-	@JoinColumn(name="PJT_ID")
-	private Project Project; // 프로젝트 뱃지 id
-
-	@ToString.Exclude
-	@OneToMany(mappedBy="tChat")
-	private List<ChatEmployee> ChatEmployees = new Vector(); //  작성자 id 
-
-	@ToString.Exclude
-	@OneToMany(mappedBy="tChat")
-	private List<Message> Messages = new Vector(); // 메시지 id
+	private Date udtDate;
 
 	
-	public ChatEmployee addChatEmployee(ChatEmployee ChatEmployee) {
-		getChatEmployees().add(ChatEmployee);
-		ChatEmployee.setChat(this);
+	// join
+	@ManyToOne
+	@JoinColumn(name="P_DEPT_ID")
+	private Department Department; // 상위부서
 
-		return ChatEmployee;
-	} // addChatEmployee
+	@ToString.Exclude
+	@OneToMany(mappedBy="TDepartment")
+	private List<Department> Departments = new Vector(); // 부서
 
-	public ChatEmployee removeChatEmployee(ChatEmployee ChatEmployee) {
-		getChatEmployees().remove(ChatEmployee);
-		ChatEmployee.setChat(null);
+	@ToString.Exclude
+	@OneToMany(mappedBy="TDepartment")
+	private List<Employee> Employees = new Vector(); // 사원
 
-		return ChatEmployee;
-	} // removeChatEmployee
 
-	public Message addMessage(Message Message) {
-		getMessages().add(Message);
-		Message.setChat(this);
+	public Department addDepartment(Department Department) {
+		getDepartments().add(Department);
+		Department.setDepartment(this);
 
-		return Message;
-	} // addMessage
+		return Department;
+	} // addDepartment
 
-	public Message removeTMessage(Message Message) {
-		getMessages().remove(Message);
-		Message.setChat(null);
+	public Department removeDepartment(Department Department) {
+		getDepartments().remove(Department);
+		Department.setDepartment(null);
 
-		return Message;
-	} // removeMessage
+		return Department;
+	} // removeDepartment
+
+	public Employee addEmployee(Employee Employee) {
+		getEmployees().add(Employee);
+		Employee.setDepartment(this);
+
+		return Employee;
+	} // addEmployee
+
+	public Employee removeEmployee(Employee Employee) {
+		getEmployees().remove(Employee);
+		Employee.setDepartment(null);
+
+		return Employee;
+	} // removeEmployee
 
 } // end class

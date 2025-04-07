@@ -3,7 +3,7 @@ package org.zerock.myapp.persistence;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
-import org.zerock.myapp.entity.Member;
+import org.zerock.myapp.entity.Employee;
 
 
 /**
@@ -11,6 +11,6 @@ import org.zerock.myapp.entity.Member;
  */
 
 @Repository
-public interface MemberRepository extends JpaRepository<Member, Long>, JpaSpecificationExecutor<Member> {
+public interface EmployeeRepository extends JpaRepository<Employee, String>, JpaSpecificationExecutor<Employee> {
 
 } // end interface

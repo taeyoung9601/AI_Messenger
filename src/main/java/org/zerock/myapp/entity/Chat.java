@@ -69,11 +69,11 @@ public class Chat implements Serializable {
 	private Project Project; // 프로젝트 뱃지 id
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="tChat")
+	@OneToMany(mappedBy="Chat")
 	private List<ChatEmployee> ChatEmployees = new Vector(); //  작성자 id 
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="tChat")
+	@OneToMany(mappedBy="Chat")
 	private List<Message> Messages = new Vector(); // 메시지 id
 
 	

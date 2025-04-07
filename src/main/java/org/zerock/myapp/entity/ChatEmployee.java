@@ -51,12 +51,12 @@ public class ChatEmployee implements Serializable {
 	// join
 	@ManyToOne
 	@MapsId("chatId") // 복합 키의 chatId 필드와 매핑
-	@JoinColumn(name="CHAT_ID", referencedColumnName="ID")
+	@JoinColumn(name="CHAT_ID", referencedColumnName="ID", insertable=false, updatable=false)
 	private Chat Chat; // 채팅방 id 
 
 	@ManyToOne
 	@MapsId("empno") // 복합 키의 empno 필드와 매핑
-	@JoinColumn(name="EMPNO")
+	@JoinColumn(name="EMPNO", insertable=false, updatable=false)
 	private Employee Employee; // 사번
 
 } // end class

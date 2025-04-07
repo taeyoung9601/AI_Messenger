@@ -49,11 +49,11 @@ public class WorkEmployee implements Serializable {
 	
 	// join
 	@ManyToOne
-	@JoinColumn(name="EMPNO")
+	@JoinColumn(name="EMPNO", insertable=false, updatable=false)
 	private Employee Employee; // 사원 id
 
 	@ManyToOne
-	@JoinColumn(name="WORK_ID", referencedColumnName = "ID")
+	@JoinColumn(name="WORK_ID", referencedColumnName = "ID", insertable=false, updatable=false)
 	private Work Work; // 업무 id
 
 } // end class

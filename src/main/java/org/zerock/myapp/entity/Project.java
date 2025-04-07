@@ -79,7 +79,7 @@ public class Project implements Serializable {
 	
 	// join
 	@ToString.Exclude
-	@OneToMany(mappedBy="TProject")
+	@OneToMany(mappedBy="Project")
 	private List<Chat> Chats = new Vector(); // 프로젝트뱃지
 
 	@ManyToOne

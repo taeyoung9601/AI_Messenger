@@ -93,11 +93,11 @@ public class Employee implements Serializable {
 	
 	// join
 	@ToString.Exclude
-	@OneToMany(mappedBy="TEmployee")
+	@OneToMany(mappedBy="Employee")
 	private List<Board> Board = new Vector(); // 게시판 작성자
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="TEmployee")
+	@OneToMany(mappedBy="Employee")
 	private List<ChatEmployee> ChatEmployees = new Vector(); // 채팅방을 사용하는 사원
 
 	@ManyToOne
@@ -105,27 +105,27 @@ public class Employee implements Serializable {
 	private Department Department; // 부서 ID
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="TEmployee")
+	@OneToMany(mappedBy="Employee")
 	private List<File> Files = new Vector(); // 프로필사진
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="TEmployee")
+	@OneToMany(mappedBy="Employee")
 	private List<Message> Messages = new Vector(); // 메시지 작성자
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="TEmployee1")
+	@OneToMany(mappedBy="Employee1")
 	private List<Project> Projects1 = new Vector(); // 만든사람 id
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="TEmployee2")
+	@OneToMany(mappedBy="Employee2")
 	private List<Project> Projects2 = new Vector(); // 담당자 id
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="TEmployee")
+	@OneToMany(mappedBy="Employee")
 	private List<Work> Works = new Vector(); // 지시자
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="TEmployee")
+	@OneToMany(mappedBy="Employee")
 	private List<WorkEmployee> WorkEmployees = new Vector(); // 담당자
 
 

@@ -89,7 +89,7 @@ public class Work implements Serializable {
 	private Employee Employee; // 지시자 id
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="TWork")
+	@OneToMany(mappedBy="Work")
 	private List<WorkEmployee> WorkEmployees = new Vector(); // 업무-사원 테이블
 
 

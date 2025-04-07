@@ -74,11 +74,11 @@ public class Department implements Serializable {
 	private Department Department; // 상위부서
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="TDepartment")
+	@OneToMany(mappedBy="Department")
 	private List<Department> Departments = new Vector(); // 부서
 
 	@ToString.Exclude
-	@OneToMany(mappedBy="TDepartment")
+	@OneToMany(mappedBy="Department")
 	private List<Employee> Employees = new Vector(); // 사원
 
 

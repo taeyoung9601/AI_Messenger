@@ -69,7 +69,7 @@ public class Message implements Serializable {
 	// join
 	// @JsonManagedReference("course-instructor")	// fix
 	@ToString.Exclude
-	@OneToMany(mappedBy="TMessage")
+	@OneToMany(mappedBy="Message")
 	private List<File> Files = new Vector(); // 파일
 
 	@ManyToOne

@@ -12,7 +12,6 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -81,7 +80,6 @@ public class Employee implements Serializable {
 	private Integer empSeq; // 사원 시퀀스(보여지는 속성은 아님)
 	
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Column(name="CRT_DATE")
 	private Date crtDate; // 등록일
@@ -94,11 +92,11 @@ public class Employee implements Serializable {
 	// join
 	@ToString.Exclude
 	@OneToMany(mappedBy="Employee")
-	private List<Board> Board = new Vector(); // 게시판 작성자
+	private List<Board> Board = new Vector<>(); // 게시판 작성자
 
 	@ToString.Exclude
 	@OneToMany(mappedBy="Employee")
-	private List<ChatEmployee> ChatEmployees = new Vector(); // 채팅방을 사용하는 사원
+	private List<ChatEmployee> ChatEmployees = new Vector<>(); // 채팅방을 사용하는 사원
 
 	@ManyToOne
 	@JoinColumn(name="DEPT_ID")
@@ -106,27 +104,27 @@ public class Employee implements Serializable {
 
 	@ToString.Exclude
 	@OneToMany(mappedBy="Employee")
-	private List<File> Files = new Vector(); // 프로필사진
+	private List<File> Files = new Vector<>(); // 프로필사진
 
 	@ToString.Exclude
 	@OneToMany(mappedBy="Employee")
-	private List<Message> Messages = new Vector(); // 메시지 작성자
+	private List<Message> Messages = new Vector<>(); // 메시지 작성자
 
 	@ToString.Exclude
 	@OneToMany(mappedBy="Employee1")
-	private List<Project> Projects1 = new Vector(); // 만든사람 id
+	private List<Project> Projects1 = new Vector<>(); // 만든사람 id
 
 	@ToString.Exclude
 	@OneToMany(mappedBy="Employee2")
-	private List<Project> Projects2 = new Vector(); // 담당자 id
+	private List<Project> Projects2 = new Vector<>(); // 담당자 id
 
 	@ToString.Exclude
 	@OneToMany(mappedBy="Employee")
-	private List<Work> Works = new Vector(); // 지시자
+	private List<Work> Works = new Vector<>(); // 지시자
 
 	@ToString.Exclude
 	@OneToMany(mappedBy="Employee")
-	private List<WorkEmployee> WorkEmployees = new Vector(); // 담당자
+	private List<WorkEmployee> WorkEmployees = new Vector<>(); // 담당자
 
 
 	public Board addBoard(Board Board) {

@@ -11,7 +11,6 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -67,7 +66,6 @@ public class Project implements Serializable {
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Column(name="CRT_DATE", nullable = false)
 	private Date crtDate; // 등록일
@@ -80,7 +78,7 @@ public class Project implements Serializable {
 	// join
 	@ToString.Exclude
 	@OneToMany(mappedBy="Project")
-	private List<Chat> Chats = new Vector(); // 프로젝트뱃지
+	private List<Chat> Chats = new Vector<>(); // 프로젝트뱃지
 
 	@ManyToOne
 	@JoinColumn(name="CREATOR")

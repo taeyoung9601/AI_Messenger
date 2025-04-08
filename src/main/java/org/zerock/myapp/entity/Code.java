@@ -27,35 +27,35 @@ import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 // 코드 entity
 
-@Entity
-@Table(name="T_CODE")
+//@Entity
+//@Table(name="T_CODE")
 public class Code implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
-	@EmbeddedId
+	//@EmbeddedId
 	private CodePK id; // 코드 ID
 	
-	@Column(nullable=false)
+	//@Column(nullable=false)
 	private String name; // 이름
 
-	@Column(nullable=false)
+	//@Column(nullable=false)
 	private String description; // 설명
 
-	@Convert(converter = BooleanToIntegerConverter.class)
-	@Column(nullable=false)
+	//@Convert(converter = BooleanToIntegerConverter.class)
+	//@Column(nullable=false)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 
-	@Column(nullable = false)
+	//@Column(nullable = false)
 	private Integer orderNum;
 	
 	
-	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
-	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
-	@Column(name="CRT_DATE", nullable = false)
+	//@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
+	//@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
+	//@Column(name="CRT_DATE", nullable = false)
 	private Date crtDate;
 
-	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
-	@Column(name="UDT_DATE")
+	//@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
+	//@Column(name="UDT_DATE")
 	private Date udtDate;
 	
 } // end class

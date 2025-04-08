@@ -12,14 +12,14 @@ import lombok.Data;
 
 // 코드 PK 엔티티
 
-@Embeddable
+//@Embeddable
 public class CodePK implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 	
-	@Column(name="CATEGORY")
+	//@Column(name="CATEGORY")
 	private String category; // 카테고리
 
-	@Column(name="CODE")
+	//@Column(name="CODE")
 	private Long code; // 코드번호
 
 } // end class

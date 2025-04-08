@@ -46,7 +46,7 @@ public class Employee implements Serializable {
 	//1. pk
 	// 생성기 만들어야 함.
 	@Id @GeneratedValue(strategy = GenerationType.AUTO)
-	@Column(name = "ID", unique=true, nullable=false)
+	@Column(name = "EMPNO", unique=true, nullable=false)
 	private String empno; // 사번
 	
 	@Column(nullable = false)

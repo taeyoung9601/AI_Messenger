@@ -29,7 +29,7 @@ public class ProjectDTO {
 	private Date udtDate; // 수정일
 
 	// join
-	private List<Chat> Chats = new Vector(); // 프로젝트뱃지
+	private List<Chat> Chats = new Vector<>(); // 프로젝트뱃지
 	private Employee Employee1; // 생성자 ID
 	private Employee Employee2; // 담당자 ID
 	

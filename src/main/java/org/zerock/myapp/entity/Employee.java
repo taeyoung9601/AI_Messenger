@@ -76,9 +76,6 @@ public class Employee implements Serializable {
 	@Column(nullable=false)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 	
-	@Column(nullable = false)
-	private Integer empSeq; // 사원 시퀀스(보여지는 속성은 아님)
-	
 	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Column(name="CRT_DATE")

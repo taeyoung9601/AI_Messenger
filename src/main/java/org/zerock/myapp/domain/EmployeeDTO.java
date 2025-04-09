@@ -34,7 +34,6 @@ private String empno; // 사번
 	private String address; // 주소
 	private BigDecimal zipCode; // 우편번호
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
-	private Integer empSeq; // 사원 시퀀스(보여지는 속성은 아님)
 	
 	private Date crtDate; // 등록일
 	private Date udtDate; // 수정일

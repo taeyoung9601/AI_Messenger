@@ -1,5 +1,6 @@
 package org.zerock.myapp.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -10,6 +11,7 @@ import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.persistence.ChatRepository;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -30,10 +32,10 @@ public class ChatServiceImpl implements ChatService {
 
 
 	@Override
-	public List<Chat> getAllList() {	//검색 없는 전체 리스트
+	public List<Chat> findAllList() {	//검색 없는 전체 리스트
 		log.debug("ChatServiceImpl -- getAllList() invoked");
 		
-		List<Chat> list = dao.findAll();
+		List<Chat> list = this.dao.findAllByEnabled(true);
 		
 		return list;
 	} // getAllList
@@ -49,21 +51,31 @@ public class ChatServiceImpl implements ChatService {
 	} // getSearchList
 	
 	@Override
-	public Chat create(ChatDTO dto) {	//등록 처리
+	public Chat createRoom(ChatDTO dto) {	//등록 처리
 		log.debug("ChatServiceImpl -- create({}) invoked", dto);
 		
-		Chat data = new Chat();//dao.save(dto);
-		log.debug("create data: {}", data);
+		Chat chat = new Chat();
 		
-		return data;
+		chat.setName(dto.getName());
+		chat.setEnabled(true);
+		chat.setCrtDate(new Date());
+//		chat.setProject(null);
+		
+		Chat saved = this.dao.save(chat);
+		
+		log.debug("create data: {}", chat);
+		
+		return saved;
 	} // create
 	
 	@Override
-	public Chat getById(String id) {	// 단일 조회
+	public Chat getById(Long id) {	// 단일 조회
 		log.debug("ChatServiceImpl -- getById({}) invoked", id);
 		
 		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
 		Chat data = new Chat();//dao.findById(id).orElse(new Chat());
+		
+		data = this.dao.findById(id).orElse(new Chat());
 		
 		return data;
 	} // getById
@@ -71,18 +83,30 @@ public class ChatServiceImpl implements ChatService {
 	@Override
 	public Boolean update(ChatDTO dto) {//수정 처리
 		log.debug("ChatServiceImpl -- update({}) invoked", dto);
-		
-//		Chat data = dao.save(dto);
-//		log.debug("create data: {}", data);
+
+	    Chat chat = this.dao.findById(dto.getId())
+	        .orElseThrow(() -> new EntityNotFoundException("채팅방이 존재하지 않습니다."));
+
+	    chat.setName(dto.getName());
+	    chat.setUdtDate(new Date());
+	    
+	    this.dao.save(chat);
+	    
 		Boolean isUpdate = true;
 		return isUpdate;
 	} // update
 
 	@Override
-	public Boolean deleteById(String id) { // 삭제 처리
+	public Boolean deleteById(Long id) { // 삭제 처리
 		log.debug("ChatServiceImpl -- deleteById({}) invoked", id);
 		
-		//dao.deleteById(id);
+		Chat chat = this.dao.findById(id)
+				.orElseThrow(() -> new EntityNotFoundException("채팅방이 존재하지 않습니다."));;
+		
+		chat.setEnabled(false);
+		
+		this.dao.save(chat);
+		
 		return true;
 	} // deleteById
 	

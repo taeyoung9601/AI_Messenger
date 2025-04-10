@@ -6,16 +6,17 @@ import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.web.socket.CloseStatus;
 import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.zerock.myapp.domain.MessageDTO;
+import org.zerock.myapp.service.MessageService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import jakarta.servlet.annotation.HandlesTypes;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -24,12 +25,15 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 
 public class WebSocketChatHandler extends TextWebSocketHandler {
-    private final ObjectMapper mapper;
+    @Autowired MessageService messageService;
+	
+	private final ObjectMapper mapper;
+    
 
     // 현재 연결된 세션들
     private final Set<WebSocketSession> sessions = new HashSet<>();
 
-    // chatRoomId: {session1, session2}
+    // chatRoomId: {session1, session2} , 채팅방 당 연결된 세션을 담음
     private final Map<Long,Set<WebSocketSession>> chatRoomSessionMap = new HashMap<>();
 
     // 소켓 연결 확인
@@ -47,10 +51,10 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         log.info("payload {}", payload);
 
         // 페이로드 -> chatMessageDto로 변환
-        MessageDTO MessageDto = mapper.readValue(payload, MessageDTO.class);
-        log.info("session {}", MessageDto.toString());
+        MessageDTO messageDto = mapper.readValue(payload, MessageDTO.class);
+        log.info("session {}", messageDto.toString());
 
-        Long chatRoomId = MessageDto.getChat().getId();
+        Long chatRoomId = messageDto.getChat().getId();
         // 메모리 상에 채팅방에 대한 세션 없으면 만들어줌
         if(!chatRoomSessionMap.containsKey(chatRoomId)){
             chatRoomSessionMap.put(chatRoomId,new HashSet<>());
@@ -58,6 +62,16 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         
         Set<WebSocketSession> chatRoomSession = chatRoomSessionMap.get(chatRoomId);
         
+        messageService.saveMessage(messageDto);
+        
+        // 방 참가 등록
+        chatRoomSession.add(session);
+
+        // 닫힌 세션 정리
+        removeClosedSession(chatRoomSession);
+
+        // 메시지 전송
+        sendMessageToChatRoom(messageDto, chatRoomSession);
 
     }
 
@@ -71,12 +85,16 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 	}//afterConnectionClosed
 
     // ====== 채팅 관련 메소드 ======
+    
+    // 연결이 끊어진 세션 삭제
     private void removeClosedSession(Set<WebSocketSession> chatRoomSession) {
         chatRoomSession.removeIf(sess -> !this.sessions.contains(sess));
     }
 
-    private void sendMessageToChatRoom(MessageDTO MessageDto, Set<WebSocketSession> chatRoomSession) {
-        chatRoomSession.parallelStream().forEach(sess -> sendMessage(sess, MessageDto));//2
+    
+    // 세션에게 메세지 전송
+    private void sendMessageToChatRoom(MessageDTO messageDto, Set<WebSocketSession> chatRoomSession) {
+        chatRoomSession.parallelStream().forEach(sess -> sendMessage(sess, messageDto));//2
     }
 
 

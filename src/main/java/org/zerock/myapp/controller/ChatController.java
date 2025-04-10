@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.service.ChatService;
@@ -31,6 +32,16 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
 		
 	@Autowired private ChatService ChatService;
+	
+	
+	@GetMapping(path="/room2")
+	ModelAndView  room2() { // 룸2
+		log.debug("room2() invoked.");
+		ModelAndView mav = new ModelAndView();
+		mav.setViewName("room2"); // "room2.html" 템플릿 파일 렌더링
+		return mav;
+	} // room2
+	
 	
 	@GetMapping
 	List<Chat> list() { // 리스트

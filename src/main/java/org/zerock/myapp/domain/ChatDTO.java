@@ -8,6 +8,7 @@ import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.Message;
 import org.zerock.myapp.entity.Project;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 
 
@@ -16,6 +17,7 @@ import lombok.Data;
  */
 
 @Data
+@AllArgsConstructor
 public class ChatDTO {
 	private Long id; // 채팅방 id
 

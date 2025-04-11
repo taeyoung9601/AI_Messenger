@@ -32,15 +32,7 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
 		
 	@Autowired private ChatService ChatService;
-	
-	
-	@GetMapping(path="/room2")
-	ModelAndView  room2() { // 룸2
-		log.debug("room2() invoked.");
-		ModelAndView mav = new ModelAndView();
-		mav.setViewName("room2"); // "room2.html" 템플릿 파일 렌더링
-		return mav;
-	} // room2
+
 	
 	
 	@GetMapping

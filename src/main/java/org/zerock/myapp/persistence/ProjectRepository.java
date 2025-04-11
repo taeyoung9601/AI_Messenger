@@ -32,7 +32,14 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 	//검색 리스트: 활성화상태(true) + status + 프로젝트명 
 	public abstract Page<Project> findByEnabledAndStatusAndNameContaining(Boolean enabled, Integer status, String name, Pageable paging);
 	
+	//검색 리스트: 활성화상태(true) + status + detail 
+	public abstract Page<Project> findByEnabledAndStatusAndDetailContaining(Boolean enabled, Integer status, String detail, Pageable paging);
 
+	//검색 리스트: 활성화상태(true) + 프로젝트명 
+	public abstract Page<Project> findByEnabledAndNameContaining(Boolean enabled, String name, Pageable paging);
+
+	//검색 리스트: 활성화상태(true) + detail 
+	public abstract Page<Project> findByEnabledAndDetailContaining(Boolean enabled, String detail, Pageable paging);
 	
 	public abstract Optional<Project> findByEnabledAndId(Boolean enabled, Long id);
 	

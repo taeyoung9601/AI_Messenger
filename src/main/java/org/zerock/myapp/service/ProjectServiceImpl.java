@@ -1,9 +1,11 @@
 package org.zerock.myapp.service;
 
 import java.util.List;
-import java.util.Vector;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.ProjectDTO;
 import org.zerock.myapp.entity.Project;
@@ -24,33 +26,59 @@ public class ProjectServiceImpl implements ProjectService {
 	
 	@PostConstruct
     void postConstruct(){
-        log.debug("ProjectServiceImpl -- postConstruct() invoked");
-        log.debug("dao: {}", dao);
+        log.debug("\t+ ProjectServiceImpl -- postConstruct() invoked");
+        log.debug("dao: {}", this.dao);
     }//postConstruct
-
-
-	@Override
-	public List<Project> getAllList() {	//검색 없는 전체 리스트
-		log.debug("ProjectServiceImpl -- getAllList() invoked");
-		
-		List<Project> list = dao.findAll();
-		
-		return list;
-	} // getAllList
+	
 	
 	@Override
-	public List<Project> getSearchList(ProjectDTO dto) {	//검색 있는 전체 리스트
-		log.debug("ProjectServiceImpl -- getSearchList(()) invoked", dto);
+	public Page<Project> getSearchList(ProjectDTO dto, Pageable paging) {
+		log.debug("\t+ ProjectServiceImpl -- getSearchList(()) invoked", dto);
 
-		List<Project> list = new Vector<>();
-		log.debug("리포지토리 미 생성");
+		if	   ( dto.getStatus() == null && dto.getSearchText() == null ) {
+			//검색 리스트: 활성화상태(true) 
+			log.debug("\t+ 검색 리스트: 활성화상태(true) ");
+			return this.dao.findByEnabled(true, paging);
+		}
+		else if( dto.getStatus() != null && dto.getSearchText() == null ) {
+			//검색 리스트: 활성화상태(true) + status
+			log.debug("\t+ 검색 리스트: 활성화상태(true) + status ");
+			return this.dao.findByEnabledAndStatus(true, dto.getStatus(), paging);
+		}
+		else if( dto.getStatus() == null && dto.getSearchText() != null ) {
+			log.debug("\t+ 검색 리스트: 3 ");
+			return switch (dto.getSearchWord()) {
+			            case "name" 	-> this.dao.findByEnabledAndNameContaining(true, dto.getSearchText(), paging);
+			            case "detail" 	-> this.dao.findByEnabledAndDetailContaining(true, dto.getSearchText(), paging);
+			            default			-> throw new IllegalArgumentException("swich_1 - Invalid search word: " + dto.getSearchWord());
+					};
+		}
+		else if( dto.getStatus() != null && dto.getSearchText() != null ) {
+			log.debug("\t+ 검색 리스트: 4 "+dto.getSearchWord()+" / "+dto.getSearchText());
+			return switch (dto.getSearchWord()) {
+			            case "name" 	-> {
+			            	log.info("test:{}", dto.getSearchWord());
+			            	yield this.dao.findByEnabledAndStatusAndNameContaining(true, dto.getStatus(), dto.getSearchText(), paging);
+			            }
+			            case "detail" 	-> this.dao.findByEnabledAndStatusAndDetailContaining(true, dto.getStatus(), dto.getSearchText(), paging);
+			            default			-> throw new IllegalArgumentException("swich_2 - Invalid search word: " + dto.getSearchWord());
+					};
+		}
 		
-		return list;
+		return null;		
 	} // getSearchList
+
+
+	@Override
+	public Page<Project> getUpCommingList(Pageable paging) {
+		log.debug("\t+ ProjectServiceImpl -- getUpCommingList(()) invoked");
+		
+		return this.dao.findByEnabled(true, paging);
+	} // getUpCommingList
 	
 	@Override
 	public Project create(ProjectDTO dto) {	//등록 처리
-		log.debug("ProjectServiceImpl -- create({}) invoked", dto);
+		log.debug("\t+ ProjectServiceImpl -- create({}) invoked", dto);
 		
 		Project data = new Project();//dao.save(dto);
 		log.debug("create data: {}", data);
@@ -59,18 +87,18 @@ public class ProjectServiceImpl implements ProjectService {
 	} // create
 	
 	@Override
-	public Project getById(String id) {	// 단일 조회
-		log.debug("ProjectServiceImpl -- getById({}) invoked", id);
+	public Project getById(Long id) {	// 단일 조회
+		log.debug("\t+ ProjectServiceImpl -- getById({}) invoked", id);
 		
-		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
-		Project data = new Project();//dao.findById(id).orElse(new Project());
+		Optional<Project> optionalProject = this.dao.findByEnabledAndId(true, id);
+		Project project = optionalProject.get();
 		
-		return data;
+		return project;
 	} // getById
 	
 	@Override
 	public Boolean update(ProjectDTO dto) {//수정 처리
-		log.debug("ProjectServiceImpl -- update({}) invoked", dto);
+		log.debug("\t+ ProjectServiceImpl -- update({}) invoked", dto);
 		
 //		Project data = dao.save(dto);
 //		log.debug("create data: {}", data);
@@ -79,12 +107,24 @@ public class ProjectServiceImpl implements ProjectService {
 	} // update
 
 	@Override
-	public Boolean deleteById(String id) { // 삭제 처리
-		log.debug("ProjectServiceImpl -- deleteById({}) invoked", id);
+	public String deleteById(Long id) { // 삭제 처리
+		log.debug("\t+ ProjectServiceImpl -- deleteById({}) invoked", id);
 		
-		//dao.deleteById(id);
-		return true;
-	} // deleteById
+		Optional<Project> optionalProject = this.dao.findByEnabledAndId(true, id);
+		
+		if(optionalProject.isPresent()) {
+			Project project = optionalProject.get();
+			project.setEnabled(false);
+			
+			Project delete = this.dao.save(project);
+			
+			return "Delete success";
+		}//if
+
+		return "Delete fail";
+		
+		
+	}//deleteById
 	
 	
 	

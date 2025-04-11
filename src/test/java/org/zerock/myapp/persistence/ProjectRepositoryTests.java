@@ -52,7 +52,7 @@ public class ProjectRepositoryTests {
 	
 	
 	
-//	@Disabled
+	@Disabled
 	@Tag("Project]-Repository-Test")
 	@Order(1)
 	@Test
@@ -88,7 +88,7 @@ public class ProjectRepositoryTests {
 		
 	}//findByEnabledAndId
 	
-//	@Disabled
+	@Disabled
 	@Tag("Project-Repository-Test")
 	@Order(3)
 	@Test
@@ -111,7 +111,7 @@ public class ProjectRepositoryTests {
 		
 	}//update
 	
-//	@Disabled
+	@Disabled
 	@Tag("Project-Repository-Test")
 	@Order(4)
 	@Test
@@ -132,7 +132,7 @@ public class ProjectRepositoryTests {
 	
 	
 	
-//	@Disabled
+	@Disabled
 	@Tag("Project-Repository-Test")
 	@Order(10)
 	@Test

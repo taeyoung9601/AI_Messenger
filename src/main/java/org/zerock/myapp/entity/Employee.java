@@ -107,13 +107,13 @@ public class Employee implements Serializable {
 	@OneToMany(mappedBy="Employee")
 	private List<Message> Messages = new Vector<>(); // 메시지 작성자
 
-	@ToString.Exclude
-	@OneToMany(mappedBy="Employee1")
-	private List<Project> Projects1 = new Vector<>(); // 만든사람 id
+//	@ToString.Exclude
+//	@OneToMany(mappedBy="pjtCreator")
+//	private List<Project> createProjects = new Vector<>(); // pjt_만든사람 id
 
-	@ToString.Exclude
-	@OneToMany(mappedBy="Employee2")
-	private List<Project> Projects2 = new Vector<>(); // 담당자 id
+//	@ToString.Exclude
+//	@OneToMany(mappedBy="pjtManager")
+//	private List<Project> manageProjects = new Vector<>(); // pjt_담당자 id
 
 	@ToString.Exclude
 	@OneToMany(mappedBy="Employee")
@@ -183,34 +183,34 @@ public class Employee implements Serializable {
 	} // removeMessage
 
 	
-	public Project addProjects1(Project Projects1) {
-		getProjects1().add(Projects1);
-		Projects1.setEmployee1(this);
-
-		return Projects1;
-	} // addProjects1
-
-	public Project removeProjects1(Project Projects1) {
-		getProjects1().remove(Projects1);
-		Projects1.setEmployee1(null);
-
-		return Projects1;
-	} // removeProjects1
-
-
-	public Project addProjects2(Project Projects2) {
-		getProjects2().add(Projects2);
-		Projects2.setEmployee2(this);
-
-		return Projects2;
-	} // addProjects2
-
-	public Project removeProjects2(Project Projects2) {
-		getProjects2().remove(Projects2);
-		Projects2.setEmployee2(null);
-
-		return Projects2;
-	} // removeProjects2
+//	public Project addCreateProjects(Project createProjects) {
+//		getCreateProjects().add(createProjects);
+//		createProjects.setPjtCreator(this);
+//
+//		return createProjects;
+//	} // addCreateProjects
+//
+//	public Project removeCreateProjects(Project createProjects) {
+//		getCreateProjects().remove(createProjects);
+//		createProjects.setPjtCreator(null);
+//
+//		return createProjects;
+//	} // removeCreateProjects
+//
+//
+//	public Project addManageProjects(Project manageProjects) {
+//		getManageProjects().add(manageProjects);
+//		manageProjects.setPjtManager(this);
+//
+//		return manageProjects;
+//	} // addManageProjects
+//
+//	public Project removeManageProjects(Project manageProjects) {
+//		getManageProjects().remove(manageProjects);
+//		manageProjects.setPjtManager(null);
+//
+//		return manageProjects;
+//	} // removeManageProjects
 
 
 	public Work addWork(Work Work) {

@@ -1,5 +1,8 @@
 package org.zerock.myapp.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,6 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.myapp.domain.WorkDTO;
+import org.zerock.myapp.entity.Work;
+import org.zerock.myapp.service.WorkService;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -22,17 +28,26 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/work")
 @RestController
 public class WorkController {
+	@Autowired private WorkService workService;
 	
 	@GetMapping
-	String list() { // 리스트
+	List<Work> list(
+			WorkDTO dto
+			) { // 리스트
 		log.debug("list() invoked.");
 		
-		return "list";
+		List<Work> works = workService.getAllList();
+
+		works.forEach(s -> log.info(s.toString()));
+		
+		return works;
 	} // list
 	
 	@PostMapping
 	String register() { // 등록 처리
 		log.debug("register() invoked.");
+		
+		
 		
 		return "register";
 	} // register

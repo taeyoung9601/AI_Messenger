@@ -12,5 +12,5 @@ import org.zerock.myapp.entity.Work;
 
 @Repository
 public interface WorkRepository extends JpaRepository<Work, Long>, JpaSpecificationExecutor<Work> {
-
+	;;
 } // end interface

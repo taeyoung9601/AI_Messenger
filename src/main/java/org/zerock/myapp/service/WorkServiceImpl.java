@@ -52,18 +52,21 @@ public class WorkServiceImpl implements WorkService {
 	public Work create(WorkDTO dto) {	//등록 처리
 		log.debug("WorkServiceImpl -- create({}) invoked", dto);
 		
-		Work data = new Work();//dao.save(dto);
-		log.debug("create data: {}", data);
-		
-		return data;
+		// DTO -> Entity 변환
+        Work work = Work.toEntity(dto);
+        
+        // DB에 저장
+        Work savedWork = dao.save(work);
+        return savedWork;
 	} // create
 	
 	@Override
-	public Work getById(String id) {	// 단일 조회
+	public Work getById(Long id) {	// 단일 조회
 		log.debug("WorkServiceImpl -- getById({}) invoked", id);
 		
 		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
-		Work data = new Work();//dao.findById(id).orElse(new Work());
+		Work data = dao.findById(id)
+				.orElseThrow(() -> new IllegalArgumentException("Invalid Work ID: " + id));
 		
 		return data;
 	} // getById
@@ -79,7 +82,7 @@ public class WorkServiceImpl implements WorkService {
 	} // update
 
 	@Override
-	public Boolean deleteById(String id) { // 삭제 처리
+	public Boolean deleteById(Long id) { // 삭제 처리
 		log.debug("WorkServiceImpl -- deleteById({}) invoked", id);
 		
 		//dao.deleteById(id);

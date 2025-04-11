@@ -7,6 +7,7 @@ import java.util.Vector;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.entity.WorkEmployee;
 
+import lombok.Builder;
 import lombok.Data;
 
 
@@ -14,6 +15,7 @@ import lombok.Data;
  * 업무 DTO
  */
 
+@Builder
 @Data
 public class WorkDTO {
 	private Long id; // 업무 id

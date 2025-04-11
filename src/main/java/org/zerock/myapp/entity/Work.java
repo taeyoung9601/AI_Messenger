@@ -9,9 +9,8 @@ import java.util.Vector;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
+import org.zerock.myapp.domain.WorkDTO;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
-
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -23,16 +22,13 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
+import lombok.Builder;
 import lombok.Data;
 import lombok.ToString;
 
 
+@Builder
 @Data
-
-//JSON 으로 변환해서 보낼때, 제외 할 항목
-@JsonIgnoreProperties({
-	"udtDate"
-})
 
 // 업무 entity
 
@@ -56,10 +52,10 @@ public class Work implements Serializable {
 	private String memo; // 업무 메모
 
 	@Column(nullable=false)
-	private Integer status; // 업무상태(진행예정, 진행중, 완료대기, 완료)
+	private Integer status; // 업무상태(진행예정=1, 진행중=2, 완료대기=3, 완료=4)
 
 	@Column(nullable=false)
-	private Integer type; // 업무분류(개발, 운영, 인사, 회계, 마케팅)
+	private Integer type; // 업무분류(개발=1, 운영=2, 인사=3, 회계=4, 마케팅=5)
 
 	@Column(nullable=false)
 	private String startDate; // 시작일
@@ -104,5 +100,20 @@ public class Work implements Serializable {
 
 		return WorkEmployee;
 	} // removeWorkEmployee
+	
+	
+	public static Work toEntity(WorkDTO dto) { // DTO -> 엔티티 편의메소드
+        return Work.builder()
+                .id(dto.getId())
+                .name(dto.getName())
+                .detail(dto.getDetail())
+                .memo(dto.getMemo())
+                .status(dto.getStatus())
+                .type(dto.getType())
+                .startDate(dto.getStartDate())
+                .endDate(dto.getEndDate())
+                .enabled(dto.getEnabled())
+                .build();
+    } // toEntity
 
 } // end class

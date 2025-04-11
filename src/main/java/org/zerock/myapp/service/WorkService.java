@@ -11,8 +11,8 @@ public interface WorkService {
 	public abstract List<Work> getSearchList(WorkDTO dto); // 전체 조회(검색)
 	
 	public abstract Work create(WorkDTO dto);    	// 생성 처리
-	public abstract Work getById(String id);    // 단일 조회
+	public abstract Work getById(Long id);    // 단일 조회
 	public abstract Boolean update(WorkDTO dto);    	// 수정 처리
-	public abstract Boolean deleteById(String id);// 삭제 처리
+	public abstract Boolean deleteById(Long id);// 삭제 처리
 	
 }//end interface

@@ -21,7 +21,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		log.debug("registerWebSocketHandlers({}) invoked.");
 
-		registry.addHandler(new WebSocketChatHandler(), "/chat/{roomID}").setAllowedOrigins("*");	
+		registry.addHandler(new WebSocketChatHandler(), "/chat").setAllowedOrigins("*");	
 		
 	}// registerWebSocketHandlers
 	

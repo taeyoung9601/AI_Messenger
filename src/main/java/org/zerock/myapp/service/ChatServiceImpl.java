@@ -13,9 +13,11 @@ import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.ChatEmployeePK;
 import org.zerock.myapp.entity.Employee;
+import org.zerock.myapp.entity.Message;
 import org.zerock.myapp.persistence.ChatEmployeeRepository;
 import org.zerock.myapp.persistence.ChatRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
+import org.zerock.myapp.persistence.MessageRepository;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
@@ -32,6 +34,7 @@ public class ChatServiceImpl implements ChatService {
     @Autowired ChatRepository chatRepository;
     @Autowired ChatEmployeeRepository chatEmployeeRepository;
     @Autowired EmployeeRepository employeeRepository;
+    @Autowired MessageRepository messageRepository;
 	
 	@PostConstruct
     void postConstruct(){
@@ -55,7 +58,6 @@ public class ChatServiceImpl implements ChatService {
 	        dto.setEnabled(chat.getEnabled());
 	        dto.setCrtDate(chat.getCrtDate());
 	        dto.setProject(chat.getProject());
-	        // 필요한 필드만 추가로 세팅해주면 돼
 
 	        chatDtoList.add(dto);
 	    }
@@ -139,7 +141,8 @@ public class ChatServiceImpl implements ChatService {
 		
 		chatDTO.setId(selectedChat.getId());
 		chatDTO.setName(selectedChat.getName());
-		chatDTO.setMessages(selectedChat.getMessages());
+		List<Message> messages = messageRepository.findByChatId(id);
+		chatDTO.setMessages(messages);
 		chatDTO.setProject(selectedChat.getProject());
 		
 		List<ChatEmployeeDTO> chatEmployeeDTOList = new ArrayList<>();

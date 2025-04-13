@@ -4,11 +4,9 @@ import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
-import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.Message;
 import org.zerock.myapp.entity.Project;
 
-import lombok.AllArgsConstructor;
 import lombok.Data;
 
 
@@ -17,7 +15,6 @@ import lombok.Data;
  */
 
 @Data
-@AllArgsConstructor
 public class ChatDTO {
 	private Long id; // 채팅방 id
 
@@ -29,7 +26,7 @@ public class ChatDTO {
 
 	// join
 	private Project Project; // 프로젝트 뱃지 id
-	private List<ChatEmployee> ChatEmployees = new Vector<>(); //  작성자 id 
+	private List<ChatEmployeeDTO> ChatEmployees; //  작성자 id 
 	private List<Message> Messages = new Vector<>(); // 메시지 id
 	
 	private String searchWord; // 검색 항목

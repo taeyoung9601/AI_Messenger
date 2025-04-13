@@ -3,6 +3,7 @@ package org.zerock.myapp.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -11,8 +12,9 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.ModelAndView;
 import org.zerock.myapp.domain.ChatDTO;
+import org.zerock.myapp.domain.ChatEmployeeDTO;
+import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.service.ChatService;
 
@@ -31,31 +33,29 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class ChatController {
 		
-	@Autowired private ChatService ChatService;
-
-	
+	@Autowired private ChatService chatService;
 	
 	@GetMapping
-	List<Chat> list() { // 리스트
+	List<ChatDTO> list() { // 리스트
 		log.debug("list() invoked.");
 		
-		return ChatService.findAllList();
+		return chatService.findAllList();
 	} // list
 	
 	@PostMapping
-	Chat register(@RequestBody ChatDTO dto) { // 등록 처리
+	ChatDTO register(@RequestBody ChatDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
 		
-		return ChatService.createRoom(dto);
+		return chatService.createRoom(dto);
 	} // register
 	
 	@GetMapping(path = "/{id}")
-	Chat read( // 세부 조회
+	ChatDTO read( // 세부 조회
 			@PathVariable Long id
 			) {
 		log.debug("read({}) invoked.",id);
 		
-		return ChatService.getById(id);
+		return chatService.getById(id);
 	} // read
 	
 	@PutMapping(path = "/{id}")
@@ -65,7 +65,7 @@ public class ChatController {
 			) { 
 		log.debug("update({}) invoked.",id);
 		
-		return ChatService.update(dto);
+		return chatService.update(dto);
 	} // update
 	
 	@DeleteMapping(path = "/{id}")
@@ -74,8 +74,15 @@ public class ChatController {
 			) {
 		log.debug("delete({}) invoked.",id);
 		
-		return ChatService.deleteById(id);
+		return chatService.deleteById(id);
 	} // delete
 	
-
+	@PostMapping("/{chatId}/invite")
+	public List<ChatEmployeeDTO> inviteEmployees(
+	    @PathVariable Long chatId,
+	    @RequestBody List<ChatEmployeeDTO> inviteList) {
+		
+	    return chatService.inviteEmployeesToChat(chatId, inviteList);
+	}
+	
 } // end class

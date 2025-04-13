@@ -76,31 +76,31 @@ public class Project implements Serializable {
 
 	
 	// join
-	@ToString.Exclude
-	@OneToMany(mappedBy="Project")
-	private List<Chat> Chats = new Vector<>(); // 프로젝트뱃지
+//	@ToString.Exclude
+//	@OneToMany(mappedBy="Project")
+//	private List<Chat> Chats = new Vector<>(); // 프로젝트뱃지
 
 	@ManyToOne
 	@JoinColumn(name="CREATOR")
-	private Employee Employee1; // 생성자 ID
+	private Employee pjtCreator; // 생성자 ID
 
 	@ManyToOne
 	@JoinColumn(name="MANAGER")
-	private Employee Employee2; // 담당자 ID
+	private Employee pjtManager; // 담당자 ID
 
 
-	public Chat addChat(Chat Chat) {
-		getChats().add(Chat);
-		Chat.setProject(this);
-
-		return Chat;
-	} // addChat
-
-	public Chat removeChat(Chat Chat) {
-		getChats().remove(Chat);
-		Chat.setProject(null);
-
-		return Chat;
-	} // removeChat
+//	public Chat addChat(Chat Chat) {
+//		getChats().add(Chat);
+//		Chat.setProject(this);
+//
+//		return Chat;
+//	} // addChat
+//
+//	public Chat removeChat(Chat Chat) {
+//		getChats().remove(Chat);
+//		Chat.setProject(null);
+//
+//		return Chat;
+//	} // removeChat
 
 } // end class

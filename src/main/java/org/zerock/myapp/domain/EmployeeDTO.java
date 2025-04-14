@@ -10,7 +10,6 @@ import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.Department;
 import org.zerock.myapp.entity.File;
 import org.zerock.myapp.entity.Message;
-import org.zerock.myapp.entity.Project;
 import org.zerock.myapp.entity.Work;
 import org.zerock.myapp.entity.WorkEmployee;
 
@@ -23,7 +22,7 @@ import lombok.Data;
 
 @Data
 public class EmployeeDTO {
-private String empno; // 사번
+	private String empno; // 사번
 	
 	private String name; // 사원명
 	private Integer position; // 직급(팀원=1, 팀장=2, 부서장=3, CEO=4, 인사담당자=5, 시스템관리자=9)

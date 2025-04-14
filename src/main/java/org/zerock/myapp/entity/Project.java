@@ -2,12 +2,12 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.util.List;
-import java.util.Vector;
 
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.CurrentTimestamp;
+import org.hibernate.annotations.SourceType;
+import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
@@ -22,10 +22,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.ToString;
 
 
 @Data
@@ -43,40 +42,36 @@ public class Project implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
 	//1. pk
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@SequenceGenerator(name = "ko", sequenceName = "T_PROJECT_SEQ", initialValue = 1, allocationSize = 1)
 	@Column(name = "ID", unique=true, nullable=false)
 	private Long id; // 프로젝트 id
 
-	@Column(nullable=false)
+	@Column(nullable=false, length = 500)
 	private String name; // 프로젝트명
 
-	@Column(nullable=true)
+	@Column(nullable=true, length = 4000)
 	private String detail; // 프로젝트내용
 
-	@Column(nullable=false)
+	@Column(nullable=false, length = 1)
 	private Integer status; // 프로젝트상태 (진행예정=1, 진행중=2, 완료=3)
 
 	@Column(nullable=false)
-	private String startDate; // 시작일
+	private LocalDate startDate; // 시작일
 	
 	@Column(nullable=false)
-	private String endDate; // 종료일
+	private LocalDate endDate; // 종료일
 
 	@Convert(converter = BooleanToIntegerConverter.class)
-	@Column(nullable=false)
+	@Column(nullable=false, length = 1)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 
 	
-//	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
-	@CreationTimestamp	//(***) 자동 년/월/일/시/분/초 값 입력, insert 시 1번만
+	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Basic(optional = false, fetch = FetchType.LAZY)
-	@Column(name="CRT_DATE", nullable = false)
     private LocalDateTime crtDate; // 등록일
 
-//	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
-	@UpdateTimestamp
-	@Basic(optional = true, fetch = FetchType.LAZY)
-	@Column(name="UDT_DATE")
+	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
 	private LocalDateTime udtDate; // 수정일
 
 	

@@ -61,10 +61,13 @@ public class ProjectController {
 	} // list
 	
 	@PostMapping
-	String register(ProjectDTO dto) { // 등록 처리
+	Project register(ProjectDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
+		log.debug("dto: {}", dto);
 		
-		return "register";
+		Project data = this.service.create(dto);		
+		
+		return data;
 	} // register
 	
 	@GetMapping(path = "/{id}")
@@ -77,10 +80,12 @@ public class ProjectController {
 	} // read
 	
 	@PutMapping(path = "/{id}")
-	String update(@PathVariable Long id, ProjectDTO dto) {  // 수정 처리
+	Project update(@PathVariable Long id, ProjectDTO dto) {  // 수정 처리
 		log.debug("update({}) invoked.",id);
+
+		Project data = this.service.update(id, dto);	
 		
-		return "update: "+id;
+		return data;
 	} // update
 	
 	@DeleteMapping(path = "/{id}")

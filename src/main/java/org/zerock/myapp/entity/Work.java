@@ -38,17 +38,17 @@ public class Work implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
 	//1. pk
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "ID", unique=true, nullable=false)
 	private Long id; // 업무 id
 	
-	@Column(nullable=false)
+	@Column(nullable=false, length = 255)
 	private String name; // 업무명
 
-	@Column(nullable=true)
+	@Column(nullable=true, length = 4000)
 	private String detail; // 업무내용
 	
-	@Column(nullable=true)
+	@Column(nullable=true, length = 4000)
 	private String memo; // 업무 메모
 
 	@Column(nullable=false)
@@ -58,10 +58,10 @@ public class Work implements Serializable {
 	private Integer type; // 업무분류(개발=1, 운영=2, 인사=3, 회계=4, 마케팅=5)
 
 	@Column(nullable=false)
-	private String startDate; // 시작일
+	private Date startDate; // 시작일
 	
 	@Column(nullable=false)
-	private String endDate; // 종료일
+	private Date endDate; // 종료일
 	
 	@Convert(converter = BooleanToIntegerConverter.class)
 	@Column(nullable=false)
@@ -69,18 +69,18 @@ public class Work implements Serializable {
 	
 	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
-	@Column(name="CRT_DATE", nullable = false)
+	@Column(nullable = false)
 	private Date crtDate; // 생성일
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
-	@Column(name="UDT_DATE")
+	@Column
 	private Date udtDate; // 수정일
 
 	
 	// join
 	@ManyToOne
 	@JoinColumn(name="EMPNO")
-	private Employee Employee; // 지시자 id
+	private Employee employee; // 요청자 id
 
 //	@ToString.Exclude
 //	@OneToMany(mappedBy="Work")

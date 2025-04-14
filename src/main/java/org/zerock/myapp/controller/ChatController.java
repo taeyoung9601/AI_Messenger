@@ -13,6 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.domain.ChatEmployeeDTO;
+import org.zerock.myapp.domain.ChatInitResponseDTO;
+import org.zerock.myapp.entity.Department;
+import org.zerock.myapp.entity.Employee;
+import org.zerock.myapp.entity.Project;
 import org.zerock.myapp.service.ChatService;
 import org.zerock.myapp.service.DepartmentService;
 import org.zerock.myapp.service.EmployeeService;
@@ -87,5 +91,16 @@ public class ChatController {
 		
 	    return chatService.inviteEmployeesToChat(chatId, inviteList);
 	}
+	
+	@GetMapping("/init")
+	   public ChatInitResponseDTO getEmployeesAndProjects() {
+	      
+	      List<Employee> empList=empService.getAllList();
+	      List<Project> pjList=pjService.getAllList();
+	      List<Department> dtList=dtService.getAllList();
+	      
+	      return new ChatInitResponseDTO(empList,pjList, dtList);
+
+   }
 	
 } // end class

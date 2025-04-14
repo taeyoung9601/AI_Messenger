@@ -3,12 +3,15 @@ package org.zerock.myapp.entity;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
+import java.util.List;
+import java.util.Vector;
 
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
@@ -17,8 +20,12 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.ToString;
 
 
 @Data
@@ -64,13 +71,14 @@ public class Department implements Serializable {
 
 	
 	// join
-//	@ManyToOne
-//	@JoinColumn(name="P_DEPT_ID")
-//	private Department Department; // 상위부서
-//
-//	@ToString.Exclude
-//	@OneToMany(mappedBy="Department")
-//	private List<Department> Departments = new Vector<>(); // 부서
+	@ManyToOne
+	@JoinColumn(name="P_DEPT_ID")
+	private Department Department; // 상위부서
+
+	@JsonIgnore
+	@ToString.Exclude
+	@OneToMany(mappedBy="Department")
+	private List<Department> Departments = new Vector<>(); // 부서
 
 //	@ToString.Exclude
 //	@OneToMany(mappedBy="Department")

@@ -16,10 +16,10 @@ import lombok.Data;
 public class ChatEmployeePK implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
-	@Column(name="EMPNO")
+	@Column(name="EMPNO", length= 500)
 	private String empno;
 
-	@Column(name="CHAT_ID")
+	@Column(name="CHAT_ID", length= 500)
 	private Long chatId;
 
 } // end class

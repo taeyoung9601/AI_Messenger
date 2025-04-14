@@ -1,7 +1,7 @@
 package org.zerock.myapp.service;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -169,7 +169,7 @@ public class ChatServiceImpl implements ChatService {
 	    Chat chat = this.chatRepository.findById(dto.getId())
 	        .orElseThrow(() -> new EntityNotFoundException("채팅방이 존재하지 않습니다."));
 
-	    chat.setUdtDate(new Date());
+	    chat.setUdtDate(LocalDateTime.now());
 	    
 	    this.chatRepository.save(chat);
 	    

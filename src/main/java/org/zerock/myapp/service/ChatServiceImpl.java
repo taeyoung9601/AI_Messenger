@@ -119,6 +119,7 @@ public class ChatServiceImpl implements ChatService {
 	        chatEmployeeDTOList.add(chatEmployeeDTO);
 	    }
 	    
+	    
 	    ChatDTO result = new ChatDTO();
 	    result.setId(savedChat.getId());
 	    result.setName(savedChat.getName());

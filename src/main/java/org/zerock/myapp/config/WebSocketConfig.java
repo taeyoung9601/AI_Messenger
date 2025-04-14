@@ -16,10 +16,11 @@ import lombok.extern.slf4j.Slf4j;
 //@EnableWebSocket
 @Configuration						
 public class WebSocketConfig implements WebSocketConfigurer {
+
 	
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
-		log.debug("registerWebSocketHandlers({}) invoked.");
+		log.debug("registerWebSocketHandlers({}) invoked.",registry);
 
 		registry.addHandler(new WebSocketChatHandler(), "/chat").setAllowedOrigins("*");	
 		

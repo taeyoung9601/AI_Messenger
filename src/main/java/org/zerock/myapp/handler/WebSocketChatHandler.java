@@ -21,7 +21,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         // 쿼리파라미터에서 채팅방 ID 추출
         Long chatId = getChatIdFromSession(session);
         chatRoomSessions.computeIfAbsent(chatId, k -> ConcurrentHashMap.newKeySet()).add(session);
-    }
+    } // afterConnectionEstablished
 
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message)  {
@@ -36,7 +36,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
                 }
             }
         }
-    }
+    } // handleTextMessage
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
@@ -45,10 +45,11 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         if (sessions != null) {
             sessions.remove(session);
         }
-    }
+    } // afterConnectionClosed
 
     private Long getChatIdFromSession(WebSocketSession session) {
         String query = session.getUri().getQuery(); // 예: "chatId=3"
         return Long.parseLong(query.split("=")[1]);
-    }
-}
+    } // getChatIdFromSession
+    
+} // end class

@@ -3,7 +3,6 @@ package org.zerock.myapp.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -14,9 +13,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.domain.ChatEmployeeDTO;
-import org.zerock.myapp.domain.EmployeeDTO;
-import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.service.ChatService;
+import org.zerock.myapp.service.DepartmentService;
+import org.zerock.myapp.service.EmployeeService;
+import org.zerock.myapp.service.ProjectService;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -34,7 +34,10 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
 		
 	@Autowired private ChatService chatService;
-	
+    @Autowired private EmployeeService empService;
+    @Autowired private ProjectService pjService;
+    @Autowired private DepartmentService dtService;
+    
 	@GetMapping
 	List<ChatDTO> list() { // 리스트
 		log.debug("list() invoked.");

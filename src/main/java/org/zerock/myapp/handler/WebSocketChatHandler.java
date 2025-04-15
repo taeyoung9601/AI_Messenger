@@ -49,7 +49,16 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
     private Long getChatIdFromSession(WebSocketSession session) {
         String query = session.getUri().getQuery(); // 예: "chatId=3"
-        return Long.parseLong(query.split("=")[1]);
-    } // getChatIdFromSession
+
+        if (query == null || !query.startsWith("chatId=")) {
+            throw new IllegalArgumentException("chatId 파라미터가 유효하지 않습니다: " + query);
+        }
+
+        try {
+            return Long.parseLong(query.split("=")[1]);
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("chatId가 숫자가 아닙니다: " + query);
+        }
+    }
     
 } // end class

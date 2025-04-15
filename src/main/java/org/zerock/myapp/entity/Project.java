@@ -2,6 +2,7 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
@@ -11,9 +12,11 @@ import org.zerock.myapp.util.BooleanToIntegerConverter;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
+import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -43,32 +46,31 @@ public class Project implements Serializable {
  	@Column(name = "ID", unique=true, nullable=false)
 	private Long id; // 프로젝트 id
 
-	@Column(nullable=false)
+	@Column(nullable=false, length = 500)
 	private String name; // 프로젝트명
 
-	@Column(nullable=true)
+	@Column(nullable=true, length = 4000)
 	private String detail; // 프로젝트내용
 
-	@Column(nullable=false)
+	@Column(nullable=false, length = 1)
 	private Integer status; // 프로젝트상태 (진행예정=1, 진행중=2, 완료=3)
 
-	@Column(nullable=false)
-	private String startDate; // 시작일
+	@Column(nullable=false, length = 500)
+	private LocalDate startDate; // 시작일
 	
-	@Column(nullable=false)
-	private String endDate; // 종료일
+	@Column(nullable=false, length = 500)
+	private LocalDate endDate; // 종료일
 
 	@Convert(converter = BooleanToIntegerConverter.class)
-	@Column(nullable=false)
+	@Column(nullable=false, length = 1)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 
 	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
-	@Column(name="CRT_DATE", nullable = false)
+ 	@Basic(optional = false, fetch = FetchType.LAZY)
 	private Date crtDate; // 등록일
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
-	@Column(name="UDT_DATE")
 	private Date udtDate; // 수정일
 
 	

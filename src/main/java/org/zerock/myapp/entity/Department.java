@@ -66,8 +66,8 @@ public class Department implements Serializable {
 	@Column(name="UDT_DATE")
 	private Date udtDate;
 	
-	@Column(name="P_DEPT_ID")
-	private Long pDeptId; // 상위부서
+//	@Column(name="P_DEPT_ID")
+//	private Long pDeptId; // 상위부서
 
 	
 	// join

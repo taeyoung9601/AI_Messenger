@@ -2,7 +2,6 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
@@ -10,11 +9,11 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -33,29 +32,30 @@ public class Employee implements Serializable {
 
 	//1. pk
 	// 생성기 만들어야 함.
-	@Id
-	@Column(name = "EMPNO", unique=true, nullable=false)
+	@Id 
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "EMPNO", unique=true, nullable=false, length=255)
 	private String empno; // 사번
 	
-	@Column(nullable = false)
+	@Column(nullable = false, length=255)
 	private String name; // 사원명
 	
 	@Column(nullable = false)
 	private Integer position; // 직급(팀원=1, 팀장=2, 부서장=3, CEO=4, 인사담당자=5, 시스템관리자=9)
 
-	@Column(nullable = false)
+	@Column(nullable = false, length=255)
 	private String email; // 이메일
 
-	@Column(nullable = false)
+	@Column(nullable = false, length=255)
 	private String loginId; // 아이디
 	
-	@Column(nullable = false)
+	@Column(nullable = false, length=255)
 	private String password; // 비밀번호
 
-	@Column(nullable = false)
+	@Column(nullable = false, length=255)
 	private String tel; // 휴대폰번호(11자리)
 	
-	@Column(nullable = false)
+	@Column(nullable = false, length=255)
 	private String address; // 주소
 
 	@Column(nullable = false)
@@ -67,11 +67,11 @@ public class Employee implements Serializable {
 	
 	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
-	@Column(name="CRT_DATE")
+	@Column(nullable=false)
 	private Date crtDate; // 등록일
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
-	@Column(name="UDT_DATE")
+	@Column
 	private Date udtDate; // 수정일
 
 	

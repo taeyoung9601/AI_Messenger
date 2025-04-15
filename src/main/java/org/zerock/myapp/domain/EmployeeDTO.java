@@ -1,6 +1,5 @@
 package org.zerock.myapp.domain;
 
-import java.math.BigDecimal;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -31,7 +30,7 @@ public class EmployeeDTO {
 	private String password; // 비밀번호
 	private String tel; // 휴대폰번호(11자리)
 	private String address; // 주소
-	private BigDecimal zipCode; // 우편번호
+	private Integer zipCode; // 우편번호
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 	
 	private Date crtDate; // 등록일

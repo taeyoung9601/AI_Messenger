@@ -42,7 +42,7 @@ public class Project implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
 	//1. pk
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "ko")
 	@SequenceGenerator(name = "ko", sequenceName = "T_PROJECT_SEQ", initialValue = 1, allocationSize = 1)
 	@Column(name = "ID", unique=true, nullable=false)
 	private Long id; // 프로젝트 id

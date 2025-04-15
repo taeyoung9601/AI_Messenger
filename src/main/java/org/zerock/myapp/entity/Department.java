@@ -37,7 +37,7 @@ public class Department implements Serializable {
 	@Column(name = "ID", unique=true, nullable=false)
 	private Long id; // 부서 id
 
-	@Column(nullable=false)
+	@Column(nullable=false, length = 255)
 	private String name; // 부서명
 
 	@Column(nullable=false)

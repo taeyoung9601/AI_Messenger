@@ -1,6 +1,7 @@
 package org.zerock.myapp.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -59,23 +60,36 @@ public class BoardServiceImpl implements BoardService {
 	} // create
 	
 	@Override
-	public Board getById(String id) {	// 단일 조회
+	public Board getById(Long id) {	// 단일 조회
 		log.debug("BoardServiceImpl -- getById({}) invoked", id);
 		
 		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
-		Board data = new Board();//dao.findById(id).orElse(new Board());
-		
-		return data;
+		Optional<Board> optional = dao.findById(id);
+		if (optional.isPresent()) {
+			log.debug("Found: {}", optional.get());
+			return optional.get();
+		} else {
+			log.warn("No employee selected: {}", id);
+			return null;
+		}
 	} // getById
 	
 	@Override
-	public Boolean update(BoardDTO dto) {//수정 처리
+	public Boolean update(Long id, BoardDTO dto) {//수정 처리
 		log.debug("BoardServiceImpl -- update({}) invoked", dto);
+
+		Board post = dao.findById(dto.getId())
+	            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 		
-//		Board data = dao.save(dto);
-//		log.debug("create data: {}", data);
-		Boolean isUpdate = true;
-		return isUpdate;
+		try {
+			post.setTitle(dto.getTitle()); // 게시글 제목
+			post.setDetail(dto.getDetail()); // 게시글 내용
+	      
+	      dao.save(post);
+	      return true; // db에 저장.
+	      } catch (Exception e) {
+	         throw new IllegalArgumentException("게시글 수정에 실패했습니다. 다시 시도해 주세요.");
+	      }
 	} // update
 
 	@Override
@@ -84,8 +98,7 @@ public class BoardServiceImpl implements BoardService {
 		
 		//dao.deleteById(id);
 		return true;
-	} // deleteById
-	
+	}
 	
 	
 }//end class

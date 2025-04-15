@@ -8,6 +8,7 @@ import java.util.Optional;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.entity.Department;
@@ -27,6 +28,7 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired EmployeeRepository dao;
     @Autowired DepartmentRepository departmentRepository;
+    @Autowired BCryptPasswordEncoder bcrypt;
 
     
 	@PostConstruct
@@ -79,7 +81,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	      employee.setEmail(dto.getEmail());     // 이메일 _ front
 	      employee.setLoginId(dto.getLoginId()); // 아이디 _ front 
 	      employee.setPassword(dto.getPassword()); // 비밀번호. _ front
-//	      employee.setPassword(bcryptPasswordEncoder.encode(employee.getPassword()));  // 비밀번호 암호화 저장
+	      employee.setPassword(bcrypt.encode(employee.getPassword()));  // 비밀번호 암호화 저장
 	      employee.setTel(dto.getTel()); // 전화번호 _ front
 	      employee.setAddress(dto.getAddress()); // 사원 주소 _ front
 	      employee.setZipCode(dto.getZipCode()); // 사원 우편번호 _ front 
@@ -182,7 +184,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	      employee.setDepartment(department); // 부서 _ front
 	      employee.setEmail(dto.getEmail());     // 이메일 _ front
 	      employee.setPassword(dto.getPassword()); // 비밀번호. _ front
-//	      employee.setPassword(bcryptPasswordEncoder.encode(employee.getPassword()));  // 비밀번호 암호화 저장
+	      employee.setPassword(bcrypt.encode(employee.getPassword()));  // 비밀번호 암호화 저장
 	      employee.setTel(dto.getTel()); // 전화번호 _ front
 	      employee.setAddress(dto.getAddress()); // 사원 주소 _ front
 	      employee.setZipCode(dto.getZipCode()); // 사원 우편번호 _ front 

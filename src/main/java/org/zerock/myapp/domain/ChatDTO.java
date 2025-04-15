@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Vector;
 
+import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.Message;
 import org.zerock.myapp.entity.Project;
 
@@ -26,7 +27,7 @@ public class ChatDTO {
 
 	// join
 	private Project Project; // 프로젝트 뱃지 id
-	private List<ChatEmployeeDTO> ChatEmployees; //  작성자 id 
+	private List<ChatEmployee> ChatEmployees; //  작성자 id 
 	private List<Message> Messages = new Vector<>(); // 메시지 id
 	
 	private String searchWord; // 검색 항목

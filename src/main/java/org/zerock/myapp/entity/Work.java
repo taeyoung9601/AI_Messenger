@@ -2,11 +2,14 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
+import org.zerock.myapp.domain.WorkDTO;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
 import jakarta.persistence.Column;
@@ -19,9 +22,15 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
+@AllArgsConstructor
+@NoArgsConstructor
+@Builder
 @Data
 
 // 업무 entity
@@ -47,10 +56,10 @@ public class Work implements Serializable {
 	private String memo; // 업무 메모
 
 	@Column(nullable=false)
-	private Integer status; // 업무상태(진행예정, 진행중, 완료대기, 완료)
+	private Integer status; // 업무상태(진행예정=1, 진행중=2, 완료대기=3, 완료=4)
 
 	@Column(nullable=false)
-	private Integer type; // 업무분류(개발, 운영, 인사, 회계, 마케팅)
+	private Integer type; // 업무분류(개발=1, 운영=2, 인사=3, 회계=4, 마케팅=5)
 
 	@Column(nullable=false)
 	private Date startDate; // 시작일
@@ -58,6 +67,7 @@ public class Work implements Serializable {
 	@Column(nullable=false)
 	private Date endDate; // 종료일
 	
+	@Builder.Default
 	@Convert(converter = BooleanToIntegerConverter.class)
 	@Column(nullable=false)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
@@ -75,7 +85,38 @@ public class Work implements Serializable {
 	// join
 	@ManyToOne
 	@JoinColumn(name="EMPNO")
-	private Employee Employee; // 지시자 id
+	private Employee employee; // 요청자 id
+
+	public static Work toEntity(WorkDTO dto) throws ParseException { // DTO -> 엔티티 편의메소드
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		return Work.builder()
+				.name(dto.getName())
+				.detail(dto.getDetail())
+				.memo(dto.getMemo())
+				.status(dto.getStatus())
+				.type(dto.getType())
+				.startDate(sdf.parse(dto.getStartDate()))
+				.endDate(sdf.parse(dto.getEndDate()))
+				.enabled(dto.getEnabled())
+				.employee(dto.getEmployee())
+				.build();
+	} // toEntity
+	
+	public WorkDTO toDTO() {
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	    WorkDTO dto = new WorkDTO();
+	    dto.setId(this.id);
+	    dto.setName(this.name);
+	    dto.setDetail(this.detail);
+	    dto.setMemo(this.memo);
+	    dto.setStatus(this.status);
+	    dto.setType(this.type);
+	    dto.setStartDate(this.startDate != null ? sdf.format(this.startDate) : null);
+	    dto.setEndDate(this.endDate != null ? sdf.format(this.endDate) : null);
+	    dto.setEnabled(this.enabled);
+	    dto.setEmployee(this.employee);
+	    return dto;
+	} // toDTO
 
 
 } // end class

@@ -5,7 +5,6 @@ import java.util.List;
 import org.zerock.myapp.domain.WorkDTO;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.entity.Work;
-import org.zerock.myapp.entity.WorkEmployee;
 
 
 public interface WorkService {

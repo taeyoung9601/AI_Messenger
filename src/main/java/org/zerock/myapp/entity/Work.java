@@ -91,6 +91,7 @@ public class Work implements Serializable {
 				.startDate(dto.getStartDate())
 				.endDate(dto.getEndDate())
 				.enabled(dto.getEnabled())
+				.employee(dto.getEmployee())
 				.build();
 	} // toEntity
 

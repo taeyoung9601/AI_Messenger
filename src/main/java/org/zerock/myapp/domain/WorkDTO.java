@@ -29,8 +29,8 @@ public class WorkDTO {
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 	
 	// join
-	private Employee Employee; // 지시자 id
-	private List<WorkEmployee> WorkEmployees = new Vector<>(); // 업무-사원 테이블
+	private Employee employee; // 지시자 id
+	private List<WorkEmployee> workEmployees = new Vector<>(); // 업무-사원 테이블
 	
 	// 요청업무 or 담당업무
 	private String work;

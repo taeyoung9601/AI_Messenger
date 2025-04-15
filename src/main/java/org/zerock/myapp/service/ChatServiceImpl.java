@@ -1,14 +1,11 @@
 package org.zerock.myapp.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.ChatDTO;
-import org.zerock.myapp.domain.ChatEmployeeDTO;
 import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.ChatEmployeePK;
@@ -20,7 +17,6 @@ import org.zerock.myapp.persistence.MessageRepository;
 import org.zerock.myapp.persistence.ProjectRepository;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -74,7 +70,7 @@ public class ChatServiceImpl implements ChatService {
 		    chat.setProject(projectRepository.findById(dto.getProject().getId()).
 		    		orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다.")));
 		    
-		    Chat savedChat = chatRepository.save(chat);
+		    this.chatRepository.save(chat);
 
 		    return true;
 	    } catch (Exception e) {
@@ -105,26 +101,31 @@ public class ChatServiceImpl implements ChatService {
 		log.debug("ChatServiceImpl -- update({}) invoked", dto);
 
 		try {
-			
 			for (String empno : dto.getEmpnos()) {
-		        // 사원 조회
-				ChatEmployee chatEmployee = new ChatEmployee();
+				ChatEmployee inviteEmp =
+						this.chatEmployeeRepository.findByIdChatIdAndIdEmpno(dto.getId(),empno);
+				if(!inviteEmp.getEnabled()){
+					inviteEmp.setEnabled(true);
+				}else{
+					ChatEmployee chatEmployee = new ChatEmployee();
+					
+			        Employee emp = this.employeeRepository.findById(empno)
+			            .orElseThrow(() -> new RuntimeException("사원 없음"));
+		
+			        // 복합키 생성
+			        ChatEmployeePK pk = new ChatEmployeePK();
+			        pk.setChatId(dto.getId());
+			        pk.setEmpno(empno);
+		
+			        // ChatEmployee 및 세팅
+			        chatEmployee.setId(pk);
+			        chatEmployee.setChat(this.chatRepository.findById(dto.getId()).get());  
+			        chatEmployee.setEmployee(emp);  
+			        
+			        // 저장
+			        chatEmployeeRepository.save(chatEmployee);
+				}// if- else
 				
-		        Employee emp = this.employeeRepository.findById(empno)
-		            .orElseThrow(() -> new RuntimeException("사원 없음"));
-	
-		        // 복합키 생성
-		        ChatEmployeePK pk = new ChatEmployeePK();
-		        pk.setChatId(dto.getId());
-		        pk.setEmpno(empno);
-	
-		        // ChatEmployee 및 세팅
-		        chatEmployee.setId(pk);
-		        chatEmployee.setChat(this.chatRepository.findById(dto.getId()).get());  
-		        chatEmployee.setEmployee(emp);  
-		        
-		        // 저장
-		        chatEmployeeRepository.save(chatEmployee);
 		    } // for
 		    return true;
 	    } catch (Exception e) {

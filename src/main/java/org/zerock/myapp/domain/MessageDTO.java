@@ -28,6 +28,8 @@ public class MessageDTO {
 	// join
 	private List<File> Files = new Vector<>(); // 파일
 	private Chat Chat; // 채팅
+	private Integer chatId;
+	private String empno;
 	private Employee Employee; // 사원
 	
 	private String searchWord; // 검색항목

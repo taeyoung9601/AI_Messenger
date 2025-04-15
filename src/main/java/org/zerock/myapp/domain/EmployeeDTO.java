@@ -10,7 +10,6 @@ import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.Department;
 import org.zerock.myapp.entity.File;
 import org.zerock.myapp.entity.Message;
-import org.zerock.myapp.entity.Project;
 import org.zerock.myapp.entity.Work;
 import org.zerock.myapp.entity.WorkEmployee;
 

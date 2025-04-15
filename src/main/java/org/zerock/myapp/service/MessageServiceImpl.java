@@ -95,11 +95,12 @@ public class MessageServiceImpl implements MessageService {
 	public Message saveMessage(MessageDTO dto) {
 		
 		Message message = new Message();
-
-		message.setEmployee(employeeRepository.findById(dto.getEmployee().getEmpno()).orElseThrow());
+		
 		message.setDetail(dto.getDetail());
+		message.setEmployee(employeeRepository.findById(dto.getEmployee().getEmpno())
+				.orElseThrow(() -> new IllegalArgumentException("사원이 존재하지 않습니다.")));
 		message.setChat(chatRepository.findById(dto.getChat().getId())
-                .orElseThrow(() -> new IllegalArgumentException("Chat not found")));
+                .orElseThrow(() -> new IllegalArgumentException("채팅방이 존재하지 않습니다.")));
 //		message.setChat(dto.getChat()); / 어떤 방법이 맞는지 궁금
 		message.setCrtDate(new Date());
 		

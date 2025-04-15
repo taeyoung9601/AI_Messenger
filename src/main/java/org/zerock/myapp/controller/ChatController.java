@@ -20,6 +20,7 @@ import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.Department;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.entity.Project;
+import org.zerock.myapp.persistence.ProjectRepository;
 import org.zerock.myapp.service.ChatService;
 import org.zerock.myapp.service.DepartmentService;
 import org.zerock.myapp.service.EmployeeService;
@@ -44,6 +45,7 @@ public class ChatController {
     @Autowired private EmployeeService empService;
     @Autowired private ProjectService pjService;
     @Autowired private DepartmentService dtService;
+    @Autowired private ProjectRepository projectRepo;
     
 	@GetMapping
 	List<Chat> list() { // 리스트
@@ -90,6 +92,15 @@ public class ChatController {
 		return chatService.deleteById(id,empno);
 	} // delete
 	
+	
+	@GetMapping("/project")
+	List<Project> projectList() { // 리스트
+		log.debug("projectList() invoked.");
+		
+		List<Project> result = this.projectRepo.findByEnabled(true);
+		
+		return result;
+	} // list
 	
 	
 } // end class

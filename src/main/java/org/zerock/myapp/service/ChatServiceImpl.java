@@ -75,34 +75,14 @@ public class ChatServiceImpl implements ChatService {
 		    		orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다.")));
 		    
 		    Chat savedChat = chatRepository.save(chat);
-		    
-		    ChatEmployee chatEmployee = new ChatEmployee();
-		    
-		    for (ChatEmployee chatEmp : dto.getChatEmployees()) {
-		        // 사원 조회
-		        Employee emp = this.employeeRepository.findById(chatEmp.getEmployee().getEmpno())
-		            .orElseThrow(() -> new RuntimeException("사원 없음"));
-	
-		        // 복합키 생성
-		        ChatEmployeePK pk = new ChatEmployeePK();
-		        pk.setChatId(chat.getId());
-		        pk.setEmpno(emp.getEmpno());
-	
-		        // ChatEmployee 및 세팅
-		        chatEmployee.setId(pk);
-		        chatEmployee.setChat(savedChat);  
-		        chatEmployee.setEmployee(emp);  
-	
-		        // 저장
-		        chatEmployeeRepository.save(chatEmployee);
-		    } // for
+
 		    return true;
 	    } catch (Exception e) {
 	    	log.error("Create failed: {}", e.getMessage(), e);
 	    	return false;
 	    }
 	   
-	}// createRoom
+	}// createRoom // 방 생성시 본인은 채팅방에 입장
 	
 	@Override
 	public ChatDTO getById(Long id) {	// 단일 조회
@@ -117,7 +97,6 @@ public class ChatServiceImpl implements ChatService {
 	
 		dto.setChatEmployees(selectedChatEmployee);
 		
-		
 		return dto;
 	} // getById
 	
@@ -127,8 +106,6 @@ public class ChatServiceImpl implements ChatService {
 
 		try {
 			
-			
-		
 			for (String empno : dto.getEmpnos()) {
 		        // 사원 조회
 				ChatEmployee chatEmployee = new ChatEmployee();
@@ -179,6 +156,6 @@ public class ChatServiceImpl implements ChatService {
 			log.error("Delete failed: {}", e.getMessage(), e);
 			return false;
 		}
-	} // deleteById
+	} // deleteById  // 로그인한 본인이 퇴장 처리 (본인의 사번과 채팅방 id를 넘겨줘야함)
 	
 }//end class

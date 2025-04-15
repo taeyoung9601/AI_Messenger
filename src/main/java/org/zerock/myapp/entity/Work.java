@@ -3,8 +3,6 @@ package org.zerock.myapp.entity;
 import java.io.Serial;
 import java.io.Serializable;
 import java.util.Date;
-import java.util.List;
-import java.util.Vector;
 
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
@@ -20,11 +18,10 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Builder;
 import lombok.Data;
-import lombok.ToString;
 
 
 @Builder
@@ -38,7 +35,8 @@ public class Work implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
 	//1. pk
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "ko")
+	@SequenceGenerator(name = "ko", sequenceName = "T_WORK_SEQ", initialValue = 1, allocationSize = 1)
 	@Column(name = "ID", unique=true, nullable=false)
 	private Long id; // 업무 id
 	
@@ -82,38 +80,18 @@ public class Work implements Serializable {
 	@JoinColumn(name="EMPNO")
 	private Employee employee; // 요청자 id
 
-//	@ToString.Exclude
-//	@OneToMany(mappedBy="Work")
-//	private List<WorkEmployee> WorkEmployees = new Vector<>(); // 업무-사원 테이블
-
-
-//	public WorkEmployee addWorkEmployee(WorkEmployee WorkEmployee) {
-//		getWorkEmployees().add(WorkEmployee);
-//		WorkEmployee.setWork(this);
-//
-//		return WorkEmployee;
-//	} // addWorkEmployee
-
-//	public WorkEmployee removeWorkEmployee(WorkEmployee WorkEmployee) {
-//		getWorkEmployees().remove(WorkEmployee);
-//		WorkEmployee.setWork(null);
-//
-//		return WorkEmployee;
-//	} // removeWorkEmployee
-	
-	
 	public static Work toEntity(WorkDTO dto) { // DTO -> 엔티티 편의메소드
-        return Work.builder()
-                .id(dto.getId())
-                .name(dto.getName())
-                .detail(dto.getDetail())
-                .memo(dto.getMemo())
-                .status(dto.getStatus())
-                .type(dto.getType())
-                .startDate(dto.getStartDate())
-                .endDate(dto.getEndDate())
-                .enabled(dto.getEnabled())
-                .build();
-    } // toEntity
+		return Work.builder()
+				.id(dto.getId())
+				.name(dto.getName())
+				.detail(dto.getDetail())
+				.memo(dto.getMemo())
+				.status(dto.getStatus())
+				.type(dto.getType())
+				.startDate(dto.getStartDate())
+				.endDate(dto.getEndDate())
+				.enabled(dto.getEnabled())
+				.build();
+	} // toEntity
 
 } // end class

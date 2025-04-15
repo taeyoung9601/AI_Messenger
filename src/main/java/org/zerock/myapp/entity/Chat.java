@@ -22,6 +22,7 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -40,8 +41,9 @@ import lombok.Data;
 public class Chat implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
-	@Id @GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "ID", unique=true, nullable=false, length= 500)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "ko")
+	@SequenceGenerator(name = "ko", sequenceName = "T_CHAT_SEQ", initialValue = 1, allocationSize = 1)
+	@Column(name = "ID", unique=true, nullable=false, length = 500)
 	private Long id; // 채팅방 id
 
 	@Column(nullable=false, length= 500)
@@ -57,6 +59,7 @@ public class Chat implements Serializable {
 	private LocalDateTime crtDate; // 생성일
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
+	@Column
 	private LocalDateTime udtDate; // 수정일
 
 	// join

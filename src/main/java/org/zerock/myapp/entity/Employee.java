@@ -47,7 +47,7 @@ public class Employee implements Serializable {
 	@Column(nullable = false, length=255)
 	private String name; // 사원명
 	
-	@Column(nullable = false)
+	@Column(nullable = false, length=255)
 	private Integer position; // 직급(팀원=1, 팀장=2, 부서장=3, CEO=4, 인사담당자=5, 시스템관리자=9)
 
 	@Column(nullable = false, length=255)

@@ -67,9 +67,9 @@ public class File implements Serializable {
 
 
 	// join
-	@ManyToOne
-	@JoinColumn(name="EMPNO")
-	private Employee Employee; // 사원id
+//	@ManyToOne
+//	@JoinColumn(name="EMPNO")
+//	private Employee Employee; // 사원id
 
 	@ManyToOne
 	@JoinColumn(name="MESSAGE_ID")

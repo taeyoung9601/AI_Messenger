@@ -36,7 +36,6 @@ import lombok.Data;
 })
 
 // 프로젝트 entity
-
 @Entity
 @Table(name="T_PROJECT")
 public class Project implements Serializable {

@@ -1,5 +1,6 @@
 package org.zerock.myapp.config;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.socket.config.annotation.WebSocketConfigurer;
@@ -11,18 +12,23 @@ import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
-@NoArgsConstructor
+//@NoArgsConstructor
 
 //@EnableWebSocket
 @Configuration						
 public class WebSocketConfig implements WebSocketConfigurer {
 
-	
+	@Autowired private WebSocketChatHandler chatHandler;
+
+    public WebSocketConfig(WebSocketChatHandler chatHandler) {
+        this.chatHandler = chatHandler;
+    }
+    
 	@Override
 	public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
 		log.debug("registerWebSocketHandlers({}) invoked.",registry);
 
-		registry.addHandler(new WebSocketChatHandler(), "/chatroom").setAllowedOrigins("*");	
+		registry.addHandler(chatHandler, "/chatroom").setAllowedOrigins("*");	
 		
 	}// registerWebSocketHandlers
 	

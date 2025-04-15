@@ -1,5 +1,6 @@
 package org.zerock.myapp.service;
 
+import java.time.LocalDateTime;
 import java.util.Date;
 import java.util.List;
 import java.util.Vector;
@@ -97,13 +98,13 @@ public class MessageServiceImpl implements MessageService {
 		Message message = new Message();
 		
 		message.setDetail(dto.getDetail());
-		message.setEmployee(employeeRepository.findById(dto.getEmployee().getEmpno())
+		message.setEmployee(employeeRepository.findById(dto.getEmpno())
 				.orElseThrow(() -> new IllegalArgumentException("사원이 존재하지 않습니다.")));
-		message.setChat(chatRepository.findById(dto.getChat().getId())
+		message.setChat(chatRepository.findById(dto.getChatId())
                 .orElseThrow(() -> new IllegalArgumentException("채팅방이 존재하지 않습니다.")));
 //		message.setChat(dto.getChat()); / 어떤 방법이 맞는지 궁금
-		message.setCrtDate(new Date());
-		
+//		message.setCrtDate(LocalDateTime.now());
+//		message.setCrtDate(dto.getCrtDateAsLocalDateTime());
 		return this.messageRepository.save(message);
 	} // saveMessage
 	

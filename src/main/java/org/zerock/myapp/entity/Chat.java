@@ -10,6 +10,12 @@ import org.hibernate.generator.EventType;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.fasterxml.jackson.databind.annotation.JsonSerialize;
+import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
+import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -46,7 +52,9 @@ public class Chat implements Serializable {
 	@Column(nullable=false, length= 500)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 
-	
+	@JsonSerialize(using = LocalDateTimeSerializer.class) // 직렬화 시 필요
+	@JsonDeserialize(using = LocalDateTimeDeserializer.class) // 역직렬화 시 필요
+	@JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss") // 원하는 형태의 포멧
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Basic(optional = false, fetch = FetchType.LAZY)
 	private LocalDateTime crtDate; // 생성일

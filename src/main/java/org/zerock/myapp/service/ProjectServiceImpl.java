@@ -69,11 +69,11 @@ public class ProjectServiceImpl implements ProjectService {
 	} // getSearchList
 
 	@Override
-	public Page<Project> getUpCommingList(Pageable paging) {
-		log.debug("\t+ ProjectServiceImpl -- getUpCommingList(()) invoked");
+	public Page<Project> getUpComingList(Pageable paging) {
+		log.debug("\t+ ProjectServiceImpl -- getUpComingList(()) invoked");
 
 		return this.dao.findByEnabled(true, paging);
-	} // getUpCommingList
+	} // getUpComingList
 
 	@Override
 	public Project create(ProjectDTO dto) { // 등록 처리

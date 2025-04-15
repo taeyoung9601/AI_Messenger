@@ -18,6 +18,7 @@ import org.zerock.myapp.persistence.ChatEmployeeRepository;
 import org.zerock.myapp.persistence.ChatRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
 import org.zerock.myapp.persistence.MessageRepository;
+import org.zerock.myapp.persistence.ProjectRepository;
 
 import jakarta.annotation.PostConstruct;
 import jakarta.persistence.EntityNotFoundException;
@@ -35,7 +36,8 @@ public class ChatServiceImpl implements ChatService {
     @Autowired ChatEmployeeRepository chatEmployeeRepository;
     @Autowired EmployeeRepository employeeRepository;
     @Autowired MessageRepository messageRepository;
-	
+	@Autowired ProjectRepository projectRepository;
+    
 	@PostConstruct
     void postConstruct(){
         log.debug("ChatServiceImpl -- postConstruct() invoked");
@@ -44,25 +46,12 @@ public class ChatServiceImpl implements ChatService {
 
 
 	@Override
-	public List<ChatDTO> findAllList() {	//검색 없는 전체 리스트
+	public List<Chat> findAllList() {	//검색 없는 전체 리스트
 		log.debug("ChatServiceImpl -- getAllList() invoked");
 		
 		List<Chat> chatList = this.chatRepository.findAllByEnabled(true);
 		
-		List<ChatDTO> chatDtoList = new Vector<>();
-		
-		for (Chat chat : chatList) {
-	        ChatDTO dto = new ChatDTO();
-	        dto.setId(chat.getId());
-	        dto.setName(chat.getName());
-	        dto.setEnabled(chat.getEnabled());
-	        dto.setCrtDate(chat.getCrtDate());
-	        dto.setProject(chat.getProject());
-
-	        chatDtoList.add(dto);
-	    }
-		
-		return chatDtoList;
+		return chatList;
 	} // getAllList
 	
 	@Override
@@ -76,24 +65,22 @@ public class ChatServiceImpl implements ChatService {
 	} // getSearchList
 	
 	@Override
-	public ChatDTO createRoom(ChatDTO dto) {
+	public Chat createRoom(ChatDTO dto) {
 	    log.debug("ChatServiceImpl -- createRoom({}) invoked", dto);
 
 	    // 1. Chat 엔티티 생성 및 기본값 세팅
 	    Chat chat = new Chat();
 	    chat.setName(dto.getName());
-	    chat.setProject(dto.getProject()); // dto에 Project 객체(id만 세팅된 상태로 전달됨)
-
-	    // 2. 먼저 Chat 저장 (ID 생성됨)
-	    Chat savedChat = chatRepository.save(chat);
-	    List<ChatEmployeeDTO> chatEmployeeDTOList = new Vector<>();
-
-	    // 3. 참여자 리스트 (ChatEmployeeDTO → ChatEmployee) 변환 및 저장
-	    List<ChatEmployee> chatEmployeeList = new Vector<>();
+	    chat.setProject(projectRepository.findById(dto.getProjectId()).
+	    		orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다.")));
 	    
-	    for (ChatEmployeeDTO chatEmpDTO : dto.getChatEmployees()) {
+	    Chat savedChat = chatRepository.save(chat);
+	    
+	    ChatEmployee chatEmployee = new ChatEmployee();
+	    
+	    for (ChatEmployee chatEmp : dto.getChatEmployees()) {
 	        // 사원 조회
-	        Employee emp = employeeRepository.findById(chatEmpDTO.getEmployee().getEmpno())
+	        Employee emp = this.employeeRepository.findById(chatEmp.getEmployee().getEmpno())
 	            .orElseThrow(() -> new RuntimeException("사원 없음"));
 
 	        // 복합키 생성
@@ -101,52 +88,34 @@ public class ChatServiceImpl implements ChatService {
 	        pk.setChatId(chat.getId());
 	        pk.setEmpno(emp.getEmpno());
 
-	        // ChatEmployee 생성 및 세팅
-	        ChatEmployee chatEmployee = new ChatEmployee();
+	        // ChatEmployee 및 세팅
 	        chatEmployee.setId(pk);
-	        chatEmployee.setChat(savedChat);      // 연관관계 설정
-	        chatEmployee.setEmployee(emp);   // 연관관계 설정
-
-	        // 리스트에 추가
-	        chatEmployeeList.add(chatEmployee);
+	        chatEmployee.setChat(savedChat);  
+	        chatEmployee.setEmployee(emp);  
 
 	        // 저장
 	        chatEmployeeRepository.save(chatEmployee);
-	        
-	        ChatEmployeeDTO chatEmployeeDTO = new ChatEmployeeDTO();
-	        chatEmployeeDTO.setEmployee(emp);
-
-	        chatEmployeeDTOList.add(chatEmployeeDTO);
 	    }
-	    
-	    
-	    ChatDTO result = new ChatDTO();
-	    result.setId(savedChat.getId());
-	    result.setName(savedChat.getName());
-	    result.setProject(savedChat.getProject());
-	    result.setCrtDate(savedChat.getCrtDate());
-	    result.setEnabled(savedChat.getEnabled());
-	    result.setChatEmployees(chatEmployeeDTOList);  // 참여자 리스트 세팅
-	    
-	    return result;
+	   
+	    return chat;
 	}// createRoom
 	
 	@Override
-	public ChatDTO getById(Long id) {	// 단일 조회
+	public Chat getById(Long id) {	// 단일 조회
 		log.debug("ChatServiceImpl -- getById({}) invoked", id);
 		
-		ChatDTO chatDTO = new ChatDTO();
+		Chat chat = new Chat();
 		
 		Chat selectedChat = this.chatRepository.findById(id).orElse(new Chat());	
 		List<ChatEmployee> selectedChatEmployee = this.chatEmployeeRepository.findByIdChatId(id);
 		
-		chatDTO.setId(selectedChat.getId());
-		chatDTO.setName(selectedChat.getName());
+		chat.setId(selectedChat.getId());
+		chat.setName(selectedChat.getName());
 		List<Message> messages = messageRepository.findByChatId(id);
-		chatDTO.setMessages(messages);
-		chatDTO.setProject(selectedChat.getProject());
+		chat.setMessages(messages);
+		chat.setProject(selectedChat.getProject());
 		
-		List<ChatEmployeeDTO> chatEmployeeDTOList = new ArrayList<>();
+		List<ChatEmployee> chatEmployeeDTOList = new ArrayList<>();
 	    
 	    for (ChatEmployee chatEmployee : selectedChatEmployee) {
 	        
@@ -157,9 +126,9 @@ public class ChatServiceImpl implements ChatService {
 	        
 	        chatEmployeeDTOList.add(chatEmployeeDTO);
 	    }
-	    chatDTO.setChatEmployees(chatEmployeeDTOList);
+	    chat.setChatEmployees(chatEmployeeDTOList);
 		
-		return chatDTO;
+		return chat;
 	} // getById
 	
 	@Override

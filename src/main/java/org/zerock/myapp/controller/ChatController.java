@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -14,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.domain.ChatEmployeeDTO;
 import org.zerock.myapp.domain.ChatInitResponseDTO;
+import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.Department;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.entity.Project;
@@ -43,21 +45,21 @@ public class ChatController {
     @Autowired private DepartmentService dtService;
     
 	@GetMapping
-	List<ChatDTO> list() { // 리스트
+	List<Chat> list() { // 리스트
 		log.debug("list() invoked.");
 		
 		return chatService.findAllList();
 	} // list
 	
 	@PostMapping
-	ChatDTO register(@RequestBody ChatDTO dto) { // 등록 처리
+	Chat register(@ModelAttribute ChatDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
 		
 		return chatService.createRoom(dto);
 	} // register
 	
 	@GetMapping(path = "/{id}")
-	ChatDTO read( // 세부 조회
+	Chat read( // 세부 조회
 			@PathVariable Long id
 			) {
 		log.debug("read({}) invoked.",id);

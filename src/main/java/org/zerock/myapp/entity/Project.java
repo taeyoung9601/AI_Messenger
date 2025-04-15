@@ -3,7 +3,7 @@ package org.zerock.myapp.entity;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.util.Date;
+import java.time.LocalDateTime;
 
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
@@ -42,8 +42,8 @@ public class Project implements Serializable {
 
 	//1. pk
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "ko")
- 	@SequenceGenerator(name = "ko", sequenceName = "T_PROJECT_SEQ", initialValue = 1, allocationSize = 1)
- 	@Column(name = "ID", unique=true, nullable=false)
+	@SequenceGenerator(name = "ko", sequenceName = "T_PROJECT_SEQ", initialValue = 1, allocationSize = 1)
+	@Column(name = "ID", unique=true, nullable=false)
 	private Long id; // 프로젝트 id
 
 	@Column(nullable=false, length = 500)
@@ -55,10 +55,10 @@ public class Project implements Serializable {
 	@Column(nullable=false, length = 1)
 	private Integer status; // 프로젝트상태 (진행예정=1, 진행중=2, 완료=3)
 
-	@Column(nullable=false, length = 500)
+	@Column(nullable=false)
 	private LocalDate startDate; // 시작일
 	
-	@Column(nullable=false, length = 500)
+	@Column(nullable=false)
 	private LocalDate endDate; // 종료일
 
 	@Convert(converter = BooleanToIntegerConverter.class)
@@ -67,11 +67,11 @@ public class Project implements Serializable {
 
 	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
- 	@Basic(optional = false, fetch = FetchType.LAZY)
-	private Date crtDate; // 등록일
+	@Basic(optional = false, fetch = FetchType.LAZY)
+    private LocalDateTime crtDate; // 등록일
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
-	private Date udtDate; // 수정일
+	private LocalDateTime udtDate; // 수정일
 
 	
 	// join

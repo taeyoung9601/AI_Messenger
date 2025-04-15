@@ -22,6 +22,7 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
 import lombok.ToString;
@@ -42,12 +43,13 @@ public class Message implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
 	//1. pk
-	@Id @GeneratedValue(strategy = GenerationType.AUTO)
+	@Id @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "ko")
+	@SequenceGenerator(name = "ko", sequenceName = "T_MESSAGE_SEQ", initialValue = 1, allocationSize = 1)
 	@Column(name = "ID", unique=true, nullable=false)
 	private Long id; // 메시지 id
 
 	// 2-1. General Properties
-	@Column(nullable=true)
+	@Column(nullable=true, length = 4000)
 	private String detail; // 내용
 
 	@Convert(converter = BooleanToIntegerConverter.class)
@@ -56,19 +58,19 @@ public class Message implements Serializable {
 	
 	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
-	@Column(name="CRT_DATE", nullable=false)
+	@Column(nullable=false)
 	private Date crtDate; // 생성일
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
-	@Column(name="UDT_DATE")
+	@Column
 	private Date udtDate; // 수정일
 
 	
 	// join
 	// @JsonManagedReference("course-instructor")	// fix
-	@ToString.Exclude
-	@OneToMany(mappedBy="Message")
-	private List<File> Files = new Vector<>(); // 파일
+//	@ToString.Exclude
+//	@OneToMany(mappedBy="Message")
+//	private List<File> Files = new Vector<>(); // 파일
 
 	@ManyToOne
 	@JoinColumn(name="CHAT_ID")
@@ -79,18 +81,18 @@ public class Message implements Serializable {
 	private Employee Employee; // 사원
 
 
-	public File addTFile(File File) {
-		getFiles().add(File);
-		File.setMessage(this);
-
-		return File;
-	} // addFile
-
-	public File removeFile(File File) {
-		getFiles().remove(File);
-		File.setMessage(null);
-
-		return File;
-	} // removeFile
+//	public File addTFile(File File) {
+//		getFiles().add(File);
+//		File.setMessage(this);
+//
+//		return File;
+//	} // addFile
+//
+//	public File removeFile(File File) {
+//		getFiles().remove(File);
+//		File.setMessage(null);
+//
+//		return File;
+//	} // removeFile
 
 } // end class

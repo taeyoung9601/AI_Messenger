@@ -3,6 +3,7 @@ package org.zerock.myapp.entity;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
@@ -41,8 +42,8 @@ public class Chat implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "ko")
- 	@SequenceGenerator(name = "ko", sequenceName = "T_CHAT_SEQ", initialValue = 1, allocationSize = 1)
- 	@Column(name = "ID", unique=true, nullable=false, length = 500)
+	@SequenceGenerator(name = "ko", sequenceName = "T_CHAT_SEQ", initialValue = 1, allocationSize = 1)
+	@Column(name = "ID", unique=true, nullable=false, length = 500)
 	private Long id; // 채팅방 id
 
 	@Column(nullable=false, length= 500)
@@ -65,7 +66,6 @@ public class Chat implements Serializable {
 	@ManyToOne
 	@JoinColumn(name="PJT_ID")
 	private Project Project; // 프로젝트 뱃지 id
-
 
 //	@ToString.Exclude
 //	@OneToMany(mappedBy="Chat")

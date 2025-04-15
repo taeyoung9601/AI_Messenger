@@ -30,7 +30,6 @@ import lombok.ToString;
 
 @Data
 
-
 // 사원 entity
 
 @Entity
@@ -41,8 +40,8 @@ public class Employee implements Serializable {
 	//1. pk
 	// 생성기 만들어야 함.
 	@Id 
- 	@GeneratedValue(strategy = GenerationType.IDENTITY)
- 	@Column(name = "EMPNO", unique=true, nullable=false, length=255)
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "EMPNO", unique=true, nullable=false, length=255)
 	private String empno; // 사번
 	
 	@Column(nullable = false, length=255)
@@ -66,7 +65,7 @@ public class Employee implements Serializable {
 	@Column(nullable = false, length=255)
 	private String address; // 주소
 
-	@Column(nullable = false, length=255)
+	@Column(nullable = false)
 	private Integer zipCode; // 우편번호
 	
 	@Convert(converter = BooleanToIntegerConverter.class)
@@ -87,15 +86,15 @@ public class Employee implements Serializable {
 //	@ToString.Exclude
 //	@OneToMany(mappedBy="Employee")
 //	private List<Board> Board = new Vector<>(); // 게시판 작성자
-
+//
 //	@ToString.Exclude
 //	@OneToMany(mappedBy="Employee")
 //	private List<ChatEmployee> ChatEmployees = new Vector<>(); // 채팅방을 사용하는 사원
-
+//
 	@ManyToOne
 	@JoinColumn(name="DEPT_ID")
 	private Department Department; // 부서 ID
-
+//
 //	@ToString.Exclude
 //	@OneToMany(mappedBy="Employee")
 //	private List<File> Files = new Vector<>(); // 프로필사진
@@ -119,8 +118,8 @@ public class Employee implements Serializable {
 //	@ToString.Exclude
 //	@OneToMany(mappedBy="Employee")
 //	private List<WorkEmployee> WorkEmployees = new Vector<>(); // 담당자
-
-
+//
+//
 //	public Board addBoard(Board Board) {
 //		getBoard().add(Board);
 //		Board.setEmployee(this);
@@ -134,8 +133,8 @@ public class Employee implements Serializable {
 //
 //		return Board;
 //	} // removeBoard
-
-
+//
+//
 //	public ChatEmployee addChatEmployee(ChatEmployee ChatEmployee) {
 //		getChatEmployees().add(ChatEmployee);
 //		ChatEmployee.setEmployee(this);
@@ -149,8 +148,8 @@ public class Employee implements Serializable {
 //
 //		return ChatEmployee;
 //	} // removeChatEmployee
-	
-
+//	
+//
 //	public File addFile(File File) {
 //		getFiles().add(File);
 //		File.setEmployee(this);

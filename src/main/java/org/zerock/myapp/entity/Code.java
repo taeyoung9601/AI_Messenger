@@ -9,8 +9,6 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.EmbeddedId;
@@ -20,11 +18,6 @@ import lombok.Data;
 
 
 @Data
-
-//JSON 으로 변환해서 보낼때, 제외 할 항목
-@JsonIgnoreProperties({
-	"udtDate"
-})
 
 // 코드 entity
 

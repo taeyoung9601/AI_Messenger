@@ -22,5 +22,5 @@ public interface WorkEmployeeRepository extends JpaRepository<WorkEmployee, Work
 	
 	// workId와 enabled로 조회
 	List<WorkEmployee> findByEnabledAndId_WorkId(Boolean enabled, Long workId);
-	
+
 } // end interface

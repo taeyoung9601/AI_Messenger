@@ -1,5 +1,6 @@
 package org.zerock.myapp.service;
 
+import java.text.SimpleDateFormat;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -125,14 +126,21 @@ public class WorkServiceImpl implements WorkService {
 	} // create
 	
 	@Override
-	public Work getById(Long id) {	// 단일 조회
+	public WorkDTO getById(Long id) {	// 단일 조회
 		log.debug("WorkServiceImpl -- getById({}) invoked", id);
 		
 		// 값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
-		Work data = this.dao.findById(id)
+		Work work = this.dao.findById(id)
 				.orElseThrow(() -> new IllegalArgumentException("Invalid Work ID: " + id));
 		
-		return data;
+		// 엔티티 -> DTO
+		WorkDTO dto = work.toDTO();
+
+	    // workId로 WorkEmployee 리스트 조회
+	    List<WorkEmployee> workEmployees = this.WEDao.findByEnabledAndId_WorkId(true, id);
+	    dto.setWorkEmployees(workEmployees);
+		
+		return dto;
 	} // getById
 	
 	@Override
@@ -147,14 +155,15 @@ public class WorkServiceImpl implements WorkService {
 	        Work existingWork = this.dao.findById(dto.getId())
 	                .orElseThrow(() -> new RuntimeException("Work not found with id: " + dto.getId()));
 	        
+	        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 	        // 2. 필요한 필드만 업데이트
 	        existingWork.setName(dto.getName());
 	        existingWork.setDetail(dto.getDetail());
 	        existingWork.setMemo(dto.getMemo());
 	        existingWork.setStatus(dto.getStatus());
 	        existingWork.setType(dto.getType());
-	        existingWork.setStartDate(dto.getStartDate());
-	        existingWork.setEndDate(dto.getEndDate());
+	        existingWork.setStartDate(sdf.parse(dto.getStartDate()));
+	        existingWork.setEndDate(sdf.parse(dto.getEndDate()));
 	        
 	        // 3. 저장
 	        this.dao.save(existingWork);

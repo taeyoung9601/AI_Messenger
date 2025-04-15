@@ -2,6 +2,8 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
@@ -20,10 +22,14 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
+@AllArgsConstructor
+@NoArgsConstructor
 @Builder
 @Data
 
@@ -61,6 +67,7 @@ public class Work implements Serializable {
 	@Column(nullable=false)
 	private Date endDate; // 종료일
 	
+	@Builder.Default
 	@Convert(converter = BooleanToIntegerConverter.class)
 	@Column(nullable=false)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
@@ -80,19 +87,36 @@ public class Work implements Serializable {
 	@JoinColumn(name="EMPNO")
 	private Employee employee; // 요청자 id
 
-	public static Work toEntity(WorkDTO dto) { // DTO -> 엔티티 편의메소드
+	public static Work toEntity(WorkDTO dto) throws ParseException { // DTO -> 엔티티 편의메소드
+		SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 		return Work.builder()
-				.id(dto.getId())
 				.name(dto.getName())
 				.detail(dto.getDetail())
 				.memo(dto.getMemo())
 				.status(dto.getStatus())
 				.type(dto.getType())
-				.startDate(dto.getStartDate())
-				.endDate(dto.getEndDate())
+				.startDate(sdf.parse(dto.getStartDate()))
+				.endDate(sdf.parse(dto.getEndDate()))
 				.enabled(dto.getEnabled())
 				.employee(dto.getEmployee())
 				.build();
 	} // toEntity
+	
+	public WorkDTO toDTO() {
+	    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+	    WorkDTO dto = new WorkDTO();
+	    dto.setId(this.id);
+	    dto.setName(this.name);
+	    dto.setDetail(this.detail);
+	    dto.setMemo(this.memo);
+	    dto.setStatus(this.status);
+	    dto.setType(this.type);
+	    dto.setStartDate(this.startDate != null ? sdf.format(this.startDate) : null);
+	    dto.setEndDate(this.endDate != null ? sdf.format(this.endDate) : null);
+	    dto.setEnabled(this.enabled);
+	    dto.setEmployee(this.employee);
+	    return dto;
+	} // toDTO
+
 
 } // end class

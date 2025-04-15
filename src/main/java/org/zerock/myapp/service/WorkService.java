@@ -26,7 +26,7 @@ public interface WorkService {
     public abstract Boolean createWorkWithEmployees(WorkDTO dto, List<String> empnos);
 	
 	
-	public abstract Work getById(Long id); 		 // 단일 조회
+	public abstract WorkDTO getById(Long id); 		 // 단일 조회
 	public abstract Boolean update(WorkDTO dto, List<String> empnos); // 수정 처리
 	public abstract Boolean deleteById(Long id); // 삭제 처리
 

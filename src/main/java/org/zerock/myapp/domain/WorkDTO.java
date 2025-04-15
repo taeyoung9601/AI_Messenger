@@ -24,8 +24,8 @@ public class WorkDTO {
 	private String memo; // 업무 메모
 	private Integer status; // 업무상태(진행예정=1, 진행중=2, 완료대기=3, 완료=4)
 	private Integer type; // 업무분류(개발=1, 운영=2, 인사=3, 회계=4, 마케팅=5)
-	private Date startDate; // 시작일
-	private Date endDate; // 종료일
+	private String startDate; // 시작일
+	private String endDate; // 종료일
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 	
 	// join

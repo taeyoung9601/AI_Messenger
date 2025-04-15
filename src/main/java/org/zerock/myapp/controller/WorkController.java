@@ -59,7 +59,7 @@ public class WorkController {
 	@PostMapping
 	Boolean register(
 			@ModelAttribute WorkDTO dto,
-			@RequestParam List<String> empnos
+			@RequestParam(required = false) List<String> empnos
 			) { // 등록 처리
 		log.debug("register({}, {}) invoked.",dto,empnos);
 		
@@ -69,12 +69,12 @@ public class WorkController {
 	} // register
 	
 	@GetMapping(path = "/{id}")
-	Work read( // 세부 조회
+	WorkDTO read( // 세부 조회
 			@PathVariable Long id
 			) {
 		log.debug("read({}) invoked.",id);
 		
-		Work work = this.service.getById(id);
+		WorkDTO work = this.service.getById(id);
 		log.info("work is ({})",work);
 		
 		return work;
@@ -83,8 +83,8 @@ public class WorkController {
 	@PutMapping(path = "/{id}")
 	Boolean update( // 수정 처리
 			@PathVariable Long id,
-			@RequestParam WorkDTO dto,
-			@RequestParam List<String> empnos
+			@ModelAttribute WorkDTO dto,
+			@RequestParam(required = false) List<String> empnos
 			) { 
 		log.debug("update({},{}) invoked.",id,dto, empnos);
 		

@@ -17,7 +17,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, String>, Jpa
 
 	// 사번 생성기 ( 테스트 중 )
 
-	// int countByEmployeeCodeStartingWith(String prefix);
-	// 여기서의 String prefix : 쿼리 메소드의 매개변수. entity 나 dto 에 선언할 필요 X
+	public abstract long countByEmpnoStartingWith(String empnoPrefix);
 
 } // end interface

@@ -69,10 +69,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	    	  
 	      Employee employee = new Employee();
 	      // 사번 생성 로직2 ( 테스트 중 )
-//	        String prefix = getRolePrefixFromPosition(dto.getPosition());
-//	        String empno = generateEmpno(prefix, dto.getCrtDate());
+	        String prefix = getRolePrefixFromPosition(dto.getPosition());
+	        String empno = generateEmpno(prefix, dto.getCrtDate());
 //	   
-	      employee.setEmpno("E2505999"); // 사번
+	      employee.setEmpno(empno); // 사번
 	      employee.setName(dto.getName()); // 사원 이름 _ front
 	      employee.setPosition(dto.getPosition()); // 직급 _ front
 	      employee.setDepartment(department); // 부서 _ front
@@ -88,7 +88,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	      dao.save(employee);
 	      return true; // db에 저장.
 	      } catch (Exception e) {
-	         throw new IllegalArgumentException("회원가입에 실패했습니다. 다시 시도해 주세요.");
+	         throw new IllegalArgumentException("회원가입에 실패했습니다. 다시 시도해 주세요.", e);
 	      }
 	   } // 회원가입 로직. 
 
@@ -107,37 +107,45 @@ public class EmployeeServiceImpl implements EmployeeService {
 	      
 	   // ================= 사번 생성 로직2 ( 테스트 중 ) =======================
 	   
-	   // 직급에 따라 알파벳 반환
-		@Override
-		public String getRolePrefixFromPosition(Integer position) {
-	       return switch (position) {
-	           case 1 -> "E"; // 사원
-	           case 2 -> "E"; // 팀장
-	           case 3 -> "E"; // 부서장
-	           case 4 -> "C"; // CEO
-	           case 5 -> "H"; // 인사관리자
-	           case 9 -> "A"; // 시스템관리자
-	           default -> throw new IllegalArgumentException("알 수 없는 직급입니다.");
-	       };
-	   }
+	     // 직급에 따라 알파벳 반환
+	      @Override
+	      public String getRolePrefixFromPosition(Integer position) {
+	          return switch (position) {
+	              case 1 -> "E"; // 사원
+	              case 2 -> "E"; // 팀장
+	              case 3 -> "E"; // 부서장
+	              case 4 -> "C"; // CEO
+	              case 5 -> "H"; // 인사관리자
+	              case 9 -> "A"; // 시스템관리자
+	              default -> throw new IllegalArgumentException("알 수 없는 직급입니다.");
+	          };
+	      }
 
-	   // 날짜와 prefix로 사번 생성
-		@Override
-		public String generateEmpno(String rolePrefix, Date date) {
-	       LocalDate localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-	       String year = String.valueOf(localDate.getYear()).substring(2);
-	       String month = String.format("%02d", localDate.getMonthValue());
 
-	       int sequence = (int)(Math.random() * 900 + 100); // 현재 방식은 랜덤 sequence 방식이라 수정 필요. 
-	       
-	       
-	       // 달이 바뀌면 sequence 초기화
-	       // 랜덤 숫자가 아닌 순서대로 
-	       // 갯수로 하면 임의로 데이터를 넣는 순간 충돌 날 수 있음.
-	       
-	       return rolePrefix + year + month + sequence;
-	       
-	   } // create
+	      @Override
+	      public String generateEmpno(String rolePrefix, Date date) {
+	           LocalDate localDate;
+	           
+	           if (date == null) {
+	               log.warn("generateEmpno: date is null, using current date.");
+	               localDate = LocalDate.now();
+	           } else {
+	               localDate = date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+	           }
+	           
+	           String year = String.valueOf(localDate.getYear()).substring(2);
+	           String month = String.format("%02d", localDate.getMonthValue());
+
+	           String basePrefix = rolePrefix + year + month;
+
+	           // 해당 달에 생성된 사번 수 조회 (이건 Repository에 메소드 하나 만들어줘야 함.)
+	           long count = dao.countByEmpnoStartingWith(basePrefix);
+
+	           String seq = String.format("%03d", count + 1);
+
+	           return basePrefix + seq;
+	       } // 사번 생성
+
 	   
 	
 	@Override

@@ -11,6 +11,7 @@ import org.zerock.myapp.domain.ProjectDTO;
 import org.zerock.myapp.entity.Project;
 import org.zerock.myapp.persistence.EmployeeRepository;
 import org.zerock.myapp.persistence.ProjectRepository;
+import org.zerock.myapp.util.DateTimeUtils;
 
 import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
@@ -25,7 +26,8 @@ public class ProjectServiceImpl implements ProjectService {
 	ProjectRepository dao;
 	@Autowired
 	EmployeeRepository empDao;
-
+	
+	
 	@PostConstruct
 	void postConstruct() {
 		log.debug("\t+ ProjectServiceImpl -- postConstruct() invoked");
@@ -71,8 +73,13 @@ public class ProjectServiceImpl implements ProjectService {
 	@Override
 	public Page<Project> getUpComingList(Pageable paging) {
 		log.debug("\t+ ProjectServiceImpl -- getUpComingList(()) invoked");
-
-		return this.dao.findByEnabled(true, paging);
+		
+		Integer[] status = {1, 2};
+		Page<Project> pageList = this.dao.findByEnabledAndStatusIn(true, status, paging);
+		pageList.forEach(data -> {
+			data.setEndDday(DateTimeUtils.getDday(data.getEndDate()));
+		});
+		return pageList;
 	} // getUpComingList
 
 	@Override

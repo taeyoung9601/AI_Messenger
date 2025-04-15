@@ -24,6 +24,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 
@@ -73,6 +74,10 @@ public class Project implements Serializable {
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
 	private LocalDateTime udtDate; // 수정일
+	
+	
+	@Transient	// DB 컬럼으로 매핑되지 않음
+	private Long endDday;	//마감 d-day
 
 	
 	// join

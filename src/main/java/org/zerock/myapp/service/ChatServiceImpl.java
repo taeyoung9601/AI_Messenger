@@ -13,7 +13,6 @@ import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.ChatEmployeePK;
 import org.zerock.myapp.entity.Employee;
-import org.zerock.myapp.entity.Message;
 import org.zerock.myapp.persistence.ChatEmployeeRepository;
 import org.zerock.myapp.persistence.ChatRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
@@ -65,140 +64,121 @@ public class ChatServiceImpl implements ChatService {
 	} // getSearchList
 	
 	@Override
-	public Chat createRoom(ChatDTO dto) {
+	public Boolean createRoom(ChatDTO dto) {
 	    log.debug("ChatServiceImpl -- createRoom({}) invoked", dto);
-
-	    // 1. Chat 엔티티 생성 및 기본값 세팅
-	    Chat chat = new Chat();
-	    chat.setName(dto.getName());
-	    chat.setProject(projectRepository.findById(dto.getProjectId()).
-	    		orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다.")));
 	    
-	    Chat savedChat = chatRepository.save(chat);
-	    
-	    ChatEmployee chatEmployee = new ChatEmployee();
-	    
-	    for (ChatEmployee chatEmp : dto.getChatEmployees()) {
-	        // 사원 조회
-	        Employee emp = this.employeeRepository.findById(chatEmp.getEmployee().getEmpno())
-	            .orElseThrow(() -> new RuntimeException("사원 없음"));
-
-	        // 복합키 생성
-	        ChatEmployeePK pk = new ChatEmployeePK();
-	        pk.setChatId(chat.getId());
-	        pk.setEmpno(emp.getEmpno());
-
-	        // ChatEmployee 및 세팅
-	        chatEmployee.setId(pk);
-	        chatEmployee.setChat(savedChat);  
-	        chatEmployee.setEmployee(emp);  
-
-	        // 저장
-	        chatEmployeeRepository.save(chatEmployee);
+	    try {
+		    // 1. Chat 엔티티 생성 및 기본값 세팅
+		    Chat chat = new Chat();
+		    chat.setName(dto.getName());
+		    chat.setProject(projectRepository.findById(dto.getProject().getId()).
+		    		orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다.")));
+		    
+		    Chat savedChat = chatRepository.save(chat);
+		    
+		    ChatEmployee chatEmployee = new ChatEmployee();
+		    
+		    for (ChatEmployee chatEmp : dto.getChatEmployees()) {
+		        // 사원 조회
+		        Employee emp = this.employeeRepository.findById(chatEmp.getEmployee().getEmpno())
+		            .orElseThrow(() -> new RuntimeException("사원 없음"));
+	
+		        // 복합키 생성
+		        ChatEmployeePK pk = new ChatEmployeePK();
+		        pk.setChatId(chat.getId());
+		        pk.setEmpno(emp.getEmpno());
+	
+		        // ChatEmployee 및 세팅
+		        chatEmployee.setId(pk);
+		        chatEmployee.setChat(savedChat);  
+		        chatEmployee.setEmployee(emp);  
+	
+		        // 저장
+		        chatEmployeeRepository.save(chatEmployee);
+		    } // for
+		    return true;
+	    } catch (Exception e) {
+	    	log.error("Create failed: {}", e.getMessage(), e);
+	    	return false;
 	    }
 	   
-	    return chat;
 	}// createRoom
 	
 	@Override
-	public Chat getById(Long id) {	// 단일 조회
+	public ChatDTO getById(Long id) {	// 단일 조회
 		log.debug("ChatServiceImpl -- getById({}) invoked", id);
 		
-		Chat chat = new Chat();
-		
-		Chat selectedChat = this.chatRepository.findById(id).
+		Chat chat = this.chatRepository.findById(id).
 				orElseThrow(() -> new RuntimeException("채팅방 없음"));
+		
+		ChatDTO dto = chat.toDTO();
+		
 		List<ChatEmployee> selectedChatEmployee = this.chatEmployeeRepository.findByIdChatId(id);
+	
+		dto.setChatEmployees(selectedChatEmployee);
 		
-		chat.setId(selectedChat.getId());
-		chat.setName(selectedChat.getName());
-		List<Message> messages = messageRepository.findByChatId(id);
-		chat.setProject(selectedChat.getProject());
-//	    chat.setChatEmployees(chatEmployeeList); // 채팅방에 참여한 사원은 employee 조회에서
 		
-		return chat;
+		return dto;
 	} // getById
 	
 	@Override
 	public Boolean update(ChatDTO dto) {//수정 처리
 		log.debug("ChatServiceImpl -- update({}) invoked", dto);
 
-	    Chat chat = this.chatRepository.findById(dto.getId())
-	        .orElseThrow(() -> new EntityNotFoundException("채팅방이 존재하지 않습니다."));
+		try {
+			
+			
+		
+			for (String empno : dto.getEmpnos()) {
+		        // 사원 조회
+				ChatEmployee chatEmployee = new ChatEmployee();
+				
+		        Employee emp = this.employeeRepository.findById(empno)
+		            .orElseThrow(() -> new RuntimeException("사원 없음"));
+	
+		        // 복합키 생성
+		        ChatEmployeePK pk = new ChatEmployeePK();
+		        pk.setChatId(dto.getId());
+		        pk.setEmpno(empno);
+	
+		        // ChatEmployee 및 세팅
+		        chatEmployee.setId(pk);
+		        chatEmployee.setChat(this.chatRepository.findById(dto.getId()).get());  
+		        chatEmployee.setEmployee(emp);  
+		        
+		        // 저장
+		        chatEmployeeRepository.save(chatEmployee);
+		    } // for
+		    return true;
+	    } catch (Exception e) {
+	    	log.error("Update failed: {}", e.getMessage(), e);
+	    	return false;
+	    } // try-catch
 
-	    chat.setUdtDate(LocalDateTime.now());
-	    
-	    this.chatRepository.save(chat);
-	    
-		Boolean isUpdate = true;
-		return isUpdate;
 	} // update
 
 	@Override
-	public Boolean deleteById(Long id) { // 삭제 처리
+	public Boolean deleteById(Long id, String empno) { // 삭제 처리
 		log.debug("ChatServiceImpl -- deleteById({}) invoked", id);
 		
-		Chat chat = this.chatRepository.findById(id)
-				.orElseThrow(() -> new EntityNotFoundException("채팅방이 존재하지 않습니다."));;
+		try {
+		// 채팅방 나가기 기능
+		ChatEmployee chatEmployee = this.chatEmployeeRepository.findByIdChatIdAndIdEmpno(id,empno);
+		chatEmployee.setEnabled(false);
 		
-		chat.setEnabled(false);
-		
-		this.chatRepository.save(chat);
-		
+		this.chatEmployeeRepository.save(chatEmployee);
+		// 사람이 아무도 없을 경우 채팅방 삭제
+		if(this.chatEmployeeRepository.findByEnabledAndIdChatId(true,id).isEmpty()) {
+			Chat chat = this.chatRepository.findById(id).get();
+			chat.setEnabled(false);
+			this.chatRepository.save(chat);
+		} // if
+
 		return true;
+		} catch(Exception e) {
+			log.error("Delete failed: {}", e.getMessage(), e);
+			return false;
+		}
 	} // deleteById
-	
-	@Override
-	public List<ChatEmployeeDTO> inviteEmployeesToChat(Long chatId, List<ChatEmployeeDTO> empnos) {
-	    // 초대 로직
-		
-		// 1. 채팅방 존재 확인
-	    Chat chat = chatRepository.findById(chatId)
-	        .orElseThrow(() -> new RuntimeException("해당 채팅방이 존재하지 않습니다."));
-
-	    for (ChatEmployeeDTO chatEmployeeDTO : empnos) {
-	        // 2. 사원 존재 확인
-	        Employee emp = employeeRepository.findById(chatEmployeeDTO.getEmployee().getEmpno())
-	            .orElseThrow(() -> new RuntimeException("사원 번호 " + chatEmployeeDTO + "가 존재하지 않습니다."));
-
-	        // 3. 중복 초대 방지
-	        ChatEmployeePK pk = new ChatEmployeePK();
-	        pk.setChatId(chatId);
-	        pk.setEmpno(chatEmployeeDTO.getEmployee().getEmpno());
-	        
-	        if (chatEmployeeRepository.existsById(pk)) {
-	            log.debug("이미 참여 중인 사원: {}", chatEmployeeDTO);
-	        } else {
-		        // 4. 새로운 ChatEmployee 생성
-		        ChatEmployee chatEmployee = new ChatEmployee();
-		        chatEmployee.setId(pk);
-		        chatEmployee.setChat(chat);
-		        chatEmployee.setEmployee(emp);
-	
-		        // 저장
-		        chatEmployeeRepository.save(chatEmployee);
-		        
-	        }
-	    }
-	    
-	    List<ChatEmployee> chatEmployees = chatEmployeeRepository.findByIdChatId(chatId);
-	    List<ChatEmployeeDTO> result = new ArrayList<>();
-
-	    for (ChatEmployee chatEmp : chatEmployees) {
-	        ChatEmployeeDTO dto = new ChatEmployeeDTO();
-	        dto.setEmployee(chatEmp.getEmployee());
-	        result.add(dto);
-	    }
-	   
-	   return result;
-	}// inviteEmployeesToChat
-	
-	
-//	public void exitChatRoom(Long chatId,String empno) {
-//        
-//        ChatEmployee employee = chatEmployeeRepository.findByIdChatIdAndEmployeeId(chatId, empno);
-//        
-//        
-//    }
 	
 }//end class

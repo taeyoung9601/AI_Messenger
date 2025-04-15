@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.domain.ChatEmployeeDTO;
@@ -54,14 +55,14 @@ public class ChatController {
 	} // list
 	
 	@PostMapping
-	Chat register(@ModelAttribute ChatDTO dto) { // 등록 처리
+	Boolean register(@ModelAttribute ChatDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
 		
 		return chatService.createRoom(dto);
 	} // register
 	
 	@GetMapping(path = "/{id}")
-	Chat read( // 세부 조회
+	ChatDTO read( // 세부 조회
 			@PathVariable Long id
 			) {
 		log.debug("read({}) invoked.",id);
@@ -81,30 +82,14 @@ public class ChatController {
 	
 	@DeleteMapping(path = "/{id}")
 	Boolean delete( // 삭제 처리
-			@PathVariable Long id
+			@PathVariable Long id,
+			@RequestParam String empno
 			) {
 		log.debug("delete({}) invoked.",id);
 		
-		return chatService.deleteById(id);
+		return chatService.deleteById(id,empno);
 	} // delete
 	
-	@PostMapping("/{chatId}/invite")
-	public List<ChatEmployeeDTO> inviteEmployees(
-	    @PathVariable Long chatId,
-	    @RequestBody List<ChatEmployeeDTO> inviteList) {
-		
-	    return chatService.inviteEmployeesToChat(chatId, inviteList);
-	}
 	
-//	@GetMapping("/init")
-//	   public ChatInitResponseDTO getEmployeesAndProjects() {
-	      
-//	      List<Employee> empList=empService.getAllList();
-//	      List<Project> pjList=pjService.getAllList();
-//	      List<Department> dtList=dtService.getAllList();
-	      
-//	      return new ChatInitResponseDTO(empList,pjList, dtList);
-
-//   }
 	
 } // end class

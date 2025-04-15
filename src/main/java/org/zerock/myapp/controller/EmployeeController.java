@@ -38,7 +38,7 @@ public class EmployeeController {
 	public List<Employee> list() { // 리스트
 		log.debug("list() invoked.");
 		
-		List<Employee> list = this.service.getAllList();
+		List<Employee> list = service.getAllList();
 		
 		return list;
 	} // list
@@ -49,7 +49,7 @@ public class EmployeeController {
 		
 		this.service.create(dto);
 		
-		return ResponseEntity.ok("회원가입 완료");
+		return ResponseEntity.ok("사원등록 완료");
 	} // register
 	
 	@GetMapping(path = "/{id}")
@@ -62,13 +62,14 @@ public class EmployeeController {
 		return read;
 	} // read
 	
-	@PutMapping(path = "/{id}")
-	String update( // 수정 처리
-			@PathVariable Long id
-			) { 
-		log.debug("update({}) invoked.",id);
+	@PutMapping(path = "/{empno}")
+	ResponseEntity<?> update( // 수정 처리
+			@PathVariable String empno, @ModelAttribute EmployeeDTO dto ) { 
+		log.debug("update({}) invoked.",empno);
 		
-		return "update";
+		this.service.update(empno, dto);
+		
+		return ResponseEntity.ok("사원정보 수정 완료");
 	} // update
 	
 	@DeleteMapping(path = "/{id}")

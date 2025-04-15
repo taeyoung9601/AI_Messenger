@@ -1,5 +1,8 @@
 package org.zerock.myapp.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -7,6 +10,8 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.myapp.entity.Department;
+import org.zerock.myapp.service.DepartmentService;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -23,11 +28,15 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class DepartmentController {
 	
+	@Autowired DepartmentService service;
+	
 	@GetMapping
-	String list() { // 리스트
+	List<Department> list() { // 리스트
 		log.debug("list() invoked.");
 		
-		return "list";
+		List<Department> list = service.getAllList();
+		
+		return list;
 	} // list
 	
 	@PostMapping

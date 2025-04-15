@@ -41,6 +41,7 @@ public class EmployeeDTO {
 	private List<Board> Board = new Vector<>(); // 게시판 작성자
 	private List<ChatEmployee> ChatEmployees = new Vector<>(); // 채팅방을 사용하는 사원
 	private Department Department; // 부서 ID
+	private Long deptId;
 	private List<File> Files = new Vector<>(); // 프로필사진
 	private List<Message> Messages = new Vector<>(); // 메시지 작성자
 //	private List<Project> Projects1 = new Vector<>(); // 만든사람 id

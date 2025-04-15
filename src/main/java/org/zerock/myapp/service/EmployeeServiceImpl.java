@@ -10,7 +10,9 @@ import java.util.Vector;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.EmployeeDTO;
+import org.zerock.myapp.entity.Department;
 import org.zerock.myapp.entity.Employee;
+import org.zerock.myapp.persistence.DepartmentRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -24,6 +26,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired EmployeeRepository dao;
+    @Autowired DepartmentRepository departmentRepository;
 
     
 	@PostConstruct
@@ -60,14 +63,19 @@ public class EmployeeServiceImpl implements EmployeeService {
 		log.debug("EmployeeServiceImpl -- create({}) invoked", dto);
 	   
 	      try {
+	    	  Department department =
+	    			  departmentRepository.findById(dto.getDeptId())
+	                    .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 부서 ID입니다."));
+	    	  
 	      Employee employee = new Employee();
 	      // 사번 생성 로직2 ( 테스트 중 )
 //	        String prefix = getRolePrefixFromPosition(dto.getPosition());
 //	        String empno = generateEmpno(prefix, dto.getCrtDate());
 //	   
-	      employee.setEmpno("E2503002"); // 사번
+	      employee.setEmpno("E2505999"); // 사번
 	      employee.setName(dto.getName()); // 사원 이름 _ front
 	      employee.setPosition(dto.getPosition()); // 직급 _ front
+	      employee.setDepartment(department); // 부서 _ front
 	      employee.setEmail(dto.getEmail());     // 이메일 _ front
 	      employee.setLoginId(dto.getLoginId()); // 아이디 _ front 
 	      employee.setPassword(dto.getPassword()); // 비밀번호. _ front
@@ -75,9 +83,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 	      employee.setTel(dto.getTel()); // 전화번호 _ front
 	      employee.setAddress(dto.getAddress()); // 사원 주소 _ front
 	      employee.setZipCode(dto.getZipCode()); // 사원 우편번호 _ front 
-	      employee.setEnabled(dto.getEnabled()); // 0 - 비활성화, 1- 유효
-	      employee.setCrtDate(dto.getCrtDate());// 생성날짜. 
-	      employee.setUdtDate(dto.getUdtDate()); // 수정날짜.
+	      employee.setEnabled(true); // 0 - 비활성화, 1- 유효
 	      
 	      dao.save(employee);
 	      return true; // db에 저장.
@@ -150,13 +156,34 @@ public class EmployeeServiceImpl implements EmployeeService {
 	} // getById
 	
 	@Override
-	public Boolean update(EmployeeDTO dto) {//수정 처리
+	public Boolean update(String empno, EmployeeDTO dto) {//수정 처리
 		log.debug("EmployeeServiceImpl -- update({}) invoked", dto);
 		
-//		Employee data = dao.save(dto);
-//		log.debug("create data: {}", data);
-		Boolean isUpdate = true;
-		return isUpdate;
+		try {
+	    	  Department department =
+	    			  departmentRepository.findById(dto.getDeptId())
+	                    .orElseThrow(() -> new IllegalArgumentException("유효하지 않은 부서 ID입니다."));
+	    	  
+	    	  Employee employee = dao.findById(dto.getEmpno())
+	    	            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사원입니다."));
+	      // 사번 생성 로직2 ( 테스트 중 )
+//	        String prefix = getRolePrefixFromPosition(dto.getPosition());
+//	        String empno = generateEmpno(prefix, dto.getCrtDate());
+//	   
+	      employee.setPosition(dto.getPosition()); // 직급 _ front
+	      employee.setDepartment(department); // 부서 _ front
+	      employee.setEmail(dto.getEmail());     // 이메일 _ front
+	      employee.setPassword(dto.getPassword()); // 비밀번호. _ front
+//	      employee.setPassword(bcryptPasswordEncoder.encode(employee.getPassword()));  // 비밀번호 암호화 저장
+	      employee.setTel(dto.getTel()); // 전화번호 _ front
+	      employee.setAddress(dto.getAddress()); // 사원 주소 _ front
+	      employee.setZipCode(dto.getZipCode()); // 사원 우편번호 _ front 
+	      
+	      dao.save(employee);
+	      return true; // db에 저장.
+	      } catch (Exception e) {
+	         throw new IllegalArgumentException("사원 정보 수정에 실패했습니다. 다시 시도해 주세요.");
+	      }
 	} // update
 
 	@Override

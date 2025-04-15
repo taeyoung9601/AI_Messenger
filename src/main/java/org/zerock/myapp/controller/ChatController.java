@@ -48,7 +48,9 @@ public class ChatController {
 	List<Chat> list() { // 리스트
 		log.debug("list() invoked.");
 		
-		return chatService.findAllList();
+		List<Chat> result = this.chatService.findAllList();
+		
+		return result;
 	} // list
 	
 	@PostMapping
@@ -94,15 +96,15 @@ public class ChatController {
 	    return chatService.inviteEmployeesToChat(chatId, inviteList);
 	}
 	
-	@GetMapping("/init")
-	   public ChatInitResponseDTO getEmployeesAndProjects() {
+//	@GetMapping("/init")
+//	   public ChatInitResponseDTO getEmployeesAndProjects() {
 	      
-	      List<Employee> empList=empService.getAllList();
-	      List<Project> pjList=pjService.getAllList();
-	      List<Department> dtList=dtService.getAllList();
+//	      List<Employee> empList=empService.getAllList();
+//	      List<Project> pjList=pjService.getAllList();
+//	      List<Department> dtList=dtService.getAllList();
 	      
-	      return new ChatInitResponseDTO(empList,pjList, dtList);
+//	      return new ChatInitResponseDTO(empList,pjList, dtList);
 
-   }
+//   }
 	
 } // end class

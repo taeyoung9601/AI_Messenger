@@ -106,27 +106,15 @@ public class ChatServiceImpl implements ChatService {
 		
 		Chat chat = new Chat();
 		
-		Chat selectedChat = this.chatRepository.findById(id).orElse(new Chat());	
+		Chat selectedChat = this.chatRepository.findById(id).
+				orElseThrow(() -> new RuntimeException("채팅방 없음"));
 		List<ChatEmployee> selectedChatEmployee = this.chatEmployeeRepository.findByIdChatId(id);
 		
 		chat.setId(selectedChat.getId());
 		chat.setName(selectedChat.getName());
 		List<Message> messages = messageRepository.findByChatId(id);
-		chat.setMessages(messages);
 		chat.setProject(selectedChat.getProject());
-		
-		List<ChatEmployee> chatEmployeeDTOList = new ArrayList<>();
-	    
-	    for (ChatEmployee chatEmployee : selectedChatEmployee) {
-	        
-	        ChatEmployeeDTO chatEmployeeDTO = new ChatEmployeeDTO();
-	        
-	        chatEmployeeDTO.setEmployee(chatEmployee.getEmployee());
-	        chatEmployeeDTO.setChatId(id);
-	        
-	        chatEmployeeDTOList.add(chatEmployeeDTO);
-	    }
-	    chat.setChatEmployees(chatEmployeeDTOList);
+//	    chat.setChatEmployees(chatEmployeeList); // 채팅방에 참여한 사원은 employee 조회에서
 		
 		return chat;
 	} // getById

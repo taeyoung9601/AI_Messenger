@@ -114,12 +114,12 @@ public class ProjectServiceImpl implements ProjectService {
 
 		Project project = this.dao.findByEnabledAndId(true, id).orElseThrow(() -> new RuntimeException("해당 건이 조회되지 않습니다. - " + id));
 
-		project.setName(dto.getName());
-		project.setStartDate(LocalDate.parse(dto.getStartDate()));
-		project.setEndDate(LocalDate.parse(dto.getEndDate()));
-		project.setStatus(dto.getStatus());
-		project.setDetail(dto.getDetail());
-		project.setPjtManager(this.empDao.findById(dto.getManagerEmpno()).orElse(null));
+		if (dto.getName() != null) 			project.setName(dto.getName());
+		if (dto.getStartDate() != null) 	project.setStartDate(LocalDate.parse(dto.getStartDate()));
+		if (dto.getEndDate() != null) 		project.setEndDate(LocalDate.parse(dto.getEndDate()));
+		if (dto.getStatus() != null) 		project.setStatus(dto.getStatus());
+		if (dto.getDetail() != null) 		project.setDetail(dto.getDetail());
+		if (dto.getManagerEmpno() != null) 	project.setPjtManager(this.empDao.findById(dto.getManagerEmpno()).orElse(null));
 		
 		Project result = this.dao.save(project);
 	    log.info("Update success: {}", result);

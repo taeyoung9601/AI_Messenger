@@ -1,11 +1,15 @@
 package org.zerock.myapp.service;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.zerock.myapp.domain.DepartmentDTO;
 import org.zerock.myapp.entity.Department;
+import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.persistence.DepartmentRepository;
+import org.zerock.myapp.persistence.EmployeeRepository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
@@ -18,6 +22,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class DepartmentServiceImpl implements DepartmentService {
     @Autowired DepartmentRepository dao;
+    @Autowired EmployeeRepository eDao;
 	
 	
 	@PostConstruct

@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.entity.Employee;

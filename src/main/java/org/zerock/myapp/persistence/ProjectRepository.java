@@ -45,6 +45,12 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
 	//검색 리스트: 활성화상태(true) + detail 
 	public abstract Page<Project> findByEnabledAndDetailContaining(Boolean enabled, String detail, Pageable paging);
 	
+	
+	//upComing list
+	public abstract Page<Project> findByEnabledAndStatusIn(Boolean enabled, Integer[] status, Pageable paging);
+	
+	
+
 	public abstract Optional<Project> findByEnabledAndId(Boolean enabled, Long id);
 	
 	

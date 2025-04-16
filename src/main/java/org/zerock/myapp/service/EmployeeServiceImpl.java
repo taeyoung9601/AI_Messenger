@@ -20,8 +20,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired EmployeeRepository dao;
-	
-	
+    @Autowired DepartmentRepository departmentRepository;
+    @Autowired BCryptPasswordEncoder bcrypt;
+
+    
+    
 	@PostConstruct
     void postConstruct(){
         log.debug("EmployeeServiceImpl -- postConstruct() invoked");

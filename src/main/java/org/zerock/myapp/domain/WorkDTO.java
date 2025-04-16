@@ -1,13 +1,11 @@
 package org.zerock.myapp.domain;
 
-import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.entity.WorkEmployee;
 
-import lombok.Builder;
 import lombok.Data;
 
 

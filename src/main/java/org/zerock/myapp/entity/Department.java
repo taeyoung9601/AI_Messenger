@@ -7,10 +7,8 @@ import java.util.Date;
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
+import org.zerock.myapp.domain.DepartmentDTO;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
-
-import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -20,7 +18,9 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 
 @Data
@@ -59,6 +59,17 @@ public class Department implements Serializable {
 	
 	@Column(name="P_DEPT_ID")
 	private Long pDeptId; // 상위부서
+	
+	public DepartmentDTO toDto() {
+		DepartmentDTO dto = new DepartmentDTO();
+		dto.setId(this.id);
+		dto.setName(this.name);
+		dto.setDepth(this.depth);
+		dto.setEnabled(this.enabled);
+		dto.setPDeptId(this.pDeptId);
+
+	    return dto;
+	} // toDto
 
 
 } // end class

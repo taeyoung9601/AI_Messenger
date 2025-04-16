@@ -31,19 +31,16 @@ public class SecurityConfig {
                 .and()
                 
                 
+//                .authorizeHttpRequests(auth -> auth
+//                        .anyRequest().permitAll()
+//                )
+                
                 .authorizeHttpRequests(auth -> auth
+                        // 로그인, 회원가입
+                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/employee", "/employee/**").hasRole("HireManager")
                         .anyRequest().permitAll()
                 )
-                
-//                .authorizeHttpRequests(auth -> auth
-//                        // 로그인, 회원가입
-//                        .requestMatchers(
-//                            "/auth/login",
-//                            "/auth/register",
-//                            "/auth/refresh",
-//                            "/css/**", "/js/**", "/img/**"
-//                        ).permitAll()
-                
 //                .sessionManagement()
 //                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                .and()

@@ -37,7 +37,7 @@ public class JwtProvider {
         Date expiresAt = new Date(now.getTime() + 3600 * 1000); // 1시간 후 만료
 
         int position = employee.getPosition(); // 혹은 적절한 값을 할당
-        String role = RoleUtil.mapPositionToRole(position);
+        String roles = RoleUtil.mapPositionToRole(position);
         
         
         		String token = JWT.create()
@@ -45,7 +45,8 @@ public class JwtProvider {
                 .withIssuer("Mark") // 토큰 발급자 정보
                 .withIssuedAt(now) // 발급 시각
                 .withExpiresAt(expiresAt) // 만료 시각
-                .withClaim("role", role) // 추가 클레임 설정 (예: 권한 정보)
+                .withClaim("roles", roles) // 추가 클레임 설정 (예: 권한 정보)
+//               .withClaim("roles", List.of("ROLE_HireManager", "ROLE_User")) : 여러 개의 권한 설정시. 
                 .withClaim("name", employee.getName())
                 .sign(algorithm); // 알고리즘과 비밀키로 서명
         		

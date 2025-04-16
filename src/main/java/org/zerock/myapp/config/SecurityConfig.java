@@ -2,6 +2,7 @@ package org.zerock.myapp.config;
 
 import org.springframework.context.annotation.Configuration;
 
+
 @Configuration
 //@EnableWebSecurity //커스텀 화면 구성시
 public class SecurityConfig {

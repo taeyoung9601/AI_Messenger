@@ -49,7 +49,9 @@ public class JwtProvider {
                 .withClaim("roles", roles) // 추가 클레임 설정 (예: 권한 정보)
 //               .withClaim("roles", List.of("ROLE_HireManager", "ROLE_User")) : 여러 개의 권한 설정시. 
                 .withClaim("name", employee.getName())
+                .withClaim("empno", employee.getEmpno())
                 .sign(algorithm); // 알고리즘과 비밀키로 서명
+        		
         		
         	return token;
     }

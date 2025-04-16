@@ -106,6 +106,14 @@ public class MessageServiceImpl implements MessageService {
 //		message.setCrtDate(dto.getCrtDateAsLocalDateTime());
 		return this.messageRepository.save(message);
 	} // saveMessage
+
+
+	@Override
+	public List<Message> getByChatId(Long chatId) {
+		
+		return this.messageRepository.findByChatIdOrderByCrtDate(chatId);
+		
+	} // getByChatId
 	
 	
 	

@@ -1,6 +1,7 @@
 package org.zerock.myapp.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.entity.Chat;
@@ -9,6 +10,7 @@ public interface ChatService {
 	
 	public abstract List<Chat> findAllList();     			// 전체 조회
 	public abstract List<Chat> getSearchList(ChatDTO dto); // 전체 조회(검색)
+	public abstract Optional<Chat> findMyList();
 	
 	public abstract Boolean createRoom(ChatDTO dto);    	// 생성 처리
 	public abstract ChatDTO getById(Long id);    // 단일 조회

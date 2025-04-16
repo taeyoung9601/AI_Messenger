@@ -1,6 +1,7 @@
 package org.zerock.myapp.service;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -40,6 +41,18 @@ public class ChatServiceImpl implements ChatService {
     }//postConstruct
 
 
+//	@Override
+	public Optional<Chat> findMyList() {	//검색 없는 전체 리스트
+//		log.debug("ChatServiceImpl -- getAllList() invoked");
+//		String username = SecurityContextHolder.getContext().getAuthentication().getName();
+//		ChatEmployee emp = this.chatEmployeeRepository.findByEnabledAndIdEmpno(true, empno);
+//		
+//		Optional<Chat> chatList = this.chatRepository.findById(emp.getChat().getId());
+//		
+//		return chatList;
+		return null;
+	} // getAllList
+	
 	@Override
 	public List<Chat> findAllList() {	//검색 없는 전체 리스트
 		log.debug("ChatServiceImpl -- getAllList() invoked");
@@ -70,7 +83,17 @@ public class ChatServiceImpl implements ChatService {
 		    chat.setProject(projectRepository.findById(dto.getProject().getId()).
 		    		orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다.")));
 		    
-		    this.chatRepository.save(chat);
+		    Chat savedChat = this.chatRepository.save(chat);
+		    
+		    // 2. 채팅 생성자(자기자신)를 ChatEmployee로 추가 ( 토큰으로 가져오기)
+//		    String empno = jwtProvider.verifyToken(token);  // 토큰에서 empno 추출
+//	        Employee employee = employeeRepository.findByEmpno(empno)
+//	                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+
+//	        ChatEmployee chatEmployee = new ChatEmployee();
+//	        chatEmployee.setChat(savedChat);
+//	        chatEmployee.setEmployee(employee);
+//	        chatEmployeeRepository.save(chatEmployee);
 
 		    return true;
 	    } catch (Exception e) {

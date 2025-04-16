@@ -1,6 +1,7 @@
 package org.zerock.myapp.controller;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -44,6 +45,13 @@ public class ChatController {
 		
 		return result;
 	} // list
+	
+//	@GetMapping
+//	Optional<Chat> myList() { // 리스트
+//		log.debug("list() invoked.");
+//		
+//		return this.chatService.findMyList();
+//	} // list
 	
 	@PostMapping
 	Boolean register(@ModelAttribute ChatDTO dto) { // 등록 처리

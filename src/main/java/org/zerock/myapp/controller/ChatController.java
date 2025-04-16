@@ -9,21 +9,12 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.ChatDTO;
-import org.zerock.myapp.domain.ChatEmployeeDTO;
-import org.zerock.myapp.domain.ChatInitResponseDTO;
 import org.zerock.myapp.entity.Chat;
-import org.zerock.myapp.entity.Department;
-import org.zerock.myapp.entity.Employee;
-import org.zerock.myapp.entity.Project;
 import org.zerock.myapp.service.ChatService;
-import org.zerock.myapp.service.DepartmentService;
-import org.zerock.myapp.service.EmployeeService;
-import org.zerock.myapp.service.ProjectService;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -41,9 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
 		
 	@Autowired private ChatService chatService;
-    @Autowired private EmployeeService empService;
-    @Autowired private ProjectService pjService;
-    @Autowired private DepartmentService dtService;
     
 	@GetMapping
 	List<Chat> list() { // 리스트

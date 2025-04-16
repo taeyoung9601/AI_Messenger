@@ -1,14 +1,11 @@
 package org.zerock.myapp.service;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.ChatDTO;
-import org.zerock.myapp.domain.ChatEmployeeDTO;
 import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.ChatEmployeePK;
@@ -20,7 +17,6 @@ import org.zerock.myapp.persistence.MessageRepository;
 import org.zerock.myapp.persistence.ProjectRepository;
 
 import jakarta.annotation.PostConstruct;
-import jakarta.persistence.EntityNotFoundException;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 

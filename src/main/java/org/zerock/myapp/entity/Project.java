@@ -3,7 +3,6 @@ package org.zerock.myapp.entity;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
@@ -74,6 +73,10 @@ public class Project implements Serializable {
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
 	private Date udtDate; // 수정일
+
+	@Transient	// DB 컬럼으로 매핑되지 않음
+	private Long endDday;	//마감 d-day
+
 
 	
 	// join

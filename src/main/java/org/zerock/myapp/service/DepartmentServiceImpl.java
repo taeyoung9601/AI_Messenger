@@ -75,7 +75,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	        .map(c -> convertToNestedDto(c))  // ★ 재귀 호출 ★
 	        .collect(Collectors.toList());
 	    
-	    dto.setDepartments(childDTOs);
+	    dto.setChildren(childDTOs);
 	    
 	    return dto;
 	} // convertToNestedDto

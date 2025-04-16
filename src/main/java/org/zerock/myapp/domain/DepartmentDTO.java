@@ -19,7 +19,7 @@ public class DepartmentDTO {
     private Long pDeptId;
     
     
-    private List<DepartmentDTO> departments = new Vector<>();
+    private List<DepartmentDTO> children = new Vector<>();
     private List<Employee> employees = new Vector<>(); 
    
 } // end class

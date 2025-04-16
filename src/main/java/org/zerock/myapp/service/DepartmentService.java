@@ -1,12 +1,8 @@
 package org.zerock.myapp.service;
 
-import java.util.List;
-
-import org.zerock.myapp.entity.Department;
+import org.zerock.myapp.domain.DepartmentDTO;
 
 public interface DepartmentService {
 	
-	public abstract List<Department> getAllList();     			// 전체 조회
-	
-	public abstract Department getById(String id);    // 단일 조회
+	public abstract DepartmentDTO getByIdAndEnabled(Long id, Boolean b);    // 단일 조회
 }//end interface

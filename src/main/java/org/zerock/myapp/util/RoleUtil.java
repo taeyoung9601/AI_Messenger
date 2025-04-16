@@ -2,6 +2,7 @@ package org.zerock.myapp.util;
 
 public class RoleUtil {
 
+	
 	public static String mapPositionToRole(int position) {
 		switch (position) {
 		case 1:

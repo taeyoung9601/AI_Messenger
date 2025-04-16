@@ -21,6 +21,7 @@ import org.zerock.myapp.service.LoginServiceImpl;
 @RestController
 public class LoginController {
 
+	
 	@Autowired LoginServiceImpl service;
 	
 	

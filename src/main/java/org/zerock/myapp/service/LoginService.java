@@ -12,4 +12,5 @@ public interface LoginService {
 	public abstract Boolean checkPassword(String rowPassword, String encodedPassword);
 	public abstract Optional<Employee> login(String loginId, String password);
 
+	
 } // end service

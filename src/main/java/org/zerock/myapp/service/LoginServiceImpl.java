@@ -11,6 +11,7 @@ import org.zerock.myapp.persistence.LoginRepository;
 @Service
 public class LoginServiceImpl implements LoginService {
 
+	
 	@Autowired LoginRepository loginRepo;
 	@Autowired BCryptPasswordEncoder bcrypt;
 	

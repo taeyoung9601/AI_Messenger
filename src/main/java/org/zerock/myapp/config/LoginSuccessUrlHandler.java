@@ -12,6 +12,7 @@ import org.zerock.myapp.util.RoleUtil;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
+
 @Component
 public class LoginSuccessUrlHandler implements AuthenticationSuccessHandler {
 	

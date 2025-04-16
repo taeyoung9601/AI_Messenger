@@ -46,4 +46,32 @@ public class DepartmentServiceImpl implements DepartmentService {
 		return data;
 	} // getById
 	
+	private DepartmentDTO convertToNestedDto(Department entity) {
+		// 핵심 수정 부분: null 입력 방지
+	    if (entity == null) {
+	        log.warn("변환할 엔티티가 null입니다!");
+	        return null;
+	    } // if
+		
+	    // 기본 필드 매핑
+	    DepartmentDTO dto = entity.toDto();
+	    
+	    // 부서 id로 사원 검색하여 삽입
+	    List<Employee> employees = this.eDao.findByEnabledAndDepartment(true, entity);
+	    dto.setEmployees(employees);
+	    
+	    // 현재 부서의 직계 하위 부서 조회
+	    List<Department> childEntities = this.dao.findBypDeptIdAndEnabled(entity.getId(), true);
+	    
+	    // 재귀 변환 실행
+	    List<DepartmentDTO> childDTOs = childEntities.stream()
+	        .map(c -> convertToNestedDto(c))  // ★ 재귀 호출 ★
+	        .collect(Collectors.toList());
+	    
+	    dto.setChildren(childDTOs);
+	    
+	    return dto;
+	} // convertToNestedDto
+
+
 }//end class

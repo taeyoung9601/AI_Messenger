@@ -18,8 +18,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 
-@Service
-public class BoardServiceImpl implements BoardService {
+@Service("NoticeBoardService")
+public class NoticeBoardServiceImpl implements BoardService {
     @Autowired BoardRepository dao;
 	
 	
@@ -54,7 +54,21 @@ public class BoardServiceImpl implements BoardService {
 		log.debug("BoardServiceImpl -- create({}) invoked", dto);
 		
 		Board data = new Board();//dao.save(dto);
+		try {
+		
+		data.setId(dto.getId()); // 게시판 Id
+		data.setTitle(dto.getTitle()); // 제목
+		data.setDetail(dto.getDetail()); // 내용
+		data.setCrtDate(dto.getCrtDate()); // 작성일
+		data.setCount(dto.getCount()); // 조회수
+		
+		dao.save(data);
 		log.debug("create data: {}", data);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("게시글 등록이 실패했습니다. 다시 시도해주세요.");
+		}
+		
+		
 		
 		return data;
 	} // create

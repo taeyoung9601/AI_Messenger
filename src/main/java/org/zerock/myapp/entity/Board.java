@@ -3,6 +3,7 @@ package org.zerock.myapp.entity;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
@@ -68,16 +69,16 @@ public class Board implements Serializable {
 	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Basic(optional = false, fetch = FetchType.LAZY)
-    private LocalDateTime crtDate; // 등록일
+    private Date crtDate; // 등록일
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
 	@Column
-	private LocalDateTime udtDate; // 수정일
+	private Date udtDate; // 수정일
 
 	
 	// join
 	@ManyToOne
 	@JoinColumn(name="EMPNO")
-	private Employee Employee; // 작성자
+	private Employee employee; // 작성자
 
 } // end class

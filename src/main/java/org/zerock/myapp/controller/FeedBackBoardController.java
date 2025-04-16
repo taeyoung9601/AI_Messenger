@@ -3,6 +3,7 @@ package org.zerock.myapp.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -27,11 +28,13 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 
-@RequestMapping("/board")
+@RequestMapping("/board/Feedback")
 @RestController
-public class BoardController {
+public class FeedBackBoardController {
 	
-	@Autowired BoardService service;
+	@Autowired  
+	@Qualifier("FeedbackBoardService")
+	private BoardService service;
 	
 	@GetMapping
 	List<Board> list() { // 리스트
@@ -42,11 +45,11 @@ public class BoardController {
 		return list;
 	} // list
 	
-	@PostMapping
-	String register() { // 등록 처리
+	@PostMapping("/register")
+	public Board register(BoardDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
 		
-		return "register";
+		return service.create(dto);
 	} // register
 	
 	@GetMapping(path = "/{id}")

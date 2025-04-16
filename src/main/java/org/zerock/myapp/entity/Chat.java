@@ -2,19 +2,13 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
-
-import com.fasterxml.jackson.annotation.JsonFormat;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
@@ -52,16 +46,13 @@ public class Chat implements Serializable {
 	@Column(nullable=false, length= 500)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 
-	@JsonSerialize(using = LocalDateTimeSerializer.class) // 직렬화 시 필요
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class) // 역직렬화 시 필요
-	@JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss") // 원하는 형태의 포멧
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Basic(optional = false, fetch = FetchType.LAZY)
-	private LocalDateTime crtDate; // 생성일
+	private Date crtDate; // 생성일
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
 	@Column
-	private LocalDateTime udtDate; // 수정일
+	private Date udtDate; // 수정일
 
 	// join
 	@ManyToOne
@@ -75,14 +66,9 @@ public class Chat implements Serializable {
 	    dto.setName(this.name);
 	    dto.setEnabled(this.enabled);
 
-	    // 연관된 Project가 있다면 projectId만 넣고, 전체 객체도 같이 보냄
 	    if (this.Project != null) {
 	        dto.setProject(this.Project);
 	    }// if
-
-	    // ChatEmployees, Messages, empnos는 상황 따라 추가 가능
-	    // 예: ChatEmployeeService에서 따로 채워주거나, 여기서 일부만 초기화해도 됨
-	    // 지금은 생략 (DB 로딩 없이 이 엔티티만으로 못 가져오니까)
 
 	    return dto;
 	}// toDTO

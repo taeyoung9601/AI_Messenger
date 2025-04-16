@@ -17,24 +17,36 @@ import org.zerock.myapp.service.MessageService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
+
+
+@Slf4j
+@RequiredArgsConstructor
+
 @Component
 public class WebSocketChatHandler extends TextWebSocketHandler {
-
-	@Autowired private MessageService messageService;
-	@Autowired private ObjectMapper objectMapper;
+	
+	@Autowired private final MessageService messageService;
 	
     private final Map<Long, Set<WebSocketSession>> chatRoomSessions = new ConcurrentHashMap<>();
     
     
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
+    	log.debug("afterConnectionEstablished({}) invoked.", session);
+    	log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 1. messageService:{}, this:{}", this.messageService, this);
+    	
         // 쿼리파라미터에서 채팅방 ID 추출
         Long chatId = getChatIdFromSession(session);
         chatRoomSessions.computeIfAbsent(chatId, k -> ConcurrentHashMap.newKeySet()).add(session);
     } // afterConnectionEstablished
 
+    
     @Override
     protected void handleTextMessage(WebSocketSession session, TextMessage message)  {
+    	log.debug("handleTextMessage({}, {}) invoked.", session, message);
+    	log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 2. messageService:{}, this:{}", this.messageService, this);
     	
     	 try {
     	        // 1. JSON 문자열을 MessageDTO 객체로 변환
@@ -62,8 +74,12 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     	    }
     } // handleTextMessage
 
+    
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
+    	log.debug("afterConnectionClosed({}, {}) invoked.", session, status);
+    	log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 3. messageService:{}, this:{}", this.messageService, this);
+    	
         Long chatId = getChatIdFromSession(session);
         Set<WebSocketSession> sessions = chatRoomSessions.get(chatId);
         if (sessions != null) {
@@ -71,7 +87,10 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         }
     } // afterConnectionClosed
 
+    
     private Long getChatIdFromSession(WebSocketSession session) {
+    	log.debug("getChatIdFromSession({}) invoked.", session);
+    	
         String query = session.getUri().getQuery(); // 예: "chatId=3"
 
         if (query == null || !query.startsWith("chatId=")) {

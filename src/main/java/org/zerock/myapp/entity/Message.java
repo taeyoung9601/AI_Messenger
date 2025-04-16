@@ -2,7 +2,6 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDateTime;
 import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
@@ -10,12 +9,7 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
-import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
-import com.fasterxml.jackson.databind.annotation.JsonSerialize;
-import com.fasterxml.jackson.datatype.jsr310.deser.LocalDateTimeDeserializer;
-import com.fasterxml.jackson.datatype.jsr310.ser.LocalDateTimeSerializer;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -58,16 +52,14 @@ public class Message implements Serializable {
 	@Column(nullable=false)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 	
-	@JsonSerialize(using = LocalDateTimeSerializer.class) // 직렬화 시 필요
-	@JsonDeserialize(using = LocalDateTimeDeserializer.class) // 역직렬화 시 필요
-	@JsonFormat(pattern = "yyyy-MM-dd kk:mm:ss") // 원하는 형태의 포멧
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Column(nullable=false)
-	private LocalDateTime crtDate; // 생성일
-
+	private Date crtDate; // 생성일
+	
+	
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
 	@Column
-	private LocalDateTime udtDate; // 수정일
+	private Date udtDate; // 수정일
 
 	
 	// join

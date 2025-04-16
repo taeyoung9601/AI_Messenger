@@ -106,6 +106,7 @@ public class ChatServiceImpl implements ChatService {
 						this.chatEmployeeRepository.findByIdChatIdAndIdEmpno(dto.getId(),empno);
 				if(!inviteEmp.getEnabled()){
 					inviteEmp.setEnabled(true);
+					this.chatEmployeeRepository.save(inviteEmp);
 				}else{
 					ChatEmployee chatEmployee = new ChatEmployee();
 					

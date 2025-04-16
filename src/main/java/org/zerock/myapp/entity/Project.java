@@ -4,6 +4,7 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
@@ -68,10 +69,10 @@ public class Project implements Serializable {
 	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Basic(optional = false, fetch = FetchType.LAZY)
-    private LocalDateTime crtDate; // 등록일
+    private Date crtDate; // 등록일
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
-	private LocalDateTime udtDate; // 수정일
+	private Date udtDate; // 수정일
 
 	
 	// join

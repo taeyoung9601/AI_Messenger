@@ -64,7 +64,7 @@ public class DepartmentServiceImpl implements DepartmentService {
 	    DepartmentDTO dto = entity.toDto();
 	    
 	    // 부서 id로 사원 검색하여 삽입
-	    List<Employee> employees = this.eDao.findByEnabledAndDepartment(entity);
+	    List<Employee> employees = this.eDao.findByEnabledAndDepartment(true, entity);
 	    dto.setEmployees(employees);
 	    
 	    // 현재 부서의 직계 하위 부서 조회

@@ -37,7 +37,7 @@ public class SecurityConfig {
                 
                 .authorizeHttpRequests(auth -> auth
                         // 로그인, 회원가입
-                        .requestMatchers("/auth/login").permitAll()
+                        .requestMatchers("/auth/login", "/employee/{empno}").permitAll()
                         .requestMatchers("/employee", "/employee/**").hasRole("HireManager")
                         .anyRequest().permitAll()
                 )

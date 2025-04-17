@@ -54,10 +54,10 @@ public class ChatController {
 //	} // list
 	
 	@PostMapping
-	Boolean register(@ModelAttribute ChatDTO dto) { // 등록 처리
+	Boolean register(@ModelAttribute ChatDTO dto, String empno) { // 등록 처리
 		log.debug("register() invoked.");
 		
-		return chatService.createRoom(dto);
+		return chatService.createRoom(dto, empno);
 	} // register
 	
 	@GetMapping(path = "/{id}")

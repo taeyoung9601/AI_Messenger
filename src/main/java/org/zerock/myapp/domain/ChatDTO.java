@@ -27,6 +27,7 @@ public class ChatDTO {
 
 	// join
 	private Project project; // 프로젝트 뱃지 id
+	private Long projectId;
 	private List<ChatEmployee> chatEmployees = new Vector<>(); //  작성자 id 
 	private List<String> empnos = new Vector<>();  // 생성 시 받아올 empno 리스트
 	private List<Message> Messages = new Vector<>(); // 메시지 id

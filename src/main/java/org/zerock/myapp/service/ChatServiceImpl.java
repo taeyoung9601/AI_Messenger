@@ -1,16 +1,20 @@
 package org.zerock.myapp.service;
 
+import java.io.IOException;
 import java.util.List;
-import java.util.Optional;
+import java.util.Set;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.socket.WebSocketSession;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.ChatEmployeePK;
 import org.zerock.myapp.entity.Employee;
+import org.zerock.myapp.entity.Project;
+import org.zerock.myapp.handler.WebSocketChatHandler;
 import org.zerock.myapp.persistence.ChatEmployeeRepository;
 import org.zerock.myapp.persistence.ChatRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
@@ -28,12 +32,13 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class ChatServiceImpl implements ChatService {
 	
-    @Autowired ChatRepository chatRepository;
-    @Autowired ChatEmployeeRepository chatEmployeeRepository;
-    @Autowired EmployeeRepository employeeRepository;
-    @Autowired MessageRepository messageRepository;
-	@Autowired ProjectRepository projectRepository;
-    
+    @Autowired private ChatRepository chatRepository;
+    @Autowired private ChatEmployeeRepository chatEmployeeRepository;
+    @Autowired private EmployeeRepository employeeRepository;
+    @Autowired private MessageRepository messageRepository;
+	@Autowired private ProjectRepository projectRepository;
+	@Autowired private WebSocketChatHandler webSocketChatHandler;
+	
 	@PostConstruct
     void postConstruct(){
         log.debug("ChatServiceImpl -- postConstruct() invoked");
@@ -42,16 +47,14 @@ public class ChatServiceImpl implements ChatService {
 
 
 //	@Override
-	public Optional<Chat> findMyList() {	//검색 없는 전체 리스트
+//	public Optional<Chat> findMyList() {	//로그인한 사원이 속한 채팅방 리스트
 //		log.debug("ChatServiceImpl -- getAllList() invoked");
-//		String username = SecurityContextHolder.getContext().getAuthentication().getName();
-//		ChatEmployee emp = this.chatEmployeeRepository.findByEnabledAndIdEmpno(true, empno);
 //		
 //		Optional<Chat> chatList = this.chatRepository.findById(emp.getChat().getId());
 //		
 //		return chatList;
-		return null;
-	} // getAllList
+//
+//	} // getAllList
 	
 	@Override
 	public List<Chat> findAllList() {	//검색 없는 전체 리스트
@@ -73,27 +76,36 @@ public class ChatServiceImpl implements ChatService {
 	} // getSearchList
 	
 	@Override
-	public Boolean createRoom(ChatDTO dto) {
+	public Boolean createRoom(ChatDTO dto, String empno) {
 	    log.debug("ChatServiceImpl -- createRoom({}) invoked", dto);
 	    
 	    try {
 		    // 1. Chat 엔티티 생성 및 기본값 세팅
 		    Chat chat = new Chat();
 		    chat.setName(dto.getName());
-		    chat.setProject(projectRepository.findById(dto.getProject().getId()).
-		    		orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다.")));
+		    if (dto.getProjectId() != null) {
+		        Project project = projectRepository.findById(dto.getProjectId())
+		            .orElseThrow(() -> new IllegalArgumentException("해당 프로젝트가 존재하지 않습니다."));
+		        chat.setProject(project);
+		    } else {
+		        chat.setProject(null);
+		    }
 		    
 		    Chat savedChat = this.chatRepository.save(chat);
 		    
-		    // 2. 채팅 생성자(자기자신)를 ChatEmployee로 추가 ( 토큰으로 가져오기)
-//		    String empno = jwtProvider.verifyToken(token);  // 토큰에서 empno 추출
-//	        Employee employee = employeeRepository.findByEmpno(empno)
-//	                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
-
-//	        ChatEmployee chatEmployee = new ChatEmployee();
-//	        chatEmployee.setChat(savedChat);
-//	        chatEmployee.setEmployee(employee);
-//	        chatEmployeeRepository.save(chatEmployee);
+//		     2. 채팅 생성자(자기자신)를 ChatEmployee로 추가 ( 토큰으로 가져오기)
+	        Employee employee = employeeRepository.findById(empno)
+	                .orElseThrow(() -> new IllegalArgumentException("사용자가 존재하지 않습니다."));
+	        
+	        ChatEmployeePK pk = new ChatEmployeePK();
+	        pk.setChatId(dto.getId());
+	        pk.setEmpno(empno);
+	        
+	        ChatEmployee chatEmployee = new ChatEmployee();
+	        chatEmployee.setId(pk);
+	        chatEmployee.setChat(savedChat);
+	        chatEmployee.setEmployee(employee);
+	        chatEmployeeRepository.save(chatEmployee);
 
 		    return true;
 	    } catch (Exception e) {
@@ -164,19 +176,36 @@ public class ChatServiceImpl implements ChatService {
 		log.debug("ChatServiceImpl -- deleteById({}) invoked", id);
 		
 		try {
-		// 채팅방 나가기 기능
-		ChatEmployee chatEmployee = this.chatEmployeeRepository.findByIdChatIdAndIdEmpno(id,empno);
-		chatEmployee.setEnabled(false);
-		
-		this.chatEmployeeRepository.save(chatEmployee);
-		// 사람이 아무도 없을 경우 채팅방 삭제
-		if(this.chatEmployeeRepository.findByEnabledAndIdChatId(true,id).isEmpty()) {
-			Chat chat = this.chatRepository.findById(id).get();
-			chat.setEnabled(false);
-			this.chatRepository.save(chat);
-		} // if
+			// 채팅방 나가기 기능
+			ChatEmployee chatEmployee = this.chatEmployeeRepository.findByIdChatIdAndIdEmpno(id,empno);
+			chatEmployee.setEnabled(false);
+			this.chatEmployeeRepository.save(chatEmployee);
+			
+			// 사람이 아무도 없을 경우 채팅방 삭제
+			if(this.chatEmployeeRepository.findByEnabledAndIdChatId(true,id).isEmpty()) {
+				Chat chat = this.chatRepository.findById(id).get();
+				chat.setEnabled(false);
+				this.chatRepository.save(chat);
+			} // if
+	
+			// 세션 종료
+			Set<WebSocketSession> sessions = webSocketChatHandler.getChatRoomSessions().get(id);	
+			if (sessions != null) {
+			    for (WebSocketSession session : sessions) {
+			        String sessionEmpno = (String) session.getAttributes().get("empno");
 
-		return true;
+			        if (empno.equals(sessionEmpno)) {
+			            try {
+			                session.close();  // 세션 강제 종료
+			                break;
+			            } catch (IOException e) {
+			                log.error("세션 종료 실패: {}", e.getMessage());
+			            }
+			        }
+			    }
+			}
+			
+			return true;
 		} catch(Exception e) {
 			log.error("Delete failed: {}", e.getMessage(), e);
 			return false;

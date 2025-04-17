@@ -31,6 +31,9 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 	
     private final Map<Long, Set<WebSocketSession>> chatRoomSessions = new ConcurrentHashMap<>();
     
+    public Map<Long, Set<WebSocketSession>> getChatRoomSessions() {
+        return this.chatRoomSessions;
+    }
     
     @Override
     public void afterConnectionEstablished(WebSocketSession session) {
@@ -39,6 +42,10 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     	
         // 쿼리파라미터에서 채팅방 ID 추출
         Long chatId = getChatIdFromSession(session);
+//        String empno = getEmpnoFromToken(session);  // JWT에서 추출 (또는 파라미터에서)
+
+//        session.getAttributes().put("empno", empno);	세션에 empno 정보 추가 
+        
         chatRoomSessions.computeIfAbsent(chatId, k -> ConcurrentHashMap.newKeySet()).add(session);
     } // afterConnectionEstablished
 
@@ -92,7 +99,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     	log.debug("getChatIdFromSession({}) invoked.", session);
     	
         String query = session.getUri().getQuery(); // 예: "chatId=3"
-
+        
         if (query == null || !query.startsWith("chatId=")) {
             throw new IllegalArgumentException("chatId 파라미터가 유효하지 않습니다: " + query);
         }

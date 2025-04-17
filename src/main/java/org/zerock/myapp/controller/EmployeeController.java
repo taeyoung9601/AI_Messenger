@@ -43,6 +43,14 @@ public class EmployeeController {
 		return list;
 	} // list
 	
+	@GetMapping("/selectlist")
+	public List<Employee> selectList() {
+		
+		return service.getPositionsList(true, List.of(2, 3));
+	} // 팀장 + 부서장
+	
+
+	
 	@PostMapping("/register")
 	ResponseEntity<?> register(@ModelAttribute EmployeeDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
@@ -51,6 +59,7 @@ public class EmployeeController {
 		
 		return ResponseEntity.ok("사원등록 완료");
 	} // register
+	
 	
 	@GetMapping(path = "/{id}")
 	Employee read( // 세부 조회
@@ -62,6 +71,7 @@ public class EmployeeController {
 		return read;
 	} // read
 	
+	
 	@PutMapping(path = "/{empno}")
 	ResponseEntity<?> update( // 수정 처리
 			@PathVariable String empno, @ModelAttribute EmployeeDTO dto ) { 
@@ -71,6 +81,7 @@ public class EmployeeController {
 		
 		return ResponseEntity.ok("사원정보 수정 완료");
 	} // update
+	
 	
 	@DeleteMapping(path = "/{id}")
 	String delete( // 삭제 처리

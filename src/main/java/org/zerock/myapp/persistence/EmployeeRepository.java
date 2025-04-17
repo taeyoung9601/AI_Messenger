@@ -27,4 +27,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, String>, Jpa
 
 	List<Employee> findByEnabledAndDepartment(Boolean b, Department entity);
 	
+	List<Employee> findByEnabledAndPositionIn (Boolean enabled, List<Integer> positions );
+	
 } // end interface

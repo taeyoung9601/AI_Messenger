@@ -60,6 +60,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return list;
 	} // getSearchList
 	
+	@Override
+	public List<Employee> getPositionsList(Boolean enabled, List<Integer> positions) {
+		
+		List<Employee> positionList = this.dao.findByEnabledAndPositionIn(enabled, positions);
+		
+		return positionList;
+	}
+	
+	
+	
 	// ================= 회원가입 로직 =======================
 	@Override
 	public Boolean create(EmployeeDTO dto) {	//등록 처리

@@ -79,7 +79,7 @@ dependencies {
     // Java Web Token
     implementation("com.auth0:java-jwt:4.4.0")
     
-    // S
+    // Simple OpenAI
 	implementation 'io.github.sashirestela:simple-openai:3.19.4'
 }	
 

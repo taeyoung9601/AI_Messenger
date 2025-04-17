@@ -1,5 +1,6 @@
 package org.zerock.myapp.service;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Vector;
 
@@ -114,6 +115,14 @@ public class MessageServiceImpl implements MessageService {
 		return this.messageRepository.findByChatIdOrderByCrtDate(chatId);
 		
 	} // getByChatId
+
+
+	@Override
+	public String summarizeMessage(Long id, Date start, Date end) {
+		
+		this.messageRepository.findByChatIdAndCrtDateBetweenOrderByCrtDate(id, start, end);
+		return null;
+	} // summarizeMessage
 	
 	
 	

@@ -1,5 +1,6 @@
 package org.zerock.myapp.controller;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -72,4 +73,16 @@ public class MessageController {
 		return "delete";
 	} // delete
 
+	
+	@GetMapping(path = "/{id}")
+	String summarize( // 세부 조회
+			@PathVariable Long id,
+			Date start, Date end
+			// 날짜 포함
+			) {
+		log.debug("summarize({}) invoked.",id);
+		this.messageService.summarizeMessage(id, start, end);
+		return "요약된 메시지";
+	} // read
+	
 } // end class

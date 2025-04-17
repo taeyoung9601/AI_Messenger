@@ -1,5 +1,6 @@
 package org.zerock.myapp.persistence;
 
+import java.util.Date;
 import java.util.List;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -16,4 +17,6 @@ import org.zerock.myapp.entity.Message;
 public interface MessageRepository extends JpaRepository<Message, Long>, JpaSpecificationExecutor<Message> {
 //	public abstract List<Message> findByChat(Chat chat);
 	List<Message> findByChatIdOrderByCrtDate(Long chatId);
+	List<Message> findByChatIdAndCrtDateBetweenOrderByCrtDate(Long chatId, Date startDate, Date endDate);
+
 } // end interface

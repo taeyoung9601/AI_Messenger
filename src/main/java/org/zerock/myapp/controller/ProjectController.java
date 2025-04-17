@@ -40,7 +40,7 @@ public class ProjectController {
 	Page<Project> list(
 			ProjectDTO dto,
 			@RequestParam(name = "currPage", required = false, defaultValue = "1") Integer currPage, // 페이지 시작 값은 0부터
-			@RequestParam(name = "pageSize", required = false, defaultValue = "8") Integer pageSize // 기본 페이지 사이즈 8
+			@RequestParam(name = "pageSize", required = false, defaultValue = "4") Integer pageSize // 기본 페이지 사이즈 8
 		) { // 리스트
 		log.debug("list() invoked.");
 		log.debug("dto: {}, currPage: {}, pageSize: {}", dto, currPage, pageSize);

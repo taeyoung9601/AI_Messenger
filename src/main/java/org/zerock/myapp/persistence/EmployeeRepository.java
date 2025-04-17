@@ -26,4 +26,6 @@ public interface EmployeeRepository extends JpaRepository<Employee, String>, Jpa
 //	List<Employee> findByEmailContainingAndEnabledTrue(String email);
 //	List<Employee> findByEmpnoContainingAndEnabledTrue(String empno);
 	
+	List<Employee> findByEnabledAndPositionIn (Boolean enabled, List<Integer> positions );
+	
 } // end interface

@@ -53,12 +53,30 @@ public class EmployeeController {
 	    return ResponseEntity.ok(result);
 	}
 	
-	@PostMapping
-	String register() { // 등록 처리
+	@GetMapping
+	public List<Employee> list() { // 리스트
+		log.debug("list() invoked.");
+		
+		List<Employee> list = service.getAllList();
+		
+		return list;
+	} // list
+	
+	@GetMapping("/selectlist")
+	public List<Employee> selectList() {
+		
+		return service.getPositionsList(true, List.of(2, 3));
+	} // 팀장 + 부서장
+	
+
+	
+	@PostMapping("/register")
+	ResponseEntity<?> register(@ModelAttribute EmployeeDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
 		
 		return "register";
 	} // register
+	
 	
 	@GetMapping(path = "/{id}")
 	String read( // 세부 조회
@@ -69,14 +87,15 @@ public class EmployeeController {
 		return "read";
 	} // read
 	
-	@PutMapping(path = "/{id}")
-	String update( // 수정 처리
-			@PathVariable Long id
-			) { 
-		log.debug("update({}) invoked.",id);
+	
+	@PutMapping(path = "/{empno}")
+	ResponseEntity<?> update( // 수정 처리
+			@PathVariable String empno, @ModelAttribute EmployeeDTO dto ) { 
+		log.debug("update({}) invoked.",empno);
 		
 		return "update";
 	} // update
+	
 	
 	@DeleteMapping(path = "/{id}")
 	String delete( // 삭제 처리

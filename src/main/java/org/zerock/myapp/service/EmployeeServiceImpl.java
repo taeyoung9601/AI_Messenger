@@ -90,6 +90,17 @@ public class EmployeeServiceImpl implements EmployeeService {
 	} // create
 	
 	@Override
+	public List<Employee> getPositionsList(Boolean enabled, List<Integer> positions) {
+		
+		List<Employee> positionList = this.dao.findByEnabledAndPositionIn(enabled, positions);
+		
+		return positionList;
+	}
+	
+	
+	
+	// ================= 회원가입 로직 =======================
+	@Override
 	public Employee getById(String id) {	// 단일 조회
 		log.debug("EmployeeServiceImpl -- getById({}) invoked", id);
 		

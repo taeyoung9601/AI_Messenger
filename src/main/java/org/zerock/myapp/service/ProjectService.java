@@ -1,6 +1,7 @@
 package org.zerock.myapp.service;
 
 import java.text.ParseException;
+import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -14,6 +15,7 @@ public interface ProjectService {
 	public abstract Page<Project> getSearchListData(ProjectDTO dto, Pageable paging);	// 
 	
 	public abstract Page<Project> getUpComingList(Pageable paging);
+	public abstract List<Project> getStatusAllList();
 	
 	public abstract Project create(ProjectDTO dto) throws ServiceException, ParseException;    			// 생성 처리
 	public abstract Project getById(Long id);    														// 단일 조회

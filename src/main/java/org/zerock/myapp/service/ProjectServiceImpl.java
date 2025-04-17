@@ -2,7 +2,7 @@ package org.zerock.myapp.service;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -52,7 +52,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public Page<Project> getSearchListData(ProjectDTO dto, Pageable paging) {
-		log.debug("\t+ ProjectServiceImpl -- getSearchListData(()) invoked", dto);
+		log.debug("\t+ ProjectServiceImpl -- getSearchListData({}) invoked", dto);
 		
 		if(dto.getSearchWord() != null && dto.getSearchWord().length() == 0) dto.setSearchWord(null);
 		if(dto.getSearchText() != null && dto.getSearchText().length() == 0) dto.setSearchText(null);
@@ -87,7 +87,7 @@ public class ProjectServiceImpl implements ProjectService {
 
 	@Override
 	public Page<Project> getUpComingList(Pageable paging) {
-		log.debug("\t+ ProjectServiceImpl -- getUpComingList(()) invoked");
+		log.debug("\t+ ProjectServiceImpl -- getUpComingList() invoked");
 
 		Integer[] status = { 1, 2 };
 		Page<Project> pageList = this.dao.findByEnabledAndStatusIn(true, status, paging);
@@ -96,6 +96,18 @@ public class ProjectServiceImpl implements ProjectService {
 		});
 		return pageList;
 	} // getUpComingList
+
+	@Override
+	public List<Project> getStatusAllList() {
+		log.debug("\t+ ProjectServiceImpl -- getStatusAllList() invoked");
+
+		Integer[] status = { 1, 2 };
+		List<Project> pageList = this.dao.findByEnabledAndStatusInOrderByCrtDateDesc(true, status);
+		pageList.forEach(data -> {
+			data.setEndDday(DateTimeUtils.getDday(data.getEndDate()));
+		});
+		return pageList;
+	} // getStatusAllList
 
 	@Override
 	public Project create(ProjectDTO dto) throws ServiceException, ParseException { // 등록 처리

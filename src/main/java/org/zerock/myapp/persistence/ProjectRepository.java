@@ -1,5 +1,6 @@
 package org.zerock.myapp.persistence;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -45,6 +46,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
 	
 	//upComing list
 	public abstract Page<Project> findByEnabledAndStatusIn(Boolean enabled, Integer[] status, Pageable paging);
+	
+	//chatroom list
+	public abstract List<Project> findByEnabledAndStatusInOrderByCrtDateDesc(Boolean enabled, Integer[] status);
 	
 	
 

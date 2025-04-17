@@ -1,6 +1,7 @@
 package org.zerock.myapp.controller;
 
 import java.text.ParseException;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -61,7 +62,16 @@ public class ProjectController {
 		Page<Project> list = this.service.getUpComingList(paging);
 		
 		return list;
-	} // list
+	} // listUpComing
+	
+	@GetMapping(path = "/status")
+	List<Project> listStatus() { // 리스트
+		log.debug("listStatus() invoked.");
+		
+		List<Project> list = this.service.getStatusAllList();
+		
+		return list;
+	} // listStatus
 	
 	@PostMapping
 	Project register(ProjectDTO dto) throws ServiceException, ParseException { // 등록 처리

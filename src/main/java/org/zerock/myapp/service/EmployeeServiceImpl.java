@@ -4,9 +4,11 @@ import java.util.List;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.entity.Employee;
+import org.zerock.myapp.persistence.DepartmentRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -20,8 +22,11 @@ import lombok.extern.slf4j.Slf4j;
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
     @Autowired EmployeeRepository dao;
-	
-	
+    @Autowired DepartmentRepository departmentRepository;
+//    @Autowired BCryptPasswordEncoder bcrypt;
+
+    
+    
 	@PostConstruct
     void postConstruct(){
         log.debug("EmployeeServiceImpl -- postConstruct() invoked");

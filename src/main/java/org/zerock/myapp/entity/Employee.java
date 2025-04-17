@@ -93,7 +93,7 @@ public class Employee implements Serializable {
 //
 	@ManyToOne
 	@JoinColumn(name="DEPT_ID")
-	private Department Department; // 부서 ID
+	private Department department; // 부서 ID
 //
 //	@ToString.Exclude
 //	@OneToMany(mappedBy="Employee")

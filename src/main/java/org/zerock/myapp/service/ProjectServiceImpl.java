@@ -54,8 +54,8 @@ public class ProjectServiceImpl implements ProjectService {
 	public Page<Project> getSearchListData(ProjectDTO dto, Pageable paging) {
 		log.debug("\t+ ProjectServiceImpl -- getSearchListData(()) invoked", dto);
 		
-		if(dto.getSearchWord().length() == 0) dto.setSearchWord(null);
-		if(dto.getSearchText().length() == 0) dto.setSearchText(null);
+		if(dto.getSearchWord() != null && dto.getSearchWord().length() == 0) dto.setSearchWord(null);
+		if(dto.getSearchText() != null && dto.getSearchText().length() == 0) dto.setSearchText(null);
 
 		if (dto.getStatus() == null && dto.getSearchText() == null) {
 			// 검색 리스트: 활성화상태(true)

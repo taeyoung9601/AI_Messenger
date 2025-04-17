@@ -4,7 +4,6 @@ import java.util.List;
 import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.entity.Employee;
@@ -32,6 +31,33 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.debug("EmployeeServiceImpl -- postConstruct() invoked");
         log.debug("dao: {}", dao);
     }//postConstruct
+	
+	
+	@Override
+	public List<Employee> getSearchList(EmployeeDTO dto) {
+	    log.debug("EmployeeServiceImpl -- getSearchList({})", dto);
+
+	    String field = dto.getSearchWord();
+	    String keyword = dto.getSearchText();
+
+	    if (field == null || keyword == null || keyword.isBlank()) {
+	        return dao.findAll(); // 아무것도 없으면 전체 반환
+	    }
+
+	    // 간단한 switch 처리 (실제론 Specification으로 해도 좋음)
+	    switch (field) {
+	        case "name":
+	            return dao.findByNameContainingAndEnabledTrue(keyword);
+	        case "tel":
+	            return dao.findByTelContainingAndEnabledTrue(keyword);
+//	        case "email":
+//	            return dao.findByEmailContainingAndEnabledTrue(keyword);
+//	        case "empno":
+//	            return dao.findByEmpnoContainingAndEnabledTrue(keyword);
+	        default:
+	            return dao.findAll();
+	    }
+	}
 
 
 	@Override
@@ -43,15 +69,15 @@ public class EmployeeServiceImpl implements EmployeeService {
 		return list;
 	} // getAllList
 	
-	@Override
-	public List<Employee> getSearchList(EmployeeDTO dto) {	//검색 있는 전체 리스트
-		log.debug("EmployeeServiceImpl -- getSearchList(()) invoked", dto);
-
-		List<Employee> list = new Vector<>();
-		log.debug("리포지토리 미 생성");
-		
-		return list;
-	} // getSearchList
+//	@Override
+//	public List<Employee> getSearchList(EmployeeDTO dto) {	//검색 있는 전체 리스트
+//		log.debug("EmployeeServiceImpl -- getSearchList(()) invoked", dto);
+//
+//		List<Employee> list = new Vector<>();
+//		log.debug("리포지토리 미 생성");
+//		
+//		return list;
+//	} // getSearchList
 	
 	@Override
 	public Employee create(EmployeeDTO dto) {	//등록 처리

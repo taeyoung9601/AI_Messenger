@@ -2,7 +2,6 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;

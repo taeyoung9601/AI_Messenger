@@ -47,7 +47,8 @@ public class JwtProvider {
                 .withIssuedAt(now) // 발급 시각
                 .withExpiresAt(expiresAt) // 만료 시각
                 .withClaim("roles", roles) // 추가 클레임 설정 (예: 권한 정보)
-//               .withClaim("roles", List.of("ROLE_HireManager", "ROLE_User")) : 여러 개의 권한 설정시. 
+//               .withClaim("roles", List.of("ROLE_HireManager", "ROLE_User")) : 여러 개의 권한 설정시.
+                .withClaim("empno", employee.getEmpno())
                 .withClaim("name", employee.getName())
                 .sign(algorithm); // 알고리즘과 비밀키로 서명
         		

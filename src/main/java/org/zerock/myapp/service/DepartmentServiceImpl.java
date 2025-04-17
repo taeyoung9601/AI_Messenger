@@ -31,24 +31,35 @@ public class DepartmentServiceImpl implements DepartmentService {
         log.debug("dao: {}", dao);
     }//postConstruct
 
-
 	@Override
 	public List<Department> getAllList() {	//검색 없는 전체 리스트
 		log.debug("DepartmentServiceImpl -- getAllList() invoked");
 		
 		List<Department> list = dao.findAll();
 		
+		
 		return list;
 	} // getAllList
 	
 	@Override
-	public Department getById(String id) {	// 단일 조회
+	public DepartmentDTO getByIdAndEnabled(Long id, Boolean b) {	// 단일 조회
 		log.debug("DepartmentServiceImpl -- getById({}) invoked", id);
 		
-		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
-		Department data = new Department();//dao.findById(id).orElse(new Department());
-		
-		return data;
+		try {
+			Department department = this.dao.findByIdAndEnabled(id, true);
+			if(department == null) {
+				log.error("잘못된 부서입니다. {}",id);
+				return null;
+				};
+			log.info("department is : {}",department);
+			
+			// 재귀 변환 메서드 호출
+	        return convertToNestedDto(department);
+
+		} catch(Exception e) {
+			log.error("잘못된 부서입니다. {}",e);
+			return null;
+		} // try-catch
 	} // getById
 	
 	private DepartmentDTO convertToNestedDto(Department entity) {

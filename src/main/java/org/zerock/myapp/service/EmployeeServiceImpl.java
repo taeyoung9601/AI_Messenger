@@ -5,7 +5,6 @@ import java.time.ZoneId;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
-import java.util.Vector;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -50,15 +49,29 @@ public class EmployeeServiceImpl implements EmployeeService {
 	} // getAllList
 	
 	
-	@Override
-	public List<Employee> getSearchList(EmployeeDTO dto) {	//검색 있는 전체 리스트
-		log.debug("EmployeeServiceImpl -- getSearchList(()) invoked", dto);
+	   @Override
+	   public List<Employee> getSearchList(EmployeeDTO dto) {
+	       log.debug("EmployeeServiceImpl -- getSearchList({})", dto);
 
-		List<Employee> list = new Vector<>();
-		log.debug("리포지토리 미 생성");
-		
-		return list;
-	} // getSearchList
+	       String field = dto.getSearchWord();
+	       String keyword = dto.getSearchText();
+
+	       if (field == null || keyword == null || keyword.isBlank()) {
+	           return dao.findAll(); // 아무것도 없으면 전체 반환
+	       }
+
+	       // 간단한 switch 처리 (실제론 Specification으로 해도 좋음)
+	       switch (field) {
+	           case "name":
+	               return dao.findByNameContainingAndEnabledTrue(keyword);
+	           case "tel":
+	               return dao.findByTelContainingAndEnabledTrue(keyword);
+
+	           default:
+	               return dao.findAll();
+	       }
+	   }
+	
 	
 	@Override
 	public List<Employee> getPositionsList(Boolean enabled, List<Integer> positions) {
@@ -67,7 +80,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 		
 		return positionList;
 	}
-	
 	
 	
 	// ================= 회원가입 로직 =======================
@@ -107,14 +119,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	   // ================= 아이디 중복 확인 =======================
 		@Override
-	   public String checkIdDuplicate(String loginId) {
-	      boolean isDuplicate = dao.existsByLoginId(loginId);
+	   public Boolean checkIdDuplicate(String loginId) {
+	      Boolean isDuplicate = dao.existsByLoginId(loginId);
 	      
-	      if (isDuplicate) {
-	         return "이미 사용 중인 아이디입니다";
-	      } else  {
-	         return "사용 가능한 아이디 입니다.";
-	      }
+	     return isDuplicate;
 	      
 	   } // 아이디 중복체크 로직 
 	      

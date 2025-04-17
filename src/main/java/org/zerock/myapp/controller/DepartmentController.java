@@ -37,6 +37,15 @@ public class DepartmentController {
 	} // list
     
     
+    @GetMapping("/filter")
+    public List<Department> filteredList() {
+    	
+    	List<Department> list = service.findByEnabledAndIdNot(true, 1L);
+    	
+    	return list;
+    }
+    
+    
 	@GetMapping(path = "/{id}")
 	DepartmentDTO read(@PathVariable Long id) { // 세부 조회
 		log.debug("read({}) invoked.",id);

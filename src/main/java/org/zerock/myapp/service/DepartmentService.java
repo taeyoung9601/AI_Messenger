@@ -11,4 +11,6 @@ public interface DepartmentService {
 	
 	public abstract List<Department> getAllList();
 	
+	public abstract List<Department> findByEnabledAndIdNot(Boolean b, Long id);
+	
 }//end interface

@@ -1,5 +1,7 @@
 package org.zerock.myapp.controller;
 
+import java.text.ParseException;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -15,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.ProjectDTO;
 import org.zerock.myapp.entity.Project;
+import org.zerock.myapp.exception.ServiceException;
 import org.zerock.myapp.service.ProjectServiceImpl;
 
 import lombok.NoArgsConstructor;
@@ -36,13 +39,13 @@ public class ProjectController {
 	@GetMapping
 	Page<Project> list(
 			ProjectDTO dto,
-			@RequestParam(name = "currPage", required = false, defaultValue = "0") Integer currPage, // 페이지 시작 값은 0부터
+			@RequestParam(name = "currPage", required = false, defaultValue = "1") Integer currPage, // 페이지 시작 값은 0부터
 			@RequestParam(name = "pageSize", required = false, defaultValue = "8") Integer pageSize // 기본 페이지 사이즈 8
 		) { // 리스트
 		log.debug("list() invoked.");
 		log.debug("dto: {}, currPage: {}, pageSize: {}", dto, currPage, pageSize);
 		
-		Pageable paging = PageRequest.of(currPage, pageSize, Sort.by("crtDate").descending());	// Pageable 설정
+		Pageable paging = PageRequest.of(currPage-1, pageSize, Sort.by("crtDate").descending());	// Pageable 설정
 		Page<Project> list = this.service.getSearchList(dto, paging);
 		
 		list.forEach(p -> log.info(p.toString()));
@@ -61,7 +64,7 @@ public class ProjectController {
 	} // list
 	
 	@PostMapping
-	Project register(ProjectDTO dto) { // 등록 처리
+	Project register(ProjectDTO dto) throws ServiceException, ParseException { // 등록 처리
 		log.debug("register() invoked.");
 		log.debug("dto: {}", dto);
 		
@@ -80,7 +83,7 @@ public class ProjectController {
 	} // read
 	
 	@PutMapping(path = "/{id}")
-	Project update(@PathVariable Long id, ProjectDTO dto) {  // 수정 처리
+	Project update(@PathVariable Long id, ProjectDTO dto) throws ServiceException, ParseException {  // 수정 처리
 		log.debug("update({}) invoked.",id);
 
 		Project data = this.service.update(id, dto);	
@@ -89,7 +92,7 @@ public class ProjectController {
 	} // update
 	
 	@DeleteMapping(path = "/{id}")
-	String delete(@PathVariable Long id) { // 삭제 처리
+	String delete(@PathVariable Long id) throws ServiceException { // 삭제 처리
 		log.debug("delete({}) invoked.",id);
 		
 		String result = this.service.deleteById(id);

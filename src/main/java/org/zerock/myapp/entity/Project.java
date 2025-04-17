@@ -4,12 +4,14 @@ import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Basic;
@@ -56,11 +58,13 @@ public class Project implements Serializable {
 	@Column(nullable=false, length = 1)
 	private Integer status; // 프로젝트상태 (진행예정=1, 진행중=2, 완료=3)
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@Column(nullable=false)
-	private LocalDate startDate; // 시작일
-	
+	private Date startDate; // 시작일
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@Column(nullable=false)
-	private LocalDate endDate; // 종료일
+	private Date endDate; // 종료일
 
 	@Convert(converter = BooleanToIntegerConverter.class)
 	@Column(nullable=false, length = 1)
@@ -69,10 +73,10 @@ public class Project implements Serializable {
 	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Basic(optional = false, fetch = FetchType.LAZY)
-    private LocalDateTime crtDate; // 등록일
+    private Date crtDate; // 등록일
 
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
-	private LocalDateTime udtDate; // 수정일
+	private Date udtDate; // 수정일
 	
 	
 	@Transient	// DB 컬럼으로 매핑되지 않음

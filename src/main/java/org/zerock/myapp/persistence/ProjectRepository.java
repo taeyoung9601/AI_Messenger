@@ -1,6 +1,5 @@
 package org.zerock.myapp.persistence;
 
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -36,7 +35,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
 	
 	//검색 리스트: 활성화상태(true) + status + detail 
 	public abstract Page<Project> findByEnabledAndStatusAndDetailContaining(Boolean enabled, Integer status, String detail, Pageable paging);
-
+	
 	//검색 리스트: 활성화상태(true) + 프로젝트명 
 	public abstract Page<Project> findByEnabledAndNameContaining(Boolean enabled, String name, Pageable paging);
 

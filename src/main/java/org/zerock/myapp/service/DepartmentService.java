@@ -1,6 +1,6 @@
 package org.zerock.myapp.service;
 
-import org.zerock.myapp.domain.DepartmentDTO;
+import java.util.List;
 
 import org.zerock.myapp.domain.DepartmentDTO;
 import org.zerock.myapp.entity.Department;

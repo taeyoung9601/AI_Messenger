@@ -37,33 +37,6 @@ public class EmployeeServiceImpl implements EmployeeService {
         log.debug("dao: {}", dao);
     }//postConstruct
 	
-	
-	@Override
-	public List<Employee> getSearchList(EmployeeDTO dto) {
-	    log.debug("EmployeeServiceImpl -- getSearchList({})", dto);
-
-	    String field = dto.getSearchWord();
-	    String keyword = dto.getSearchText();
-
-	    if (field == null || keyword == null || keyword.isBlank()) {
-	        return dao.findAll(); // 아무것도 없으면 전체 반환
-	    }
-
-	    // 간단한 switch 처리 (실제론 Specification으로 해도 좋음)
-	    switch (field) {
-	        case "name":
-	            return dao.findByNameContainingAndEnabledTrue(keyword);
-	        case "tel":
-	            return dao.findByTelContainingAndEnabledTrue(keyword);
-//	        case "email":
-//	            return dao.findByEmailContainingAndEnabledTrue(keyword);
-//	        case "empno":
-//	            return dao.findByEmpnoContainingAndEnabledTrue(keyword);
-	        default:
-	            return dao.findAll();
-	    }
-	}
-
 
 	@Override
 	public List<Employee> getAllList() {	//검색 없는 전체 리스트

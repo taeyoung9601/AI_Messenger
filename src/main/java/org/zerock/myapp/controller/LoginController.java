@@ -17,13 +17,15 @@ import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.service.JwtProvider;
 import org.zerock.myapp.service.LoginServiceImpl;
 
+import jakarta.servlet.http.HttpServletRequest;
+
 @RequestMapping("/auth")
 @RestController
 public class LoginController {
 
 	
 	@Autowired LoginServiceImpl service;
-	
+	@Autowired JwtProvider jwt;
 	
 	@PostMapping("/login")
 	ResponseEntity<?> login( // ResponseEntity<?> :Spring 에서 http 응답 전체를 커스터마이징 하고 싶을때 사용하는 클래
@@ -55,6 +57,6 @@ public class LoginController {
 		return ResponseEntity.ok("반가워요. " + loginId + "님 !");
 	}
 	
-	
+
 	
 }

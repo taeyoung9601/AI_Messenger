@@ -31,6 +31,24 @@ public class DepartmentServiceImpl implements DepartmentService {
         log.debug("dao: {}", dao);
     }//postConstruct
 
+	@Override
+	public List<Department> getAllList() {	//검색 없는 전체 리스트
+		log.debug("DepartmentServiceImpl -- getAllList() invoked");
+		
+		List<Department> list = dao.findAll();
+		
+		
+		return list;
+	} // getAllList
+	
+	@Override
+	public List<Department> findByEnabledAndIdNot(Boolean b, Long id) {
+		
+		List<Department> list = this.dao.findByEnabledAndIdNot(b, id);
+		
+		return list;
+		
+	} // findByEnabledAndIdNot
 	
 	@Override
 	public DepartmentDTO getByIdAndEnabled(Long id, Boolean b) {	// 단일 조회

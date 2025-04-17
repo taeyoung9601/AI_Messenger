@@ -102,10 +102,10 @@ public class ProjectController {
 	} // update
 	
 	@DeleteMapping(path = "/{id}")
-	String delete(@PathVariable Long id) throws ServiceException { // 삭제 처리
+	Project delete(@PathVariable Long id) throws ServiceException { // 삭제 처리
 		log.debug("delete({}) invoked.",id);
 		
-		String result = this.service.deleteById(id);
+		Project result = this.service.deleteById(id);
 		
 		return result;
 	} // delete

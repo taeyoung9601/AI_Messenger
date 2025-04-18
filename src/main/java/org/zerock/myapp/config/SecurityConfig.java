@@ -27,8 +27,8 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, JwtProvider jwtProvider) throws Exception {
         return http
                 .csrf().disable()
-                .cors()
-                .and()
+//                .cors()
+//                .and()
                 
                 
                 .authorizeHttpRequests(auth -> auth

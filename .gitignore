@@ -187,7 +187,8 @@ replay_pid*
 .LSOverride
 
 # Icon must end with two \r
-Icon
+Icon
+
 
 # Thumbnails
 ._*
@@ -321,3 +322,4 @@ bin/
 
 # End of https://www.toptal.com/developers/gitignore/api/windows,macos,eclipse,intellij+all,gradle,maven,java,visualstudiocode
 
+src/main/resources/application.properties

@@ -19,7 +19,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, String>, Jpa
 	// 회원가입시 똑같은 아이디가 db에 저장되어 있는지 검증.
 	public abstract Boolean existsByLoginId(String loginId);
 
-	// 사번 생성기 ( 테스트 중 )
+	
 
 	public abstract long countByEmpnoStartingWith(String empnoPrefix);
 
@@ -27,7 +27,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, String>, Jpa
 
 	List<Employee> findByEnabledAndDepartment(Boolean b, Department entity);
 
-	List<Employee> findByEnabledAndPositionIn(Boolean enabled, List<Integer> positions);
+	List<Employee> findByEnabledAndPositionInOrderByPositionAscCrtDateDesc(Boolean enabled, Integer[] positions);
 
 	List<Employee> findByNameContainingAndEnabledTrue(String name);
 

@@ -25,6 +25,8 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
 	 * 		- 프로젝트명
 	 * */
 	
+	public abstract List<Project> findByEnabled(Boolean enabled);
+	
 	//검색 리스트: 활성화상태(true) 
 	public abstract Page<Project> findByEnabled(Boolean enabled, Pageable paging);
 	

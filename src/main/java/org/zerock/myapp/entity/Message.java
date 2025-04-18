@@ -19,7 +19,6 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.SequenceGenerator;
 import jakarta.persistence.Table;
 import lombok.Data;
@@ -53,11 +52,11 @@ public class Message implements Serializable {
 	@Column(nullable=false)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 	
-	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Column(nullable=false)
 	private Date crtDate; // 생성일
-
+	
+	
 	@CurrentTimestamp(event = EventType.UPDATE, source = SourceType.DB)
 	@Column
 	private Date udtDate; // 수정일

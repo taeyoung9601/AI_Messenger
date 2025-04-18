@@ -40,7 +40,7 @@ dependencies {
 	// web-tomcat
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	providedRuntime 'org.springframework.boot:spring-boot-starter-tomcat'
-
+	
 	// web-socket
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
 	implementation 'org.springframework:spring-messaging'
@@ -72,15 +72,18 @@ dependencies {
 	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
 	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
 	
-	// Spring Security
-	implementation 'org.springframework.boot:spring-boot-starter-security'
-	testImplementation 'org.springframework.security:spring-security-test'
-	
-	// Java Web Token
-	implementation("com.auth0:java-jwt:4.4.0")
-	
-	
-}
+    // Spring Security
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    testImplementation 'org.springframework.security:spring-security-test'
+   
+    // Java Web Token
+    implementation("com.auth0:java-jwt:4.4.0")
+    
+    // Simple OpenAI
+	implementation('io.github.sashirestela:simple-openai:3.19.4') {
+    	exclude group: 'org.slf4j', module: 'slf4j-simple'
+	}
+}	
 
 tasks.named('test') {
 	useJUnitPlatform()

@@ -47,7 +47,6 @@ public class Chat implements Serializable {
 	@Column(nullable=false, length= 500)
 	private Boolean enabled = true; // 활성화상태(1=유효,0=삭제)
 
-	
 	@CurrentTimestamp(event = EventType.INSERT, source = SourceType.DB)
 	@Basic(optional = false, fetch = FetchType.LAZY)
 	private Date crtDate; // 생성일
@@ -68,14 +67,9 @@ public class Chat implements Serializable {
 	    dto.setName(this.name);
 	    dto.setEnabled(this.enabled);
 
-	    // 연관된 Project가 있다면 projectId만 넣고, 전체 객체도 같이 보냄
 	    if (this.Project != null) {
 	        dto.setProject(this.Project);
 	    }// if
-
-	    // ChatEmployees, Messages, empnos는 상황 따라 추가 가능
-	    // 예: ChatEmployeeService에서 따로 채워주거나, 여기서 일부만 초기화해도 됨
-	    // 지금은 생략 (DB 로딩 없이 이 엔티티만으로 못 가져오니까)
 
 	    return dto;
 	}// toDTO

@@ -128,7 +128,7 @@ public class MessageServiceImpl implements MessageService {
 	public String summarizeMessage(Long id, String start, String end) {
 		try {
 			// 1. 날짜 문자열을 Date로 변환
-			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+			SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd HH:mm");
 	        Date startDate = formatter.parse(start);
 	        Date endDate = formatter.parse(end);
 			
@@ -152,7 +152,7 @@ public class MessageServiceImpl implements MessageService {
 	  		var n = 1;
 	  		var maxTokens = 500;
 	     
-	  		var prompt = "해당 대화에 대한 요점을 100 단어 이하로 요약해줘!";
+	  		var prompt = "해당 대화에 대한 요점을 100 단어 이하로 요약해줘!" + chatContent;
 		     
 		    var messages = List.<ChatMessage>of(   
 		             UserMessage.of(

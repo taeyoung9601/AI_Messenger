@@ -74,13 +74,24 @@ public class EmployeeServiceImpl implements EmployeeService {
 	
 	
 	   @Override
-	   public List<Employee> getPositionsList() {
-	      
-	      Integer[] position =  { 2, 3};
-	      List<Employee> positionList = this.dao.findByEnabledAndPositionInOrderByPositionAscCrtDateDesc(true, position);
-	      
-	      return positionList;
-	   }
+	    public void findByEnabledAndPositionInOrderByDepartment() {
+
+	        Boolean enabled = true;
+	        Integer[] positions = new Integer[]{2, 3};
+
+	        List<Object[]> results = dao.findByEnabledAndPositionInOrderByDepartment(enabled, positions);
+
+	        for (Object[] row : results) {
+	            String empno = (String) row[0];
+	            String name = (String) row[1];
+	            String departmentName = (String) row[2];
+	            String positionName = (String) row[3];
+	            String path = (String) row[4];
+
+	            System.out.printf("사번: %s, 이름: %s, 부서: %s, 직책: %s, 경로: %s\n",
+	                    empno, name, departmentName, positionName, path);
+	        }
+	    }
 	
 	
 	// ================= 회원가입 로직 =======================

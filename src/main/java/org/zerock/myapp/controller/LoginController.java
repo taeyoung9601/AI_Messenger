@@ -1,5 +1,6 @@
 package org.zerock.myapp.controller;
 
+import java.util.Map;
 import java.util.Optional;
 
 import org.apache.tomcat.util.net.openssl.ciphers.Authentication;
@@ -16,8 +17,6 @@ import org.zerock.myapp.domain.TokenResponseDto;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.service.JwtProvider;
 import org.zerock.myapp.service.LoginServiceImpl;
-
-import jakarta.servlet.http.HttpServletRequest;
 
 @RequestMapping("/auth")
 @RestController
@@ -36,7 +35,8 @@ public class LoginController {
 	    Optional<Employee> employeecheck = service.login(dto.getLoginId(), dto.getPassword());
 
 	    if (employeecheck.isEmpty()) {
-	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("로그인 실패. 인증된 사용자가 아닙니다.");
+	        return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+	        		.body(Map.of("error", "로그인 실패. 인증된 사용자가 아닙니다."));
 	    }
 
 	    Employee employee = employeecheck.get();
@@ -45,8 +45,10 @@ public class LoginController {
 
 	    TokenResponseDto response = new TokenResponseDto(token, expiresAt);
 	    return ResponseEntity.ok(response);  // 토큰 클라이언트에 반환
+	    
 	} catch (IllegalArgumentException e) {
-		return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(e.getMessage());
+		return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+				.body(Map.of("error", e.getMessage()));
 	}
 	
 	} // end login

@@ -14,7 +14,6 @@ import org.zerock.myapp.entity.Department;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.persistence.DepartmentRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
-import org.zerock.myapp.util.DateTimeUtils;
 
 import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
@@ -74,14 +73,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 	   }
 	
 	
-	@Override
-	public List<Employee> getPositionsList() {
-		
-		Integer[] position =  { 2, 3};
-		List<Employee> positionList = this.dao.findByEnabledAndPositionInOrderByPositionAscCrtDateDesc(true, position);
-		
-		return positionList;
-	}
+	   @Override
+	   public List<Employee> getPositionsList() {
+	      
+	      Integer[] position =  { 2, 3};
+	      List<Employee> positionList = this.dao.findByEnabledAndPositionInOrderByPositionAscCrtDateDesc(true, position);
+	      
+	      return positionList;
+	   }
 	
 	
 	// ================= 회원가입 로직 =======================

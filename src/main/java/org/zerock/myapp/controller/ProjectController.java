@@ -78,9 +78,7 @@ public class ProjectController {
 	Project register(ProjectDTO dto) throws ServiceException, ParseException { // 등록 처리
 		log.debug("register() invoked.");
 		log.debug("dto: {}", dto);
-		
-		dto.setCreatorEmpno("E2110002");
-		
+				
 		Project data = this.service.create(dto);
 //		Project data = null;
 		

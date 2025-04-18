@@ -29,6 +29,8 @@ public class ProjectServiceImpl implements ProjectService {
 	ProjectRepository dao;
 	@Autowired
 	EmployeeRepository empDao;
+	@Autowired 
+	JwtProvider jwt;
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -114,8 +116,11 @@ public class ProjectServiceImpl implements ProjectService {
 		log.debug("\t+ ProjectServiceImpl -- create({}) invoked", dto);
 
 		try {
+			dto.setCreatorEmpno("E2110002");
+						
+			
 			Project project = new Project();
-
+			
 			project.setName(dto.getName());
 			project.setStartDate(this.sdf.parse(dto.getStartDate()));
 			project.setEndDate(this.sdf.parse(dto.getEndDate()));

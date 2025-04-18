@@ -80,7 +80,9 @@ dependencies {
     implementation("com.auth0:java-jwt:4.4.0")
     
     // Simple OpenAI
-	implementation 'io.github.sashirestela:simple-openai:3.19.4'
+	implementation('io.github.sashirestela:simple-openai:3.19.4') {
+    	exclude group: 'org.slf4j', module: 'slf4j-simple'
+	}
 }	
 
 tasks.named('test') {

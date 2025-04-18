@@ -1,6 +1,5 @@
 package org.zerock.myapp.service;
 
-import java.util.Date;
 import java.util.List;
 
 import org.zerock.myapp.domain.MessageDTO;
@@ -18,5 +17,5 @@ public interface MessageService {
 	public abstract Boolean deleteById(String id);// 삭제 처리
 	
 	public abstract Message saveMessage(MessageDTO dto);
-	public abstract String summarizeMessage(Long id, Date start, Date end);
+	public abstract String summarizeMessage(Long id, String start, String end);
 }//end interface

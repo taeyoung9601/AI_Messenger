@@ -57,7 +57,7 @@ public class EmployeeController {
 	@GetMapping("/selectlist")
 	public List<Employee> selectList() {
 
-		return service.getPositionsList(true, List.of(2, 3));
+		return service.getPositionsList();
 	} // 팀장 + 부서장
 
 	@PostMapping("/register")

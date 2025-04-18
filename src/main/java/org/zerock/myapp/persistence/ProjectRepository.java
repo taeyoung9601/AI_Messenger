@@ -36,7 +36,7 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
 	
 	//검색 리스트: 활성화상태(true) + status + detail 
 	public abstract Page<Project> findByEnabledAndStatusAndDetailContaining(Boolean enabled, Integer status, String detail, Pageable paging);
-
+	
 	//검색 리스트: 활성화상태(true) + 프로젝트명 
 	public abstract Page<Project> findByEnabledAndNameContaining(Boolean enabled, String name, Pageable paging);
 
@@ -46,6 +46,9 @@ public interface ProjectRepository extends JpaRepository<Project, Long>, JpaSpec
 	
 	//upComing list
 	public abstract Page<Project> findByEnabledAndStatusIn(Boolean enabled, Integer[] status, Pageable paging);
+	
+	//chatroom list
+	public abstract List<Project> findByEnabledAndStatusInOrderByCrtDateDesc(Boolean enabled, Integer[] status);
 	
 	
 

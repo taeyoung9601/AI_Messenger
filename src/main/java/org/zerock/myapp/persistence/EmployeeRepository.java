@@ -9,7 +9,6 @@ import org.springframework.stereotype.Repository;
 import org.zerock.myapp.entity.Department;
 import org.zerock.myapp.entity.Employee;
 
-
 /**
  * 회원 Repository
  */

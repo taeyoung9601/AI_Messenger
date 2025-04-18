@@ -19,4 +19,5 @@ public interface DepartmentRepository extends JpaRepository<Department, Long>, J
 
 	List<Department> findBypDeptIdAndEnabled(Long pDeptId, Boolean b);
 
+	List<Department> findByEnabledAndIdNot(Boolean b, Long id);
 } // end interface

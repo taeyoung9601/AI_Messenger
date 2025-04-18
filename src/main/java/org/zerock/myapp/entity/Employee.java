@@ -2,30 +2,21 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.math.BigDecimal;
 import java.util.Date;
-import java.util.List;
-import java.util.Vector;
 
 import org.hibernate.annotations.CurrentTimestamp;
 import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
-import lombok.ToString;
 
 
 @Data
@@ -40,7 +31,6 @@ public class Employee implements Serializable {
 	//1. pk
 	// 생성기 만들어야 함.
 	@Id 
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "EMPNO", unique=true, nullable=false, length=255)
 	private String empno; // 사번
 	

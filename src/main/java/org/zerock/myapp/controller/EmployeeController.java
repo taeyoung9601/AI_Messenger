@@ -29,9 +29,26 @@ public class EmployeeController {
 		
 		return "list";
 	} // list
-	
-	@PostMapping
-	String register() { // 등록 처리
+
+	@GetMapping("/search")
+	public ResponseEntity<List<Employee>> searchEmployees(@RequestParam String searchWord,
+			@RequestParam String searchText) {
+		EmployeeDTO dto = new EmployeeDTO();
+		dto.setSearchWord(searchWord);
+		dto.setSearchText(searchText);
+
+		List<Employee> result = service.getSearchList(dto);
+		return ResponseEntity.ok(result);
+	}
+
+	@GetMapping("/selectlist")
+	public List<Employee> selectList() {
+
+		return service.getPositionsList();
+	} // 팀장 + 부서장
+
+	@PostMapping("/register")
+	ResponseEntity<?> register(@ModelAttribute EmployeeDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
 		
 		return "register";

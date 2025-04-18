@@ -17,8 +17,17 @@ import org.zerock.myapp.entity.Employee;
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, String>, JpaSpecificationExecutor<Employee> {
 
+	// 회원가입시 똑같은 아이디가 db에 저장되어 있는지 검증.
+	public abstract Boolean existsByLoginId(String loginId);
+
+	
+
+	public abstract long countByEmpnoStartingWith(String empnoPrefix);
+
 	Optional<Employee> findByEnabledAndEmpno(Boolean enabled, String empno);
 
 	List<Employee> findByEnabledAndDepartment(Boolean b, Department entity);
-	
+	List<Employee> findByEnabledAndPositionInOrderByPositionAscCrtDateDesc(Boolean enabled, Integer[] positions);
+	List<Employee> findByNameContainingAndEnabledTrue(String name);
+	List<Employee> findByTelContainingAndEnabledTrue(String tel);
 } // end interface

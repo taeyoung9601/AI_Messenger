@@ -10,6 +10,7 @@ import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.persistence.DepartmentRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
+import org.zerock.myapp.util.DateTimeUtils;
 
 import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
@@ -54,11 +55,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 	} // getSearchList
 	
 	@Override
-	public Employee create(EmployeeDTO dto) {	//등록 처리
-		log.debug("EmployeeServiceImpl -- create({}) invoked", dto);
+	public List<Employee> getPositionsList() {
 		
-		Employee data = new Employee();//dao.save(dto);
-		log.debug("create data: {}", data);
+		Integer[] position =  { 2, 3};
+		List<Employee> positionList = this.dao.findByEnabledAndPositionInOrderByPositionAscCrtDateDesc(true, position);
 		
 		return data;
 	} // create

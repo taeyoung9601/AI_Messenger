@@ -28,6 +28,10 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public Optional<Employee> login(String loginId, String password) {
+		
+		System.out.println("받은 아이디: " + loginId);
+		System.out.println("받은 비밀번호: " + password);
+		
 		Optional<Employee> loginOptional = loginRepo.findByLoginId(loginId);
 		
 		if (loginOptional.isEmpty()) {

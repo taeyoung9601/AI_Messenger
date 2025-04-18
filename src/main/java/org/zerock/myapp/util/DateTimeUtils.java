@@ -110,9 +110,12 @@ public class DateTimeUtils {
 		return Date.from(localDateTime.atZone(ZoneId.systemDefault()).toInstant());		// OK
 	}
 	
-	public static Long getDday(LocalDate targetDate) {
-        LocalDate today = LocalDate.now();
-        return ChronoUnit.DAYS.between(targetDate, today);
+	public static Long getDday(Date targetDate) {
+		Date today = new Date();
+		Long diffSec = (today.getTime() - targetDate.getTime()) / 1000; // 초 차이
+		Long diffDays = diffSec / (24 * 60 * 60); // 일수 차인
+		
+        return diffDays;
 	}
 	
 	

@@ -2,7 +2,6 @@ package org.zerock.myapp.entity;
 
 import java.io.Serial;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.Date;
 
 import org.hibernate.annotations.CurrentTimestamp;
@@ -10,6 +9,7 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Basic;
@@ -56,11 +56,13 @@ public class Project implements Serializable {
 	@Column(nullable=false, length = 1)
 	private Integer status; // 프로젝트상태 (진행예정=1, 진행중=2, 완료=3)
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@Column(nullable=false)
-	private LocalDate startDate; // 시작일
-	
+	private Date startDate; // 시작일
+
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd", timezone = "Asia/Seoul")
 	@Column(nullable=false)
-	private LocalDate endDate; // 종료일
+	private Date endDate; // 종료일
 
 	@Convert(converter = BooleanToIntegerConverter.class)
 	@Column(nullable=false, length = 1)

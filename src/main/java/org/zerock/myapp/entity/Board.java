@@ -78,6 +78,6 @@ public class Board implements Serializable {
 	// join
 	@ManyToOne
 	@JoinColumn(name="EMPNO")
-	private Employee Employee; // 작성자
+	private Employee employee; // 작성자
 
 } // end class

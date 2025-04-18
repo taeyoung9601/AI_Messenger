@@ -1,12 +1,21 @@
 package org.zerock.myapp.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.myapp.domain.BoardDTO;
+import org.zerock.myapp.entity.Board;
+import org.zerock.myapp.service.BoardService;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,40 +28,50 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 
-@RequestMapping("/board")
+@RequestMapping("/board/Feedback")
 @RestController
-public class BoardController {
+public class FeedBackBoardController {
+	
+	@Autowired  
+	@Qualifier("FeedbackBoardService")
+	private BoardService service;
 	
 	@GetMapping
-	String list() { // 리스트
+	List<Board> list() { // 리스트
 		log.debug("list() invoked.");
 		
-		return "list";
+		List<Board> list = service.getAllList(); 
+		
+		return list;
 	} // list
 	
-	@PostMapping
-	String register() { // 등록 처리
+	@PostMapping("/register")
+	public Board register(BoardDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
 		
-		return "register";
+		return service.create(dto);
 	} // register
 	
 	@GetMapping(path = "/{id}")
-	String read( // 세부 조회
+	Board read( // 세부 조회
 			@PathVariable Long id
 			) {
 		log.debug("read({}) invoked.",id);
 		
-		return "read";
+		Board post = service.getById(id);
+		
+		return post;
 	} // read
 	
 	@PutMapping(path = "/{id}")
-	String update( // 수정 처리
-			@PathVariable Long id
+	ResponseEntity<?> update( // 수정 처리
+			@PathVariable Long id, @ModelAttribute BoardDTO dto
 			) { 
 		log.debug("update({}) invoked.",id);
 		
-		return "update";
+		this.service.update(id, dto);
+		
+		return ResponseEntity.ok("게시글 수정 완료");
 	} // update
 	
 	@DeleteMapping(path = "/{id}")

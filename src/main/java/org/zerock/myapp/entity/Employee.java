@@ -12,8 +12,6 @@ import org.zerock.myapp.util.BooleanToIntegerConverter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
@@ -33,7 +31,6 @@ public class Employee implements Serializable {
 	//1. pk
 	// 생성기 만들어야 함.
 	@Id 
-	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "EMPNO", unique=true, nullable=false, length=255)
 	private String empno; // 사번
 	

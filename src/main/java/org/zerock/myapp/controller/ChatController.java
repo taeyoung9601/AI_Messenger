@@ -53,7 +53,7 @@ public class ChatController {
 	} // list
 	
 	@PostMapping
-	Boolean register(@ModelAttribute ChatDTO dto, @RequestParam String empno) { // 등록 처리
+	Chat register(@ModelAttribute ChatDTO dto, @RequestParam String empno) { // 등록 처리
 		log.debug("register() invoked.");
 		
 		return chatService.createRoom(dto, empno);
@@ -69,7 +69,7 @@ public class ChatController {
 	} // read
 	
 	@PutMapping(path = "/{id}")
-	Boolean update( // 수정 처리
+	Boolean update( 			// 수정 처리
 			@ModelAttribute ChatDTO dto,
 			@PathVariable Long id
 			) { 
@@ -79,7 +79,7 @@ public class ChatController {
 	} // update
 	
 	@DeleteMapping(path = "/{id}")
-	Boolean delete( // 삭제 처리
+	Chat delete( // 삭제 처리
 			@PathVariable Long id,
 			@RequestParam String empno
 			) {
@@ -87,16 +87,6 @@ public class ChatController {
 		
 		return chatService.deleteById(id,empno);
 	} // delete
-	
-	
-	@GetMapping("/project")
-	List<Project> projectList() { // 리스트
-		log.debug("projectList() invoked.");
-		
-		List<Project> result = this.projectRepo.findByEnabled(true);
-		
-		return result;
-	} // list
 	
 	
 } // end class

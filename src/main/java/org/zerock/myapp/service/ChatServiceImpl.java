@@ -14,6 +14,7 @@ import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.ChatEmployeePK;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.entity.Project;
+import org.zerock.myapp.exception.ServiceException;
 import org.zerock.myapp.handler.WebSocketChatHandler;
 import org.zerock.myapp.persistence.ChatEmployeeRepository;
 import org.zerock.myapp.persistence.ChatRepository;
@@ -86,7 +87,7 @@ public class ChatServiceImpl implements ChatService {
 	} // getSearchList
 	
 	@Override
-	public Boolean createRoom(ChatDTO dto, String empno) {
+	public Chat createRoom(ChatDTO dto, String empno) {
 	    log.debug("ChatServiceImpl -- createRoom({}) invoked", dto);
 	    
 	    try {
@@ -117,10 +118,10 @@ public class ChatServiceImpl implements ChatService {
 	        chatEmployee.setEmployee(employee);
 	        chatEmployeeRepository.save(chatEmployee);
 
-		    return true;
+		    return chat;
 	    } catch (Exception e) {
 	    	log.error("Create failed: {}", e.getMessage(), e);
-	    	return false;
+	    	throw new RuntimeException("채팅방 생성 중 오류 발생");
 	    }
 	   
 	}// createRoom // 방 생성시 본인은 채팅방에 입장
@@ -186,7 +187,7 @@ public class ChatServiceImpl implements ChatService {
 	} // update
 
 	@Override
-	public Boolean deleteById(Long id, String empno) { // 삭제 처리
+	public Chat deleteById(Long id, String empno){ // 삭제 처리
 		log.debug("ChatServiceImpl -- deleteById({}) invoked", id);
 		
 		try {
@@ -196,8 +197,8 @@ public class ChatServiceImpl implements ChatService {
 			this.chatEmployeeRepository.save(chatEmployee);
 			
 			// 사람이 아무도 없을 경우 채팅방 삭제
+			Chat chat = this.chatRepository.findById(id).get();
 			if(this.chatEmployeeRepository.findByEnabledAndIdChatId(true,id).isEmpty()) {
-				Chat chat = this.chatRepository.findById(id).get();
 				chat.setEnabled(false);
 				this.chatRepository.save(chat);
 			} // if
@@ -219,10 +220,10 @@ public class ChatServiceImpl implements ChatService {
 			    }
 			}
 			
-			return true;
+			return chat;
 		} catch(Exception e) {
 			log.error("Delete failed: {}", e.getMessage(), e);
-			return false;
+			throw new RuntimeException("채팅방 삭제 중 오류 발생");
 		}
 	} // deleteById  // 로그인한 본인이 퇴장 처리 (본인의 사번과 채팅방 id를 넘겨줘야함)
 	

@@ -5,8 +5,9 @@ import lombok.Data;
 @Data
 public class JwtPrincipal {
 	private final String empno;
-    private final String username;
+    private final String name;
     private final String role;
+    private final Integer position;
 	
 }
 

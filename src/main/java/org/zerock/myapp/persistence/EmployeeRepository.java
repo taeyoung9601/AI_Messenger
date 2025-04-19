@@ -8,48 +8,47 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
+import org.zerock.myapp.domain.EmployeeHierarchyDTO;
 import org.zerock.myapp.entity.Department;
 import org.zerock.myapp.entity.Employee;
 
 /**
- * 회원 Repository
- */
+
+- 회원 Repository
+*/
 
 @Repository
 public interface EmployeeRepository extends JpaRepository<Employee, String>, JpaSpecificationExecutor<Employee> {
 
-	// 회원가입시 똑같은 아이디가 db에 저장되어 있는지 검증.
-	public abstract Boolean existsByLoginId(String loginId);
 
-	
+		// 회원가입시 똑같은 아이디가 db에 저장되어 있는지 검증.
+		public abstract Boolean existsByLoginId(String loginId);
+		
+		public abstract long countByEmpnoStartingWith(String empnoPrefix);
+		
+		Optional<Employee> findByEnabledAndEmpno(Boolean enabled, String empno);
+		
+		List<Employee> findByEnabledAndDepartment(Boolean b, Department entity);
+		
+		List<Employee> findByNameContainingAndEnabledTrue(String name);
+		List<Employee> findByTelContainingAndEnabledTrue(String tel);
 
-	public abstract long countByEmpnoStartingWith(String empnoPrefix);
 
-	Optional<Employee> findByEnabledAndEmpno(Boolean enabled, String empno);
-
-	List<Employee> findByEnabledAndDepartment(Boolean b, Department entity);
-
-	List<Employee> findByNameContainingAndEnabledTrue(String name);
-
-	List<Employee> findByTelContainingAndEnabledTrue(String tel);
-	
-	    @Query(
+	@Query(
 	        value = """
-	            SELECT 
-	                e.empno, 
-	                e.name AS emp_name, 
-	                dd.name AS dept_name, 
-	                c.name AS position_name, 
-	                dd.path
+	            SELECT
+	                e.empno AS empno,
+	                dd.name AS department,
+	                c.name AS position,
+	                e.name AS name,
+	                dd.path AS path
 	            FROM t_employee e
 	            LEFT JOIN (
 	                WITH org_tree (id, name, p_dept_id, depth, org_name, path) AS (
 	                    SELECT id, name, p_dept_id, 1 AS depth, name AS org_name, TO_CHAR(id) AS path
 	                    FROM t_department
 	                    WHERE p_dept_id IS NULL
-
 	                    UNION ALL
-
 	                    SELECT d.id, d.name, d.p_dept_id, t.depth + 1,
 	                           LPAD(' ', (t.depth + 1) * 4) || d.name,
 	                           t.path || ' > ' || TO_CHAR(d.id)
@@ -64,7 +63,7 @@ public interface EmployeeRepository extends JpaRepository<Employee, String>, Jpa
 	        """,
 	        nativeQuery = true
 	    )
-	    List<Object[]> findByEnabledAndPositionInOrderByDepartment(@Param("enabled") Boolean enabled, @Param("positions") Integer[] positions);
+	    List<EmployeeHierarchyDTO> findHierarchy(@Param("enabled") Boolean enabled, @Param("positions") Integer[] positions);
 
 
 

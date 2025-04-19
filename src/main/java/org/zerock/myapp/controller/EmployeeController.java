@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.EmployeeDTO;
+import org.zerock.myapp.domain.EmployeeHierarchyDTO;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.service.EmployeeService;
 
@@ -55,11 +56,9 @@ public class EmployeeController {
 	}
 
 	@GetMapping("/selectlist")
-	public ResponseEntity<String> getManagerAndTeamLeaderList() {
-		
-	        service.findByEnabledAndPositionInOrderByDepartment();
-	        
-	        return ResponseEntity.ok("조직도 순서에 맞춰 팀장/부서장 목록 출력 완료");
+	public ResponseEntity<List<EmployeeHierarchyDTO>> getGroupLeaders() {
+	    List<EmployeeHierarchyDTO> result = service.findByEnabledAndPositionInOrderByDepartment();
+	    return ResponseEntity.ok(result);
 	}
 	
 

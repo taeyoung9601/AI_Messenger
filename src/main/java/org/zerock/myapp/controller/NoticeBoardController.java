@@ -48,7 +48,7 @@ public class NoticeBoardController {
 		) { // 리스트
 		log.debug("list({}) invoked.", dto);
 		
-		dto.setType(1); //공지
+		dto.setType(1); // 공지
 		
 		Pageable paging = PageRequest.of(currPage-1, pageSize, Sort.by("crtDate").descending());	// Pageable 설정
 		

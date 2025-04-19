@@ -91,8 +91,13 @@ public class NoticeBoardServiceImpl implements BoardService {
 		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
 		Optional<Board> optional = dao.findById(id);
 		if (optional.isPresent()) {
+			Board board = optional.get();
 			log.debug("Found: {}", optional.get());
-			return optional.get();
+			
+			board.setCount(board.getCount() + 1);
+			dao.save(board);
+			
+			return board;
 		} else {
 			log.warn("No employee selected: {}", id);
 			return null;
@@ -136,7 +141,7 @@ public class NoticeBoardServiceImpl implements BoardService {
 			throw new ServiceException("프로젝트 삭제 중 오류가 발생했습니다.", e);
 		}
 		return null;
-	}
+	} // delete
 	
 	
 }//end class

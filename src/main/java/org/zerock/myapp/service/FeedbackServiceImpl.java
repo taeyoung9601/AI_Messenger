@@ -8,8 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.BoardDTO;
 import org.zerock.myapp.entity.Board;
+import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.exception.ServiceException;
 import org.zerock.myapp.persistence.BoardRepository;
+import org.zerock.myapp.persistence.EmployeeRepository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
@@ -22,7 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service("FeedbackBoardService")
 public class FeedbackServiceImpl implements BoardService {
     @Autowired BoardRepository dao;
-	
+    @Autowired EmployeeRepository edao;
 	
 	@PostConstruct
     void postConstruct(){
@@ -46,7 +48,6 @@ public class FeedbackServiceImpl implements BoardService {
 		else if (dto.getSearchText() != null) {
 			return switch (dto.getSearchWord()) {
 			case "name" -> this.dao.findByEnabledAndTypeAndTitleContaining(true, dto.getType(), dto.getSearchText(), paging);
-			case "author" -> this.dao.findBoardByEmployeeName(true, dto.getType(), dto.getSearchText(), paging);
 			default -> throw new IllegalArgumentException("swich_1 - Invalid search word: " + dto.getSearchWord());
 			};
 
@@ -60,14 +61,17 @@ public class FeedbackServiceImpl implements BoardService {
 		
 		Board data = new Board();//dao.save(dto);
 		try {
-			dto.setAuthorEmpno("E2206011");//임시
-				
+			Employee employee = edao.findById(dto.getAuthorEmpno())
+					.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사원 ID입니다."));
 			
-			data.setId(dto.getId()); // 게시판 Id
+			data.setEmployee(employee);//임시
+			data.setType(1);
+				
 			data.setTitle(dto.getTitle()); // 제목
+			data.setPosition(dto.getPosition());
+			data.setCount(0); // 조회수
 			data.setDetail(dto.getDetail()); // 내용
-			data.setCrtDate(dto.getCrtDate()); // 작성일
-			data.setCount(dto.getCount()); // 조회수
+			data.setEnabled(true);
 			
 			dao.save(data);
 			log.debug("create data: {}", data);
@@ -85,8 +89,13 @@ public class FeedbackServiceImpl implements BoardService {
 		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
 		Optional<Board> optional = dao.findById(id);
 		if (optional.isPresent()) {
+			Board board = optional.get();
 			log.debug("Found: {}", optional.get());
-			return optional.get();
+			
+			board.setCount(board.getCount() + 1);
+			dao.save(board);
+			
+			return board;
 		} else {
 			log.warn("No employee selected: {}", id);
 			return null;
@@ -127,10 +136,10 @@ public class FeedbackServiceImpl implements BoardService {
 				return result;
 			} // if
 		}  catch (Exception e) {
-			throw new ServiceException("게시글 삭제 중 오류가 발생했습니다.", e);
+			throw new ServiceException("프로젝트 삭제 중 오류가 발생했습니다.", e);
 		}
 		return null;
-	}
+	} // delete
 	
 	
 }//end class

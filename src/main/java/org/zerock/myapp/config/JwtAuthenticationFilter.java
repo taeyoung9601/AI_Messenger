@@ -21,67 +21,73 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
-
 @Component
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
-    private final JwtProvider jwtProvider;
 
-    public JwtAuthenticationFilter(JwtProvider jwtProvider) {
-        this.jwtProvider = jwtProvider;
+private final JwtProvider jwtProvider;
+
+public JwtAuthenticationFilter(JwtProvider jwtProvider) {
+    this.jwtProvider = jwtProvider;
+}
+
+@Override
+protected void doFilterInternal(HttpServletRequest request,
+                                HttpServletResponse response,
+                                FilterChain filterChain) throws ServletException, IOException {
+
+    String authHeader = request.getHeader("Authorization");
+
+    if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        filterChain.doFilter(request, response);
+        return;
     }
+    String token = authHeader.substring(7); // "Bearer " 제거
 
-    @Override
-    protected void doFilterInternal(HttpServletRequest request,
-                                    HttpServletResponse response,
-                                    FilterChain filterChain) throws ServletException, IOException {
+    try {
+        // 1. JWT 검증 + 사용자 추출
+        String username = jwtProvider.verifyToken(token);
+        // 2. JWT에서 roles 추출
+        DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256("mySuperSecretKey12345"))
+                .withIssuer("Mark") // ❗ issuer도 검증해야 함
+                .build()
+                .verify(token);
 
-        String authHeader = request.getHeader("Authorization");
+        // JWT 토큰에서 꺼낼 정보 기입.
+        String empno = decodedJWT.getClaim("empno").asString();
+        String role = decodedJWT.getClaim("roles").asString();
+        String name = decodedJWT.getClaim("name").asString();
+        String loginId = decodedJWT.getClaim("loginId").asString();
+        String password = decodedJWT.getClaim("password").asString();
+        String tel = decodedJWT.getClaim("tel").asString();
+        String address = decodedJWT.getClaim("address").asString();
+        Integer zipCode = decodedJWT.getClaim("zipCode").asInt();
+        String email = decodedJWT.getClaim("email").asString();
+        Integer position = decodedJWT.getClaim("position").asInt();
 
-        if (authHeader == null || !authHeader.startsWith("Bearer ")) {
+        if (role == null || role.isEmpty()) {
+            System.out.println("JWT에 roles 정보 없음");
             filterChain.doFilter(request, response);
             return;
         }
 
-        String token = authHeader.substring(7); // "Bearer " 제거
+        // 3. SecurityContext에 권한 주입
 
-        try {
-            // 1. JWT 검증 + 사용자 추출
-            String username = jwtProvider.verifyToken(token);
+        JwtPrincipal principal = new JwtPrincipal(empno, role, name, loginId, password, tel, address, zipCode, email, position);
 
-            // 2. JWT에서 roles 추출
-            DecodedJWT decodedJWT = JWT.require(Algorithm.HMAC256("mySuperSecretKey12345"))
-                    .withIssuer("Mark") // ❗ issuer도 검증해야 함
-                    .build()
-                    .verify(token);
+        SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
+        Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, List.of(authority));
+        SecurityContextHolder.getContext().setAuthentication(auth);
 
-            // JWT 토큰에서 꺼낼 정보 기입.
-            String role = decodedJWT.getClaim("roles").asString();
-            String empno = decodedJWT.getClaim("empno").asString();
-            String name = decodedJWT.getClaim("name").asString();
-            Integer position = decodedJWT.getClaim("position").asInt();
-            
+        System.out.println("JWT 필터 통과: " + username + ", 권한: " + role);
 
-            if (role == null || role.isEmpty()) {
-                System.out.println("JWT에 roles 정보 없음");
-                filterChain.doFilter(request, response);
-                return;
-            }
-
-            // 3. SecurityContext에 권한 주입
-            
-            JwtPrincipal principal = new JwtPrincipal(empno, name, role, position);            
-            SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
-            Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, List.of(authority));
-            SecurityContextHolder.getContext().setAuthentication(auth);
-
-           
-            System.out.println("JWT 필터 통과: " + username + ", 권한: " + role);
-
-        } catch (Exception e) {
-            System.out.println("JWT 검증 실패: " + e.getMessage());
-        }
-
-        filterChain.doFilter(request, response);
+    } catch (Exception e) {
+        System.out.println("JWT 검증 실패: " + e.getMessage());
     }
+
+    filterChain.doFilter(request, response);
+}
+
+
+
 }

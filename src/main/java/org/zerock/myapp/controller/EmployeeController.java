@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -13,6 +14,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.myapp.controller.common.JwtPrincipal;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.domain.EmployeeHierarchyDTO;
 import org.zerock.myapp.entity.Employee;
@@ -59,6 +61,24 @@ public class EmployeeController {
 	public ResponseEntity<List<EmployeeHierarchyDTO>> getGroupLeaders() {
 	    List<EmployeeHierarchyDTO> result = service.findByEnabledAndPositionInOrderByDepartment();
 	    return ResponseEntity.ok(result);
+	} // 부서장 + 팀장
+	
+	@GetMapping("/myinfo")
+
+	public ResponseEntity<?> myInfo (@AuthenticationPrincipal JwtPrincipal principal) {
+
+	return ResponseEntity.ok(
+			"사번: " + principal.getEmpno() +
+			", 이름: " + principal.getName() +
+			", 권한: " + principal.getRole() +
+			", 아이디: " + principal.getLoginId() +
+			", 비밀번호: " + principal.getPassword() +
+			", 전화번호: " + principal.getTel() +
+			", 주소: " + principal.getAddress() +
+			", 우편번호 : " + principal.getZipCode() +
+			", 이메일: " + principal.getEmail()
+
+			);
 	}
 	
 

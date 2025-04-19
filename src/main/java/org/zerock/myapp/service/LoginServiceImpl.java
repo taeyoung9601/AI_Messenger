@@ -28,21 +28,28 @@ public class LoginServiceImpl implements LoginService {
 
 	@Override
 	public Optional<Employee> login(String loginId, String password) {
-		Optional<Employee> loginOptional = loginRepo.findByLoginId(loginId);
-		
-		if (loginOptional.isEmpty()) {
-			throw new IllegalArgumentException("아이디 또는 패스워드를 입력해주세요.");
-		} // 아이디 & 비밀번호 창이 비어있는 경우 검증
-		
-		Employee employee = loginOptional.get();
-		
-		// checkPassword = bcryptPasswordEncoder.matches 의 rapper 메소드
-		if (! bcrypt.matches(password, employee.getPassword())) {
-			throw new IllegalArgumentException("아이디 또는 패스워드가 틀립니다.");
-		} // 비밀번호 검증.
-		
+
+	    System.out.println("받은 아이디: " + loginId);
+	    System.out.println("받은 비밀번호: " + password);
+
 	
-		return loginOptional;
-		
-	} // end login
+	    if (loginId == null || loginId.trim().isEmpty() || password == null || password.trim().isEmpty()) {
+	        throw new IllegalArgumentException("아이디와 비밀번호를 모두 입력해주세요.");
+	    }
+
+	    // 똑같은 Exception을 반환하기에 합쳐보려고 했으나 500 에러 탐지.
+	    Optional<Employee> loginOptional = loginRepo.findByLoginId(loginId);
+	    
+	    if (loginOptional.isEmpty()) {
+	        throw new IllegalArgumentException("아이디 또는 비밀번호가 틀립니다."); // 아이디가 db에 없는 경우.
+	    }
+
+
+	    Employee employee = loginOptional.get();
+	    if (!bcrypt.matches(password, employee.getPassword())) {
+	        throw new IllegalArgumentException("아이디 또는 비밀번호가 틀립니다."); // 비밀번호가 틀린 경우.
+	    }
+
+	    return loginOptional;
+	}
 }

@@ -10,6 +10,8 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.zerock.myapp.service.JwtProvider;
 
+import jakarta.servlet.http.HttpServletResponse;
+
 
 @Configuration
 @EnableWebSecurity
@@ -27,9 +29,10 @@ public class SecurityConfig {
     public SecurityFilterChain filterChain(HttpSecurity http, JwtProvider jwtProvider) throws Exception {
         return http
                 .csrf().disable()
-                .cors()
-                .and()
+//                .cors()
+//                .and()
                 
+
                 
                 .authorizeHttpRequests(auth -> auth
                         .anyRequest().permitAll()
@@ -45,12 +48,12 @@ public class SecurityConfig {
 //                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 //                .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtProvider), UsernamePasswordAuthenticationFilter.class)
-
                 .logout(logout -> logout
-                        .disable()
+                        .logoutUrl("/logout")
+                        .logoutSuccessHandler((request, response, authentication) -> {
+                            response.setStatus(HttpServletResponse.SC_OK);
+                        })
                 )
-                .build();
-        
+                .build(); // ← 이게 최종 마무리
     }
-    
 }

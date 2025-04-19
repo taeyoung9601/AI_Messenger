@@ -58,6 +58,8 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             // JWT 토큰에서 꺼낼 정보 기입.
             String role = decodedJWT.getClaim("roles").asString();
             String empno = decodedJWT.getClaim("empno").asString();
+            String name = decodedJWT.getClaim("name").asString();
+            Integer position = decodedJWT.getClaim("position").asInt();
             
 
             if (role == null || role.isEmpty()) {
@@ -68,7 +70,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
             // 3. SecurityContext에 권한 주입
             
-            JwtPrincipal principal = new JwtPrincipal(empno, username, role);            
+            JwtPrincipal principal = new JwtPrincipal(empno, name, role, position);            
             SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
             Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, List.of(authority));
             SecurityContextHolder.getContext().setAuthentication(auth);

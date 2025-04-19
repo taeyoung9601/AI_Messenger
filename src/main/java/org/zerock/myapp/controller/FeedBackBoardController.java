@@ -88,11 +88,11 @@ public class FeedBackBoardController {
 	} // update
 	
 	@DeleteMapping(path = "/{id}")
-	Boolean delete( // 삭제 처리
+	Board delete( // 삭제 처리
 			@PathVariable Long id
 			) throws ServiceException {
 		
-		Boolean result = this.service.deleteById(id);
+		Board result = this.service.deleteById(id);
 		
 		return result;
 	} // delete

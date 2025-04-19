@@ -8,8 +8,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.BoardDTO;
 import org.zerock.myapp.entity.Board;
+import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.exception.ServiceException;
 import org.zerock.myapp.persistence.BoardRepository;
+import org.zerock.myapp.persistence.EmployeeRepository;
 
 import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
@@ -22,6 +24,7 @@ import lombok.extern.slf4j.Slf4j;
 @Service("NoticeBoardService")
 public class NoticeBoardServiceImpl implements BoardService {
     @Autowired BoardRepository dao;
+    @Autowired EmployeeRepository edao;
 	
 	
 	@PostConstruct
@@ -60,14 +63,17 @@ public class NoticeBoardServiceImpl implements BoardService {
 		
 		Board data = new Board();//dao.save(dto);
 		try {
-			dto.setAuthorEmpno("E2206011");//임시
-				
+			Employee employee = edao.findById(dto.getAuthorEmpno())
+					.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사원 ID입니다."));
 			
-			data.setId(dto.getId()); // 게시판 Id
+			data.setEmployee(employee);//임시
+			data.setType(1);
+				
 			data.setTitle(dto.getTitle()); // 제목
+			data.setPosition(dto.getPosition());
+			data.setCount(0); // 조회수
 			data.setDetail(dto.getDetail()); // 내용
-			data.setCrtDate(dto.getCrtDate()); // 작성일
-			data.setCount(dto.getCount()); // 조회수
+			data.setEnabled(true);
 			
 			dao.save(data);
 			log.debug("create data: {}", data);
@@ -94,7 +100,7 @@ public class NoticeBoardServiceImpl implements BoardService {
 	} // getById
 	
 	@Override
-	public Boolean update(Long id, BoardDTO dto) {//수정 처리
+	public Board update(Long id, BoardDTO dto) {//수정 처리
 		log.debug("BoardServiceImpl -- update({}) invoked", dto);
 
 		Board post = dao.findById(dto.getId())
@@ -104,15 +110,14 @@ public class NoticeBoardServiceImpl implements BoardService {
 			post.setTitle(dto.getTitle()); // 게시글 제목
 			post.setDetail(dto.getDetail()); // 게시글 내용
 	      
-	      dao.save(post);
-	      return true; // db에 저장.
+	      return dao.save(post); // db에 저장.
 	      } catch (Exception e) {
 	         throw new IllegalArgumentException("게시글 수정에 실패했습니다. 다시 시도해 주세요.");
 	      }
 	} // update
 
 	@Override
-	public Boolean deleteById(Long id) throws ServiceException { // 삭제 처리
+	public Board deleteById(Long id) throws ServiceException { // 삭제 처리
 		log.debug("BoardServiceImpl -- deleteById({}) invoked", id);
 
 		try {
@@ -125,7 +130,7 @@ public class NoticeBoardServiceImpl implements BoardService {
 				Board result = this.dao.save(board);
 				log.info("Delete success");
 	
-				return true;
+				return result;
 			} // if
 		}  catch (Exception e) {
 			throw new ServiceException("프로젝트 삭제 중 오류가 발생했습니다.", e);

@@ -94,7 +94,7 @@ public class FeedbackServiceImpl implements BoardService {
 	} // getById
 	
 	@Override
-	public Boolean update(Long id, BoardDTO dto) {//수정 처리
+	public Board update(Long id, BoardDTO dto) {//수정 처리
 		log.debug("BoardServiceImpl -- update({}) invoked", dto);
 
 		Board post = dao.findById(dto.getId())
@@ -104,15 +104,14 @@ public class FeedbackServiceImpl implements BoardService {
 			post.setTitle(dto.getTitle()); // 게시글 제목
 			post.setDetail(dto.getDetail()); // 게시글 내용
 	      
-	      dao.save(post);
-	      return true; // db에 저장.
+	      return dao.save(post); // db에 저장.
 	      } catch (Exception e) {
 	         throw new IllegalArgumentException("게시글 수정에 실패했습니다. 다시 시도해 주세요.");
 	      }
 	} // update
 
 	@Override
-	public Boolean deleteById(Long id) throws ServiceException { // 삭제 처리
+	public Board deleteById(Long id) throws ServiceException { // 삭제 처리
 		log.debug("BoardServiceImpl -- deleteById({}) invoked", id);
 
 		try {
@@ -125,7 +124,7 @@ public class FeedbackServiceImpl implements BoardService {
 				Board result = this.dao.save(board);
 				log.info("Delete success");
 	
-				return true;
+				return result;
 			} // if
 		}  catch (Exception e) {
 			throw new ServiceException("게시글 삭제 중 오류가 발생했습니다.", e);

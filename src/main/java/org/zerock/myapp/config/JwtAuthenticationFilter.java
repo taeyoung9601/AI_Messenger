@@ -64,6 +64,7 @@ protected void doFilterInternal(HttpServletRequest request,
         Integer zipCode = decodedJWT.getClaim("zipCode").asInt();
         String email = decodedJWT.getClaim("email").asString();
         Integer position = decodedJWT.getClaim("position").asInt();
+        String department = decodedJWT.getClaim("department").asString();
 
         if (role == null || role.isEmpty()) {
             System.out.println("JWT에 roles 정보 없음");
@@ -73,7 +74,7 @@ protected void doFilterInternal(HttpServletRequest request,
 
         // 3. SecurityContext에 권한 주입
 
-        JwtPrincipal principal = new JwtPrincipal(empno, role, name, loginId, password, tel, address, zipCode, email, position);
+        JwtPrincipal principal = new JwtPrincipal(empno, role, name, loginId, password, tel, address, zipCode, email, position, department);
 
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
         Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, List.of(authority));

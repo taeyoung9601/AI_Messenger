@@ -19,6 +19,7 @@ public class JwtPrincipal implements UserDetails {
 	private final Integer zipCode;
 	private final String email;
 	private final Integer position;
+	private final String department;
 
 // 🔐 권한 정보 반환 (Spring Security 필수)
 

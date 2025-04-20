@@ -53,6 +53,7 @@ public class JwtProvider {
                 .withClaim("email", employee.getEmail())
                 .withClaim("loginId", employee.getLoginId())
                 .withClaim("position", position)
+                .withClaim("department", employee.getDepartment().getId())
                 .sign(algorithm); // 알고리즘과 비밀키로 서명
         		
         		

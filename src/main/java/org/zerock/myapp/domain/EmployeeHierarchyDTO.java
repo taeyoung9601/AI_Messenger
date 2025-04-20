@@ -1,9 +1,5 @@
 package org.zerock.myapp.domain;
 
-import jakarta.persistence.ColumnResult;
-import jakarta.persistence.ConstructorResult;
-import jakarta.persistence.NamedNativeQuery;
-import jakarta.persistence.SqlResultSetMapping;
 import lombok.Data;
 
 @Data

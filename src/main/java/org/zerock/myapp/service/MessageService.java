@@ -6,16 +6,7 @@ import org.zerock.myapp.domain.MessageDTO;
 import org.zerock.myapp.entity.Message;
 
 public interface MessageService {
-	
-	public abstract List<Message> getAllList();     			// 전체 조회
-	public abstract List<Message> getSearchList(MessageDTO dto); // 전체 조회(검색)
-	public abstract List<Message> getByChatId(Long chatId);
-
-	public abstract Message create(MessageDTO dto);    	// 생성 처리
-	public abstract Message getById(String id);    // 단일 조회
-	public abstract Boolean update(MessageDTO dto);    	// 수정 처리
-	public abstract Boolean deleteById(String id);// 삭제 처리
-	
-	public abstract Message saveMessage(MessageDTO dto);
-	public abstract String summarizeMessage(Long id, String start, String end);
+	public abstract List<Message> getByChatId(Long chatId);			// 해당 채팅방 메세지 리스트
+	public abstract Message saveMessage(MessageDTO dto);			// 메세지 저장
+	public abstract String summarizeMessage(Long id, String start, String end); // 메세지 요약
 }//end interface

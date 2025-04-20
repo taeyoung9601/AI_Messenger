@@ -15,7 +15,6 @@ import org.zerock.myapp.entity.Message;
 
 @Repository
 public interface MessageRepository extends JpaRepository<Message, Long>, JpaSpecificationExecutor<Message> {
-//	public abstract List<Message> findByChat(Chat chat);
 	List<Message> findByChatIdOrderByCrtDate(Long chatId);
 	List<Message> findByChatIdAndCrtDateBetweenOrderByCrtDate(Long chatId, Date startDate, Date endDate);
 

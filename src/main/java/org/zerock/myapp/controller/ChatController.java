@@ -14,9 +14,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.entity.Chat;
-import org.zerock.myapp.entity.ChatEmployee;
-import org.zerock.myapp.entity.Project;
-import org.zerock.myapp.persistence.ProjectRepository;
 import org.zerock.myapp.service.ChatService;
 
 import lombok.NoArgsConstructor;
@@ -35,16 +32,6 @@ import lombok.extern.slf4j.Slf4j;
 public class ChatController {
 		
 	@Autowired private ChatService chatService;
-    @Autowired private ProjectRepository projectRepo;
-    
-	@GetMapping
-	List<Chat> list() { // 리스트
-		log.debug("list() invoked.");
-		
-		List<Chat> result = this.chatService.findAllList();
-		
-		return result;
-	} // list
 	
 	@GetMapping(path = "/list/{empno}")
 	List<Chat> myList(@PathVariable String empno) { // 리스트
@@ -57,7 +44,7 @@ public class ChatController {
 	Chat register(@ModelAttribute ChatDTO dto, @RequestParam String empno) { // 등록 처리
 		log.debug("register() invoked.");
 		
-		return chatService.createRoom(dto, empno);
+		return this.chatService.createRoom(dto, empno);
 	} // register
 	
 	@GetMapping(path = "/{id}")
@@ -66,7 +53,7 @@ public class ChatController {
 			) {
 		log.debug("read({}) invoked.",id);
 		
-		return chatService.getById(id);
+		return this.chatService.getById(id);
 	} // read
 	
 	@PutMapping(path = "/{id}")
@@ -76,7 +63,7 @@ public class ChatController {
 			) { 
 		log.debug("update({}) invoked.",id);
 		
-		return chatService.update(dto,id);
+		return this.chatService.update(dto,id);
 	} // update
 	
 	@DeleteMapping(path = "/{id}")
@@ -86,7 +73,7 @@ public class ChatController {
 			) {
 		log.debug("delete({}) invoked.",id);
 		
-		return chatService.deleteById(id,empno);
+		return this.chatService.deleteById(id,empno);
 	} // delete
 	
 	

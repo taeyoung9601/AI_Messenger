@@ -65,25 +65,6 @@ public class ChatServiceImpl implements ChatService {
 	} // getAllList
 	
 	@Override
-	public List<Chat> findAllList() {	//검색 없는 전체 리스트
-		log.debug("ChatServiceImpl -- getAllList() invoked");
-		
-		List<Chat> chatList = this.chatRepository.findAllByEnabled(true);
-		
-		return chatList;
-	} // getAllList
-	
-	@Override
-	public List<Chat> getSearchList(ChatDTO dto) {	//검색 있는 전체 리스트
-		log.debug("ChatServiceImpl -- getSearchList(()) invoked", dto);
-
-		List<Chat> list = new Vector<>();
-		log.debug("리포지토리 미 생성");
-		
-		return list;
-	} // getSearchList
-	
-	@Override
 	public Chat createRoom(ChatDTO dto, String empno) {
 	    log.debug("ChatServiceImpl -- createRoom({}) invoked", dto);
 	    
@@ -113,7 +94,7 @@ public class ChatServiceImpl implements ChatService {
 	        chatEmployee.setId(pk);
 	        chatEmployee.setChat(savedChat);
 	        chatEmployee.setEmployee(employee);
-	        chatEmployeeRepository.save(chatEmployee);
+	        this.chatEmployeeRepository.save(chatEmployee);
 
 		    return chat;
 	    } catch (Exception e) {
@@ -171,7 +152,7 @@ public class ChatServiceImpl implements ChatService {
 			        chatEmployee.setEmployee(emp);  
 			        
 			        // 저장
-			        chatEmployeeRepository.save(chatEmployee);
+			        this.chatEmployeeRepository.save(chatEmployee);
 				}// if- else
 				
 		    } // for

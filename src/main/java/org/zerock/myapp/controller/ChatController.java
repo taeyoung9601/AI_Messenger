@@ -12,8 +12,10 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.zerock.myapp.config.JwtAuthenticationFilter;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.entity.Chat;
+import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.service.ChatService;
 
 import lombok.NoArgsConstructor;
@@ -31,12 +33,12 @@ import lombok.extern.slf4j.Slf4j;
 @RestController
 public class ChatController {
 		
+	@Autowired private JwtAuthenticationFilter jwt;
 	@Autowired private ChatService chatService;
 	
 	@GetMapping(path = "/list/{empno}")
-	List<Chat> myList(@PathVariable String empno) { // 리스트
+	List<ChatEmployee> myList(@PathVariable String empno) { // 리스트
 		log.debug("list() invoked.");
-		
 		return this.chatService.findMyList(empno);
 	} // list
 	

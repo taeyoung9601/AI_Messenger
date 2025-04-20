@@ -2,7 +2,6 @@ package org.zerock.myapp.persistence;
 
 import java.util.List;
 
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -26,11 +25,20 @@ public interface ChatEmployeeRepository extends JpaRepository<ChatEmployee, Chat
 	
 	//게시판 별 유효한 전체 게시물 + 작성자
 	final String nativeSQL_board_empname = """
-			SELECT DISTINCT C.*
-			FROM T_ChatEmployee C
-			   LEFT JOIN T_Message M ON C.EMPNO = M.EMPNO
-			WHERE C.ENABLED = :enabled
-			ORDER BY MESSAGE.CRTDATE
+			SELECT C.*, M.CRT_DATE AS lastMsg
+			FROM T_CHAT_EMPLOYEE C
+			    LEFT JOIN (
+			        SELECT CHAT.ID, 
+			        CASE 
+				        WHEN MAX(MESSAGE.CRT_DATE) IS NULL THEN CHAT.CRT_DATE
+				        ELSE MAX(MESSAGE.CRT_DATE)
+			        END AS CRT_DATE
+			        FROM T_CHAT CHAT
+			            LEFT JOIN T_MESSAGE MESSAGE ON CHAT.ID = MESSAGE.CHAT_ID
+			        GROUP BY CHAT.ID , CHAT.CRT_DATE
+			    ) M ON C.CHAT_ID = M.ID
+			WHERE C.ENABLED = :enabled AND C.EMPNO = :empno
+			ORDER BY M.CRT_DATE DESC
 		""";
 	@Query(value = nativeSQL_board_empname, nativeQuery = true)
 	List<ChatEmployee> findChatByEmpno(

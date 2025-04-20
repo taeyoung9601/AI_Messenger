@@ -9,6 +9,8 @@ import org.hibernate.annotations.SourceType;
 import org.hibernate.generator.EventType;
 import org.zerock.myapp.util.BooleanToIntegerConverter;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
+
 import jakarta.persistence.Basic;
 import jakarta.persistence.Column;
 import jakarta.persistence.Convert;
@@ -19,6 +21,7 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.MapsId;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.Data;
 
 
@@ -57,4 +60,8 @@ public class ChatEmployee implements Serializable {
 	@JoinColumn(name="EMPNO", insertable=false, updatable=false)
 	private Employee Employee; // 사번
 
+	@JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd hh:mm:ss", timezone = "Asia/Seoul")
+	@Transient	// DB 컬럼으로 매핑되지 않음
+	private Date lastMsg;	//마지막 메시지
+	
 } // end class

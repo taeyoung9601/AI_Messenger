@@ -79,7 +79,7 @@ protected void doFilterInternal(HttpServletRequest request,
         SimpleGrantedAuthority authority = new SimpleGrantedAuthority(role);
         Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, List.of(authority));
         SecurityContextHolder.getContext().setAuthentication(auth);
-
+        
         System.out.println("JWT 필터 통과: " + username + ", 권한: " + role);
 
     } catch (Exception e) {

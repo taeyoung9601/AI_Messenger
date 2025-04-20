@@ -14,7 +14,7 @@ public interface ChatService {
 	
 	public abstract Chat createRoom(ChatDTO dto, String empno);    	// 생성 처리
 	public abstract ChatDTO getById(Long id);    // 단일 조회
-	public abstract List<ChatEmployee> update(ChatDTO dto, Long id);    	// 수정 처리
+	public abstract Boolean update(ChatDTO dto, Long id);    	// 수정 처리
 	public abstract Chat deleteById(Long id,String empno);// 삭제 처리
 	
 }//end interface

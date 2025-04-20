@@ -70,7 +70,7 @@ public class ChatController {
 	} // read
 	
 	@PutMapping(path = "/{id}")
-	List<ChatEmployee> update( 			// 수정 처리
+	Boolean update( 			// 수정 처리
 			@ModelAttribute ChatDTO dto,
 			@PathVariable Long id
 			) { 

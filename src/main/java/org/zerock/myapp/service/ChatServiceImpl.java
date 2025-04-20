@@ -18,7 +18,6 @@ import org.zerock.myapp.handler.WebSocketChatHandler;
 import org.zerock.myapp.persistence.ChatEmployeeRepository;
 import org.zerock.myapp.persistence.ChatRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
-import org.zerock.myapp.persistence.MessageRepository;
 import org.zerock.myapp.persistence.ProjectRepository;
 
 import jakarta.annotation.PostConstruct;
@@ -35,7 +34,6 @@ public class ChatServiceImpl implements ChatService {
     @Autowired private ChatRepository chatRepository;
     @Autowired private ChatEmployeeRepository chatEmployeeRepository;
     @Autowired private EmployeeRepository employeeRepository;
-    @Autowired private MessageRepository messageRepository;
 	@Autowired private ProjectRepository projectRepository;
 	@Autowired private WebSocketChatHandler webSocketChatHandler;
 	
@@ -142,7 +140,7 @@ public class ChatServiceImpl implements ChatService {
 	} // getById
 	
 	@Override
-	public List<ChatEmployee> update(ChatDTO dto,Long id) {//수정 처리
+	public Boolean update(ChatDTO dto,Long id) {//수정 처리
 		log.debug("ChatServiceImpl -- update({}) invoked", dto);
 
 		try {
@@ -177,12 +175,11 @@ public class ChatServiceImpl implements ChatService {
 				}// if- else
 				
 		    } // for
-			List<ChatEmployee> selectedChatEmp = this.chatEmployeeRepository.findByIdChatId(id);
 			
-			return selectedChatEmp;
+			return true;
 	    } catch (Exception e) {
 	    	log.error("Update failed: {}", e.getMessage(), e);
-	    	return null;
+	    	return false;
 	    } // try-catch
 		
 	} // update

@@ -43,7 +43,7 @@ public class Board implements Serializable {
 
 	//1. pk
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "ko")
-	@SequenceGenerator(name = "ko", sequenceName = "T_PROJECT_SEQ", initialValue = 1, allocationSize = 1)
+	@SequenceGenerator(name = "ko", sequenceName = "T_Board_SEQ", initialValue = 1, allocationSize = 1)
 	@Column(name = "ID", unique=true, nullable=false)
 	private Long id; // 게시판 id
 	
@@ -60,7 +60,7 @@ public class Board implements Serializable {
 	private String detail; // 내용
 	
 	@Column(nullable=false, length = 1)
-	private Integer type; // 유형(건의==1, 공지==2)
+	private Integer type; // 유형(공지==1, 건의==2)
 
 	@Convert(converter = BooleanToIntegerConverter.class)
 	@Column(nullable=false, length = 1)

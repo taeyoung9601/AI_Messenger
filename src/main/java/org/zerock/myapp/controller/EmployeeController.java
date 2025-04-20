@@ -18,6 +18,7 @@ import org.zerock.myapp.controller.common.JwtPrincipal;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.domain.EmployeeHierarchyDTO;
 import org.zerock.myapp.entity.Employee;
+import org.zerock.myapp.persistence.DepartmentRepository;
 import org.zerock.myapp.service.EmployeeService;
 
 import lombok.NoArgsConstructor;
@@ -36,6 +37,9 @@ public class EmployeeController {
 
 	@Autowired
 	EmployeeService service;
+	
+	@Autowired
+	DepartmentRepository dao;
 
 	@GetMapping
 	public List<Employee> list() { // 리스트
@@ -63,25 +67,11 @@ public class EmployeeController {
 	    return ResponseEntity.ok(result);
 	} // 부서장 + 팀장
 	
-	@GetMapping("/myinfo")
-
-	public ResponseEntity<?> myInfo (@AuthenticationPrincipal JwtPrincipal principal) {
-
-	return ResponseEntity.ok(
-			"사번: " + principal.getEmpno() +
-			", 이름: " + principal.getName() +
-			", 권한: " + principal.getRole() +
-			", 아이디: " + principal.getLoginId() +
-			", 비밀번호: " + principal.getPassword() +
-			", 전화번호: " + principal.getTel() +
-			", 주소: " + principal.getAddress() +
-			", 우편번호 : " + principal.getZipCode() +
-			", 이메일: " + principal.getEmail()
-
-			);
+	@GetMapping("/department/{deptId}")
+	public ResponseEntity<List<Employee>> getEmployeesByDepartment(@PathVariable Long deptId) {
+	    List<Employee> employees = service.getEmployeesByDepartmentId(deptId);
+	    return ResponseEntity.ok(employees);
 	}
-	
-
 
 	@PostMapping("/register")
 	ResponseEntity<?> register(@ModelAttribute EmployeeDTO dto) { // 등록 처리

@@ -13,7 +13,7 @@ public interface BoardService {
 	
 	public abstract Board create(BoardDTO dto);    	// 생성 처리
 	public abstract Board getById(Long id);    // 단일 조회
-	public abstract Boolean update(Long id, BoardDTO dto);    	// 수정 처리
-	public abstract Boolean deleteById(Long id) throws ServiceException;// 삭제 처리
+	public abstract Board update(Long id, BoardDTO dto);    	// 수정 처리
+	public abstract Board deleteById(Long id) throws ServiceException;// 삭제 처리
 	
 }//end interface

@@ -43,13 +43,13 @@ public class FeedBackBoardController {
 	
 	@GetMapping
 	Page<Board> list(
-			BoardDTO dto,
+			@ModelAttribute BoardDTO dto,
 			@RequestParam(name = "currPage", required = false, defaultValue = "1") Integer currPage, // 페이지 시작 값은 0부터
 			@RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize // 기본 페이지 사이즈 8
 		) { // 리스트
 		log.debug("list({}) invoked.", dto);
 		
-		dto.setType(1); //공지
+		dto.setType(2); // 건의
 		
 		Pageable paging = PageRequest.of(currPage-1, pageSize, Sort.by("crtDate").descending());	// Pageable 설정
 		
@@ -59,10 +59,12 @@ public class FeedBackBoardController {
 	} // list
 	
 	@PostMapping("/create")
-	public Board create(BoardDTO dto) { // 등록 처리
+	Board create(@ModelAttribute BoardDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
 		
-		return service.create(dto);
+		Board result = this.service.create(dto);
+		
+		return result;
 	} // register
 	
 	@GetMapping(path = "/{id}")
@@ -77,22 +79,22 @@ public class FeedBackBoardController {
 	} // read
 	
 	@PutMapping(path = "/{id}")
-	ResponseEntity<?> update( // 수정 처리
+	Board update( // 수정 처리
 			@PathVariable Long id, @ModelAttribute BoardDTO dto
 			) { 
 		log.debug("update({}) invoked.",id);
 		
-		this.service.update(id, dto);
+		Board result = this.service.update(id, dto);
 		
-		return ResponseEntity.ok("게시글 수정 완료");
+		return result;
 	} // update
 	
 	@DeleteMapping(path = "/{id}")
-	Boolean delete( // 삭제 처리
+	Board delete( // 삭제 처리
 			@PathVariable Long id
 			) throws ServiceException {
 		
-		Boolean result = this.service.deleteById(id);
+		Board result = this.service.deleteById(id);
 		
 		return result;
 	} // delete

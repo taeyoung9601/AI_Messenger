@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.entity.Chat;
+import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.Project;
 import org.zerock.myapp.persistence.ProjectRepository;
 import org.zerock.myapp.service.ChatService;
@@ -69,7 +70,7 @@ public class ChatController {
 	} // read
 	
 	@PutMapping(path = "/{id}")
-	Boolean update( 			// 수정 처리
+	List<ChatEmployee> update( 			// 수정 처리
 			@ModelAttribute ChatDTO dto,
 			@PathVariable Long id
 			) { 

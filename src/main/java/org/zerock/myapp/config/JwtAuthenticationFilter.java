@@ -9,7 +9,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import org.zerock.myapp.controller.common.JwtPrincipal;
+import org.zerock.myapp.secutity.JwtPrincipal;
 import org.zerock.myapp.service.JwtProvider;
 
 import com.auth0.jwt.JWT;

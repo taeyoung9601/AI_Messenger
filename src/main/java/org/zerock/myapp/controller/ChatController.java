@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.myapp.config.JwtAuthenticationFilter;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.ChatEmployee;
@@ -32,8 +31,7 @@ import lombok.extern.slf4j.Slf4j;
 @RequestMapping("/chat")
 @RestController
 public class ChatController {
-		
-	@Autowired private JwtAuthenticationFilter jwt;
+
 	@Autowired private ChatService chatService;
 	
 	@GetMapping(path = "/list/{empno}")

@@ -25,12 +25,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class ProjectServiceImpl implements ProjectService {
-	@Autowired
-	ProjectRepository dao;
-	@Autowired
-	EmployeeRepository empDao;
-	@Autowired 
-	JwtProvider jwt;
+	@Autowired ProjectRepository dao;
+	@Autowired EmployeeRepository empDao;
+	
 
 	SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -116,9 +113,6 @@ public class ProjectServiceImpl implements ProjectService {
 		log.debug("\t+ ProjectServiceImpl -- create({}) invoked", dto);
 
 		try {
-			dto.setCreatorEmpno("E2110002");
-						
-			
 			Project project = new Project();
 			
 			project.setName(dto.getName());

@@ -6,7 +6,7 @@ import java.util.Vector;
 
 import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.Employee;
-import org.zerock.myapp.entity.File;
+import org.zerock.myapp.entity.UpFile;
 
 import lombok.Data;
 
@@ -26,7 +26,7 @@ public class MessageDTO {
 
 	
 	// join
-	private List<File> Files = new Vector<>(); // 파일
+	private List<UpFile> Files = new Vector<>(); // 파일
 	private Chat Chat; // 채팅
 	private Long chatId;
 	private String empno;

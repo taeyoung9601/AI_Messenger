@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.domain.TokenResponseDto;
 import org.zerock.myapp.entity.Employee;
-import org.zerock.myapp.service.JwtProvider;
+import org.zerock.myapp.secutity.JwtProvider;
 import org.zerock.myapp.service.LoginServiceImpl;
 
 @RequestMapping("/auth")

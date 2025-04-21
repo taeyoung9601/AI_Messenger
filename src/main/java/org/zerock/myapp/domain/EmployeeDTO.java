@@ -7,7 +7,7 @@ import java.util.Vector;
 import org.zerock.myapp.entity.Board;
 import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.Department;
-import org.zerock.myapp.entity.File;
+import org.zerock.myapp.entity.UpFile;
 import org.zerock.myapp.entity.Message;
 import org.zerock.myapp.entity.Work;
 import org.zerock.myapp.entity.WorkEmployee;
@@ -41,7 +41,7 @@ public class EmployeeDTO {
 	private List<ChatEmployee> ChatEmployees = new Vector<>(); // 채팅방을 사용하는 사원
 	private Department Department; // 부서 ID
 	private Long deptId;
-	private List<File> Files = new Vector<>(); // 프로필사진
+	private List<UpFile> Files = new Vector<>(); // 프로필사진
 	private List<Message> Messages = new Vector<>(); // 메시지 작성자
 //	private List<Project> Projects1 = new Vector<>(); // 만든사람 id
 //	private List<Project> Projects2 = new Vector<>(); // 담당자 id

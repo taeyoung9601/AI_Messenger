@@ -202,8 +202,16 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employee.setPosition(dto.getPosition()); // 직급 _ front
 			employee.setDepartment(department); // 부서 _ front
 			employee.setEmail(dto.getEmail()); // 이메일 _ front
-			employee.setPassword(dto.getPassword()); // 비밀번호. _ front
-			employee.setPassword(bcrypt.encode(employee.getPassword())); // 비밀번호 암호화 저장
+			
+			
+			String newPassword = dto.getPassword();
+
+			if (newPassword != null && !newPassword.isEmpty()) {
+			    employee.setPassword(bcrypt.encode(newPassword));
+			} else {
+			    employee.setPassword(newPassword);
+			} // 비밀번호가 빈값일시 기본 값 유지 & 새로운 값이 있을 시 새로운 값으로 대치 
+
 			employee.setTel(dto.getTel()); // 전화번호 _ front
 			employee.setAddress(dto.getAddress()); // 사원 주소 _ front
 			employee.setZipCode(dto.getZipCode()); // 사원 우편번호 _ front

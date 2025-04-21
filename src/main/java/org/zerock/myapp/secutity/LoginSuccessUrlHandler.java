@@ -1,4 +1,4 @@
-package org.zerock.myapp.config;
+package org.zerock.myapp.secutity;
 
 import java.io.IOException;
 import java.util.Collection;

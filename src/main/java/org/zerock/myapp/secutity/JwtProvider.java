@@ -1,6 +1,7 @@
-package org.zerock.myapp.service;
+package org.zerock.myapp.secutity;
 
 import java.util.Date;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.entity.Employee;
@@ -46,7 +47,7 @@ public class JwtProvider {
                 .withIssuer("Mark") // 토큰 발급자 정보
                 .withIssuedAt(now) // 발급 시각
                 .withExpiresAt(expiresAt) // 만료 시각
-                .withClaim("roles", roles) // 추가 클레임 설정 (예: 권한 정보)
+                .withClaim("roles", List.of(roles)) // 추가 클레임 설정 (예: 권한 정보)
 //               .withClaim("roles", List.of("ROLE_HireManager", "ROLE_User")) : 여러 개의 권한 설정시.
                 .withClaim("empno", employee.getEmpno())
                 .withClaim("name", employee.getName())

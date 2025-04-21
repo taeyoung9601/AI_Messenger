@@ -15,6 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.ChatEmployee;
+import org.zerock.myapp.secutity.JwtAuthenticationFilter;
 import org.zerock.myapp.service.ChatService;
 
 import lombok.NoArgsConstructor;

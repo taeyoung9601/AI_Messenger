@@ -40,7 +40,7 @@ public class NoticeBoardServiceImpl implements BoardService {
 		
 		if(dto.getSearchWord() != null && dto.getSearchWord().length() == 0) dto.setSearchWord(null);
 		if(dto.getSearchText() != null && dto.getSearchText().length() == 0) dto.setSearchText(null);
-
+ 
 		if (dto.getSearchText() == null) {
 			// 검색 리스트: 활성화상태(true)
 			return this.dao.findByEnabledAndType(true, dto.getType(), paging);
@@ -48,8 +48,8 @@ public class NoticeBoardServiceImpl implements BoardService {
 		} 
 		else if (dto.getSearchText() != null) {
 			return switch (dto.getSearchWord()) {
-			case "name" -> this.dao.findByEnabledAndTypeAndTitleContaining(true, dto.getType(), dto.getSearchText(), paging);
-			case "author" -> this.dao.findBoardByEmployeeName(true, dto.getType(), dto.getSearchText(), paging);
+			case "title" -> this.dao.findByEnabledAndTypeAndTitleContaining(true, dto.getType(), dto.getSearchText(), paging);
+			case "author" -> this.dao.findByEnabledAndTypeAndEmployee_NameContaining(true, dto.getType(), dto.getSearchText(), paging);
 			default -> throw new IllegalArgumentException("swich_1 - Invalid search word: " + dto.getSearchWord());
 			};
 
@@ -91,9 +91,7 @@ public class NoticeBoardServiceImpl implements BoardService {
 		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
 		Optional<Board> optional = dao.findById(id);
 		if (optional.isPresent()) {
-			Board board = optional.get();
-			log.debug("Found: {}", optional.get());
-			
+			Board board = optional.get();			log.debug("Found: {}", optional.get());
 			board.setCount(board.getCount() + 1);
 			dao.save(board);
 			

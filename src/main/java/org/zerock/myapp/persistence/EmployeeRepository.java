@@ -3,6 +3,8 @@ package org.zerock.myapp.persistence;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
@@ -27,6 +29,24 @@ public interface EmployeeRepository extends JpaRepository<Employee, String>, Jpa
 		public abstract long countByEmpnoStartingWith(String empnoPrefix);
 		
 		Optional<Employee> findByEnabledAndEmpno(Boolean enabled, String empno);
+		
+		// 리스트: 활성화상태(true)
+		public abstract Page<Employee> findByEnabled(Boolean enabled, Pageable paging);
+		
+		// 리스트: 활성화상태(true) + 이름
+		public abstract Page<Employee> findByEnabledAndNameContaining(Boolean enabled, String name, Pageable paging);
+		
+		// 리스트: 활성화상태(true) + 전화번호
+		public abstract Page<Employee> findByEnabledAndTelContaining(Boolean enabled, String tel, Pageable paging);		
+		
+		// 리스트: 활성화상태(true) + 부서명
+		public abstract Page<Employee> findByEnabledAndDepartmentId(Boolean enabled, Long deptId, Pageable paging);		
+
+		// 리스트: 활성화상태(true) + 부서명 + 이름
+		public abstract Page<Employee> findByEnabledAndDepartmentIdAndNameContaining(Boolean enabled, Long deptId, String name, Pageable paging);		
+		
+		// 리스트: 활성화상태(true) + 부서명 + 전화번호
+		public abstract Page<Employee> findByEnabledAndDepartmentIdAndTelContaining(Boolean enabled, Long deptId, String tel, Pageable paging);	
 		
 		List<Employee> findByEnabledAndDepartment(Boolean b, Department entity);
 		List<Employee> findByNameContainingAndEnabledTrue(String name);

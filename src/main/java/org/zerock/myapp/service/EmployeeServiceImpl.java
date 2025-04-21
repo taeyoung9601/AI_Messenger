@@ -7,6 +7,8 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.EmployeeDTO;
@@ -15,7 +17,6 @@ import org.zerock.myapp.entity.Department;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.persistence.DepartmentRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
-import org.zerock.myapp.util.DateTimeUtils;
 
 import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
@@ -49,27 +50,50 @@ public class EmployeeServiceImpl implements EmployeeService {
 	} // getAllList
 
 	@Override
-	public List<Employee> getSearchList(EmployeeDTO dto) {
-		log.debug("EmployeeServiceImpl -- getSearchList({})", dto);
+	public Page<Employee> getSearchList(EmployeeDTO dto, Pageable paging) {
+		log.debug("\t+ EmployeeServiceImpl -- getSearchList(()) invoked", dto);
 
-		String field = dto.getSearchWord();
-		String keyword = dto.getSearchText();
+		Page<Employee> pageList = getSearchListData(dto, paging);
 
-		if (field == null || keyword == null || keyword.isBlank()) {
-			return dao.findAll(); // 아무것도 없으면 전체 반환
+		return pageList;
+	} // getSearchList
+	
+	
+	@Override
+	public Page<Employee> getSearchListData(EmployeeDTO dto, Pageable paging) {
+		log.debug("\t+ EmployeeServiceImpl -- getSearchListData({}) invoked", dto);
+		
+		if(dto.getSearchWord() != null && dto.getSearchWord().length() == 0) dto.setSearchWord(null);
+		if(dto.getSearchText() != null && dto.getSearchText().length() == 0) dto.setSearchText(null);
+
+		if (dto.getSearchText() == null && dto.getDeptId() == null) {
+			// 검색 리스트: 활성화상태(true)
+			return this.dao.findByEnabled(true, paging);
+
+		} else if (dto.getDeptId() == null && dto.getSearchText() != null) {
+			// 리스트: 활성화상태(true) + 이름 or 전화번호
+			return switch (dto.getSearchWord()) {
+			case "name" -> this.dao.findByEnabledAndNameContaining(true, dto.getSearchText(), paging);
+			case "tel" -> this.dao.findByEnabledAndTelContaining(true, dto.getSearchText(), paging);
+			default -> throw new IllegalArgumentException("swich_1 - Invalid search word: " + dto.getSearchWord());
+			};
+		
+		} else if(dto.getDeptId() != null && dto.getSearchText() == null) {
+			// 리스트: 활성화상태(true) + 부서명
+			return this.dao.findByEnabledAndDepartmentId(true, dto.getDeptId(), paging);
+		} else if (dto.getDeptId() != null && dto.getSearchText() != null) {
+			// 리스트: 활성화상태(true) + 부서명 + 이름 or 전화번호
+			return switch (dto.getSearchWord()) {
+			case "name" ->
+				this.dao.findByEnabledAndDepartmentIdAndNameContaining(true, dto.getDeptId(), dto.getSearchText(), paging);
+			case "tel" ->
+				this.dao.findByEnabledAndDepartmentIdAndTelContaining(true, dto.getDeptId(), dto.getSearchText(), paging);
+			default -> throw new IllegalArgumentException("swich_2 - Invalid search word: " + dto.getSearchWord());
+			};
 		}
 
-		// 간단한 switch 처리 (실제론 Specification으로 해도 좋음)
-		switch (field) {
-		case "name":
-			return dao.findByNameContainingAndEnabledTrue(keyword);
-		case "tel":
-			return dao.findByTelContainingAndEnabledTrue(keyword);
-
-		default:
-			return dao.findAll();
-		}
-	}
+		return null;
+	} // getSearchListData
 
 	@Override
 	public List<EmployeeHierarchyDTO> findByEnabledAndPositionInOrderByDepartment() {
@@ -80,7 +104,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 	@Override
 	public List<Employee> getEmployeesByDepartmentId(Long deptId) {
-	    return dao.findByEnabledAndDepartment_Id(true, deptId);
+		return dao.findByEnabledAndDepartment_Id(true, deptId);
 	}
 
 // ================= 회원가입 로직 =======================
@@ -198,6 +222,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 //	        String prefix = getRolePrefixFromPosition(dto.getPosition());
 //	        String empno = generateEmpno(prefix, dto.getCrtDate());
 //
+			String newPassword = dto.getPassword();
 
 			employee.setPosition(dto.getPosition()); // 직급 _ front
 			employee.setDepartment(department); // 부서 _ front

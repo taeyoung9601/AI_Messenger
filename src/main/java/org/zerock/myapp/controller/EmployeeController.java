@@ -3,8 +3,11 @@ package org.zerock.myapp.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -42,24 +45,21 @@ public class EmployeeController {
 	DepartmentRepository dao;
 
 	@GetMapping
-	public List<Employee> list() { // 리스트
+	Page<Employee> list(
+			@ModelAttribute EmployeeDTO dto,
+			@RequestParam(name = "currPage", required = false, defaultValue = "0") Integer currPage, // 페이지 시작 값은 0부터
+			@RequestParam(name = "pageSize", required = false, defaultValue = "8") Integer pageSize // 기본 페이지 사이즈 8
+		) { // 리스트
 		log.debug("list() invoked.");
-
-		List<Employee> list = service.getAllList();
-
+		log.debug("dto: {}, currPage: {}, pageSize: {}", dto, currPage, pageSize);
+		
+		Pageable paging = PageRequest.of(currPage, pageSize, Sort.by("crtDate").descending());	// Pageable 설정
+		Page<Employee> list = this.service.getSearchList(dto, paging);
+		
+		list.forEach(p -> log.info(p.toString()));
+		
 		return list;
 	} // list
-
-	@GetMapping("/search")
-	public ResponseEntity<List<Employee>> searchEmployees(@RequestParam String searchWord,
-			@RequestParam String searchText) {
-		EmployeeDTO dto = new EmployeeDTO();
-		dto.setSearchWord(searchWord);
-		dto.setSearchText(searchText);
-
-		List<Employee> result = service.getSearchList(dto);
-		return ResponseEntity.ok(result);
-	}
 
 	@GetMapping("/selectlist")
 	public ResponseEntity<List<EmployeeHierarchyDTO>> getGroupLeaders() {
@@ -67,11 +67,16 @@ public class EmployeeController {
 	    return ResponseEntity.ok(result);
 	} // 부서장 + 팀장
 	
-	@GetMapping("/department/{deptId}")
-	public ResponseEntity<List<Employee>> getEmployeesByDepartment(@PathVariable Long deptId) {
-	    List<Employee> employees = service.getEmployeesByDepartmentId(deptId);
-	    return ResponseEntity.ok(employees);
-	}
+//	@GetMapping("/department/{deptId}")
+//	public ResponseEntity<?> getEmployeesByDepartment(@PathVariable Long deptId) {
+//	    List<Employee> employees = service.getEmployeesByDepartmentId(deptId);
+//	    if (employees.isEmpty()) {
+//	    	return ResponseEntity
+//	    			.status(HttpStatus.NOT_FOUND)
+//					.body("해당 부서에 사원이 없습니다");
+//	    }
+//	    return ResponseEntity.ok(employees);
+//	}
 
 	@PostMapping("/register")
 	ResponseEntity<?> register(@ModelAttribute EmployeeDTO dto) { // 등록 처리

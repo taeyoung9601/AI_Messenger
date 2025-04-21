@@ -29,10 +29,11 @@ public class FileController {
 	
 	
 	@PostMapping("/upload")
-		public void upload(@RequestParam MultipartFile file) {
-			service.save(file);
-			return;
-		};
+	public void upload(@RequestParam MultipartFile file) {
+		log.info("📤 upload() 호출됨"); 
+		service.save(file);
+		return;
+	};
 		
 	
 	@GetMapping("/get/{file}")

@@ -14,11 +14,11 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
-import org.zerock.myapp.controller.common.JwtPrincipal;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.domain.EmployeeHierarchyDTO;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.persistence.DepartmentRepository;
+import org.zerock.myapp.secutity.JwtPrincipal;
 import org.zerock.myapp.service.EmployeeService;
 
 import lombok.NoArgsConstructor;

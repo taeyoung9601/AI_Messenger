@@ -10,14 +10,14 @@
 
     <script defer>
       // Note: `ws:URL` if http protocol used, `wss:URL` if https protocol used.
-        var socket = new WebSocket("wss://localhost/chatroom/room1");
+        var socket = new WebSocket("wss://192.168.0.83/chatroom?chatId=1");
       console.log('socket:', socket);
    
       var uuid;
       
         socket.onopen = e => {
            console.debug('onopen invoked:', e);
-           console.log("Connected to /chat/room1 endpoint.");
+           console.log("Connected to /chatroom endpoint.");
            
            uuid = crypto.randomUUID().split('-')[0];
            console.log('\t+ uuid:', uuid);
@@ -33,7 +33,7 @@
         
         socket.onclose = () => {
            console.debug('onclose invoked.');
-           console.log("Disconnected from /chat/room1 endpoint.");
+           console.log("Disconnected from /chatroom endpoint.");
            
            uuid = "";
         };

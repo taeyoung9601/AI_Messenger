@@ -37,16 +37,6 @@ public class WorkServiceImpl implements WorkService {
     }//postConstruct
 
 
-	// 담당자 조회
-//	@Override
-//	public List<WorkEmployee> getWorkEmployeesByEnabledAndEmpno(Boolean enabled, String empno) {	
-//		log.debug("WorkServiceImpl -- findByEnabledAndEmpno({},{}) invoked",enabled,empno);
-//		
-//		List<WorkEmployee> list = this.WEDao.findByEnabledAndId_Empno(true, empno);
-//		
-//		return list;
-//	} // findByEnabledAndEmpno
-	
 	// 담당자의 업무 조회
 	@Override
 	public List<Work> getManagedWorksByEnabledAndEmpno(

@@ -95,6 +95,8 @@ public class Project implements Serializable {
 	private Employee pjtManager; // 담당자 ID
 
 
+
+
 //	public Chat addChat(Chat Chat) {
 //		getChats().add(Chat);
 //		Chat.setProject(this);

@@ -26,16 +26,12 @@ import lombok.Data;
 
 @Data
 
-//JSON 으로 변환해서 보낼때, 제외 할 항목
-@JsonIgnoreProperties({
-	"udtDate"
-})
 
 // 파일 엔티티
 
 @Entity
 @Table(name="T_FILE")
-public class File implements Serializable {
+public class UpFile implements Serializable {
 	@Serial private static final long serialVersionUID = 1L;
 
 	@Id @GeneratedValue(strategy = GenerationType.IDENTITY, generator = "ko")

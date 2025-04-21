@@ -1,68 +1,54 @@
 package org.zerock.myapp.controller;
 
-import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
+import org.zerock.myapp.service.FileService;
 
-import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 
-/**
- * 파일 Controller
- */
+
 
 @Slf4j
-@NoArgsConstructor
-
 @RequestMapping("/file")
 @RestController
+@RequiredArgsConstructor
 public class FileController {
 	
-	@GetMapping
-	String list() { // 리스트
-		log.debug("list() invoked.");
-		
-		return "list";
-	} // list
+	private final FileService service;
 	
-	@PostMapping
-	String register() { // 등록 처리
-		log.debug("register() invoked.");
-		
-		return "register";
-	} // register
 	
-	@GetMapping(path = "/{id}")
-	String read( // 세부 조회
-			@PathVariable Long id
-			) {
-		log.debug("read({}) invoked.",id);
+	@PostMapping("/upload")
+	public void upload(@RequestParam MultipartFile file) {
+		log.info("📤 upload() 호출됨"); 
+		service.save(file);
+		return;
+	};
 		
-		return "read";
-	} // read
 	
-	@PutMapping(path = "/{id}")
-	String update( // 수정 처리
-			@PathVariable Long id
-			) { 
-		log.debug("update({}) invoked.",id);
+	@GetMapping("/get/{file}")
+	public ResponseEntity<Resource> getFile(@PathVariable String file) {
+		Resource resource = service.getFile(file);
 		
-		return "update";
-	} // update
-	
-	@DeleteMapping(path = "/{id}")
-	String delete( // 삭제 처리
-			@PathVariable Long id
-			) {
-		log.debug("delete({}) invoked.",id);
+		if(resource != null) {
+			return ResponseEntity.ok()
+			.header(HttpHeaders.CONTENT_DISPOSITION, 
+					"attachment; filename=\""  + resource.getFilename() + "\"" )
+			.contentType(MediaType.APPLICATION_OCTET_STREAM)
+			.body(resource);
+			}
+		return ResponseEntity.internalServerError().build();
+	}
 		
-		return "delete";
-	} // delete
-	
-
+			
 } // end class

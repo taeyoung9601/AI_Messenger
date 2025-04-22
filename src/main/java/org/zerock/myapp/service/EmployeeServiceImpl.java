@@ -117,7 +117,6 @@ public class EmployeeServiceImpl implements EmployeeService {
 					.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 부서 ID입니다."));
 
 			Employee employee = new Employee();
-			// 사번 생성 로직2 ( 테스트 중 )
 			String prefix = getRolePrefixFromPosition(dto.getPosition());
 			String empno = generateEmpno(prefix, dto.getCrtDate());
 
@@ -217,11 +216,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 			Employee employee = dao.findById(dto.getEmpno())
 					.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사원입니다."));
-			// 사번 생성 로직2 ( 테스트 중 )
 
-//	        String prefix = getRolePrefixFromPosition(dto.getPosition());
-//	        String empno = generateEmpno(prefix, dto.getCrtDate());
-//
 			String newPassword = dto.getPassword();
 
 			employee.setPosition(dto.getPosition()); // 직급 _ front

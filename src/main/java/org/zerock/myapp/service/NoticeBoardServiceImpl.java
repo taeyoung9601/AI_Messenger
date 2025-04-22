@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.BoardDTO;
 import org.zerock.myapp.entity.Board;
@@ -12,6 +14,7 @@ import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.exception.ServiceException;
 import org.zerock.myapp.persistence.BoardRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
+import org.zerock.myapp.secutity.JwtPrincipal;
 
 import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
@@ -63,7 +66,12 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 		
 		Board data = new Board();//dao.save(dto);
 		try {
-			Employee employee = edao.findById(dto.getAuthorEmpno())
+	        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	        JwtPrincipal principal = (JwtPrincipal) auth.getPrincipal();
+	        String empno = principal.getEmpno();
+	        
+	        
+			Employee employee = this.edao.findById(empno)
 					.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사원 ID입니다."));
 			
 			data.setEmployee(employee);//임시
@@ -90,7 +98,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 		log.debug("BoardServiceImpl -- getById({}) invoked", id);
 		
 		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
-		Optional<Board> optional = dao.findById(id);
+		Optional<Board> optional = this.dao.findByEnabledAndId(true, id);
 		if (optional.isPresent()) {
 			Board board = optional.get();			log.debug("Found: {}", optional.get());
 			board.setCount(board.getCount() + 1);
@@ -109,7 +117,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 	public Board update(Long id, BoardDTO dto) {//수정 처리
 		log.debug("BoardServiceImpl -- update({}) invoked", dto);
 
-		Board post = dao.findById(dto.getId())
+		Board post = this.dao.findByEnabledAndId(true, id)
 	            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 		
 		try {
@@ -129,7 +137,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 		log.debug("BoardServiceImpl -- deleteById({}) invoked", id);
 
 		try {
-			Optional<Board> optionalBoard = this.dao.findById(id);
+			Optional<Board> optionalBoard = this.dao.findByEnabledAndId(true, id);
 	
 			if (optionalBoard.isPresent()) {
 				Board board = optionalBoard.get();

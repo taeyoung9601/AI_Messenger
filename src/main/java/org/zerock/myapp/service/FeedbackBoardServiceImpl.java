@@ -38,13 +38,22 @@ public class FeedbackBoardServiceImpl implements FeedbackBoardService {
 
 	@Override
 	public Page<Board> getSearchList(BoardDTO dto, Pageable paging) {	//검색 있는 전체 리스트
-		log.debug("FeedbackBoardServiceImpl -- getSearchList(()) invoked", dto);
+		log.debug("FeedbackBoardServiceImpl -- getSearchList(()) invoked", dto);		
+
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        JwtPrincipal principal = (JwtPrincipal) auth.getPrincipal();
+        String empno = principal.getEmpno();
+
+        boolean CEO = auth.getAuthorities().stream()
+        		.anyMatch(a -> 
+                a.getAuthority().equals("ROLE_CEO") || a.getAuthority().equals("ROLE_SystemManager")
+            );        
 		
 		if(dto.getSearchWord() != null && dto.getSearchWord().length() == 0) dto.setSearchWord(null);
 		if(dto.getSearchText() != null && dto.getSearchText().length() == 0) dto.setSearchText(null);
 		
 		
-		if(dto.getPosition() == 4) {
+		if(CEO) {
 			//CEO
 			if (dto.getSearchText() == null) {
 				// 검색 리스트: 활성화상태(true)
@@ -62,13 +71,13 @@ public class FeedbackBoardServiceImpl implements FeedbackBoardService {
 			//일반 직원
 			if (dto.getSearchText() == null) {
 				// 검색 리스트: 활성화상태(true)
-				return this.dao.findByEnabledAndTypeAndEmployee_Empno(true, dto.getType(), dto.getAuthorEmpno(), paging);
+				return this.dao.findByEnabledAndTypeAndEmployee_Empno(true, dto.getType(), empno, paging);
 
 			} 
 			else if (dto.getSearchText() != null) {
 				return switch (dto.getSearchWord()) {
-						case "title" -> this.dao.findByEnabledAndTypeAndTitleContainingAndEmployee_Empno(true, dto.getType(), dto.getSearchText(), dto.getAuthorEmpno(), paging);
-						case "author" -> this.dao.findByEnabledAndTypeAndEmployee_EmpnoAndEmployee_NameContaining(true, dto.getType(), dto.getSearchText(), dto.getAuthorEmpno(), paging);
+						case "title" -> this.dao.findByEnabledAndTypeAndTitleContainingAndEmployee_Empno(true, dto.getType(), dto.getSearchText(), empno, paging);
+						case "author" -> this.dao.findByEnabledAndTypeAndEmployee_EmpnoAndEmployee_NameContaining(true, dto.getType(), dto.getSearchText(), empno, paging);
 						default -> throw new IllegalArgumentException("swich_1 - Invalid search word: " + dto.getSearchWord());
 					};
 			}
@@ -85,7 +94,12 @@ public class FeedbackBoardServiceImpl implements FeedbackBoardService {
 		
 		Board data = new Board();//dao.save(dto);
 		try {
-			Employee employee = edao.findById(dto.getAuthorEmpno())
+	        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	        JwtPrincipal principal = (JwtPrincipal) auth.getPrincipal();
+	        String empno = principal.getEmpno();
+	        
+	        
+			Employee employee = this.edao.findById(empno)
 					.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사원 ID입니다."));
 			
 			data.setEmployee(employee);//임시
@@ -111,7 +125,7 @@ public class FeedbackBoardServiceImpl implements FeedbackBoardService {
 		log.debug("FeedbackBoardServiceImpl -- getById({}) invoked", id);
 		
 		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
-		Optional<Board> optional = dao.findById(id);
+		Optional<Board> optional = this.dao.findByEnabledAndId(true, id);
 		if (optional.isPresent()) {
 			Board board = optional.get();
 			log.debug("Found: {}", optional.get());
@@ -126,11 +140,12 @@ public class FeedbackBoardServiceImpl implements FeedbackBoardService {
 		}
 	} // getById
 	
+	
 	@Override
 	public Board update(Long id, BoardDTO dto) {//수정 처리
 		log.debug("FeedbackBoardServiceImpl -- update({}) invoked", dto);
 
-		Board post = dao.findById(dto.getId())
+		Board post = this.dao.findByEnabledAndId(true, id)
 	            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
 		
 		try {
@@ -142,13 +157,14 @@ public class FeedbackBoardServiceImpl implements FeedbackBoardService {
 	         throw new IllegalArgumentException("게시글 수정에 실패했습니다. 다시 시도해 주세요.");
 	      }
 	} // update
+	
 
 	@Override
 	public Board deleteById(Long id) throws ServiceException { // 삭제 처리
 		log.debug("FeedbackBoardServiceImpl -- deleteById({}) invoked", id);
 
 		try {
-			Optional<Board> optionalBoard = this.dao.findById(id);
+			Optional<Board> optionalBoard = this.dao.findByEnabledAndId(true, id);
 	
 			if (optionalBoard.isPresent()) {
 				Board board = optionalBoard.get();
@@ -164,28 +180,6 @@ public class FeedbackBoardServiceImpl implements FeedbackBoardService {
 		}
 		return null;
 	} // delete
-	
-	
-	 /** 3) 건의 목록 (CEO: 전체, 그 외: 자신의 것만) */
-	@Override
-    public Optional<Board> listFeedbacksForCurrentUser() {
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        JwtPrincipal principal = (JwtPrincipal) auth.getPrincipal();
-        String empno = principal.getEmpno();
-
-        boolean CEO = auth.getAuthorities().stream()
-        		.anyMatch(a -> 
-                a.getAuthority().equals("ROLE_CEO") || a.getAuthority().equals("ROLE_SystemManager")
-            );
-
-        if (CEO) {
-            // type=2: 건의 전체 리스트
-            return dao.findByType(2);
-        } else {
-            // type=2 & employee.empno = 내 사번
-            return dao.findByTypeAndEmployee_Empno(2, empno);
-        }
-    }
 	
 	
 	

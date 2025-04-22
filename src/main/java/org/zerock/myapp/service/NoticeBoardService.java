@@ -1,5 +1,8 @@
 package org.zerock.myapp.service;
 
+import java.util.List;
+import java.util.Optional;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.zerock.myapp.domain.BoardDTO;
@@ -15,5 +18,7 @@ public interface NoticeBoardService {
 	public abstract Board getById(Long id);    // 단일 조회
 	public abstract Board update(Long id, BoardDTO dto);    	// 수정 처리
 	public abstract Board deleteById(Long id) throws ServiceException;// 삭제 처리
+	
+	public abstract Optional<Board> listFeedbacksForCurrentUser();
 	
 }//end interface

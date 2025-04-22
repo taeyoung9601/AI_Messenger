@@ -6,6 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -45,6 +47,13 @@ public class SecurityConfig {
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", cfg);
         return source;
+    }
+    
+    @Bean
+    public AuthenticationManager authenticationManager(
+            AuthenticationConfiguration authenticationConfiguration
+    ) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
     
     
@@ -87,7 +96,7 @@ public class SecurityConfig {
             
                 .authorizeHttpRequests(auth -> auth
                 	    
-                		 // SYSTEM_MANAGER는 모든 요청 허용
+                		  //SYSTEM_MANAGER는 모든 요청 허용
 //                	    .requestMatchers("/**").hasRole("SystemManager")
                 		
                 	    .requestMatchers(
@@ -98,10 +107,10 @@ public class SecurityConfig {
                 	        "/project/status",
                 	        "/employee",
                 	        "/employee/**",
-                	        "/board/Notice/list",
+                	        "/board/notice/list",
                 	        "/file/upload"
                 	    ).permitAll()
-                	    .requestMatchers(HttpMethod.GET, "/board/Notice/{id}").permitAll()
+                	    .requestMatchers(HttpMethod.GET, "/board/notice/{id}").permitAll()
                 	    .requestMatchers(HttpMethod.GET, "/board/Feedback/{id}").permitAll()
                 	    .requestMatchers(HttpMethod.PUT, "/board/Feedback/{id}").permitAll()
                 	    .requestMatchers(HttpMethod.DELETE, "/board/Feedback/{id}").permitAll()

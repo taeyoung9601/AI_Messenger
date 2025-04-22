@@ -5,6 +5,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -17,7 +18,8 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.BoardDTO;
 import org.zerock.myapp.entity.Board;
 import org.zerock.myapp.exception.ServiceException;
-import org.zerock.myapp.service.NoticeBoardService;
+import org.zerock.myapp.secutity.JwtPrincipal;
+import org.zerock.myapp.service.BoardService;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -43,7 +45,8 @@ public class NoticeBoardController {
 			 BoardDTO dto,
 			@RequestParam(name = "currPage", required = false, defaultValue = "1") Integer currPage, // 페이지 시작 값은 0부터
 			@RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize // 기본 페이지 사이즈 8
-		) { // 리스트
+		
+			) { // 리스트
 		log.debug("list({}) invoked.", dto);
 		
 		dto.setType(1); // 공지
@@ -51,6 +54,8 @@ public class NoticeBoardController {
 		Pageable paging = PageRequest.of(currPage-1, pageSize, Sort.by("crtDate").descending());	// Pageable 설정
 		
 		Page<Board> list = this.service.getSearchList(dto, paging); 
+		
+	
 		
 		return list;
 	} // list

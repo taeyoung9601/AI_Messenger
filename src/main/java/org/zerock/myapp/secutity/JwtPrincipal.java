@@ -76,23 +76,32 @@ public class JwtPrincipal implements UserDetails {
 // 사용 예제
 
 //@GetMapping("/me")
-
 //public ResponseEntity<?> getMyInfo(@AuthenticationPrincipal JwtPrincipal principal) {
-
 //    return ResponseEntity.ok("사번: " + principal.getEmpno() +
-
 //                             ", 이름: " + principal.getUsername() +
-
 //                             ", 권한: " + principal.getRole());
-
 //}
 
 // 하나만 꺼낼때.
-
 //@GetMapping("/empno")
-
 //public ResponseEntity<String> getEmpno(@AuthenticationPrincipal JwtPrincipal principal) {
-
 //    return ResponseEntity.ok(principal.getEmpno());
-
 //}
+
+//@Service
+//public class YourService {
+//    
+//    public List<YourDto> listSomething(...) {
+//        JwtPrincipal principal = 
+//            (JwtPrincipal) SecurityContextHolder
+//                .getContext()
+//                .getAuthentication()
+//                .getPrincipal();
+//        
+//        String empno = principal.getEmpno();
+//        // empno 이용한 비즈니스 로직...
+//    }
+//}
+
+
+

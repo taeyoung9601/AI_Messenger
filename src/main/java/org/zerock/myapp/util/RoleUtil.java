@@ -24,12 +24,12 @@ public class RoleUtil {
 	
     public static String getRedirectUrlByRole(String roles) {
         switch (roles) {
-            case "ROLE_Employee": return "/chat";
-            case "ROLE_TeamLeader": return "/chat";
-            case "ROLE_DepartmentLeader": return "/chat";
-            case "ROLE_CEO": return "/chat";
-            case "ROLE_HireManager": return "/member/list";
-            case "ROLE_SystemManager": return "/member/list";
+            case "Employee": return "/chat";
+            case "TeamLeader": return "/chat";
+            case "DepartmentLeader": return "/chat";
+            case "CEO": return "/chat";
+            case "HireManager": return "/member/list";
+            case "SystemManager": return "/member/list";
             default: return "/chat";
         }
     } // 로그인 이후 해당 역할에 따라 다른 초기 메인 주소.

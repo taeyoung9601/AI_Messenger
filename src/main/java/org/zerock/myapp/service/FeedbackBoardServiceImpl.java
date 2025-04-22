@@ -5,6 +5,8 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.BoardDTO;
 import org.zerock.myapp.entity.Board;
@@ -12,6 +14,7 @@ import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.exception.ServiceException;
 import org.zerock.myapp.persistence.BoardRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
+import org.zerock.myapp.secutity.JwtPrincipal;
 
 import jakarta.annotation.PostConstruct;
 import lombok.NoArgsConstructor;
@@ -161,6 +164,29 @@ public class FeedbackBoardServiceImpl implements FeedbackBoardService {
 		}
 		return null;
 	} // delete
+	
+	
+	 /** 3) 건의 목록 (CEO: 전체, 그 외: 자신의 것만) */
+	@Override
+    public Optional<Board> listFeedbacksForCurrentUser() {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        JwtPrincipal principal = (JwtPrincipal) auth.getPrincipal();
+        String empno = principal.getEmpno();
+
+        boolean CEO = auth.getAuthorities().stream()
+        		.anyMatch(a -> 
+                a.getAuthority().equals("ROLE_CEO") || a.getAuthority().equals("ROLE_SystemManager")
+            );
+
+        if (CEO) {
+            // type=2: 건의 전체 리스트
+            return dao.findByType(2);
+        } else {
+            // type=2 & employee.empno = 내 사번
+            return dao.findByTypeAndEmployee_Empno(2, empno);
+        }
+    }
+	
 	
 	
 }//end class

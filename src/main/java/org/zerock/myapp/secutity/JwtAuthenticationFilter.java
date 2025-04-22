@@ -75,24 +75,15 @@ protected void doFilterInternal(HttpServletRequest request,
             return;
         }
 
-        // 4. GrantedAuthority 리스트 생성 (ROLE_ 접두사 붙이기)
+        // 4. GrantedAuthority 리스트 생성
         Collection<GrantedAuthority> authorities = roles.stream()
             .map(r -> new SimpleGrantedAuthority("ROLE_" + r))
+//            .map(SimpleGrantedAuthority::new) // 있는 문자열 그대로 "employee"
             .collect(Collectors.toList());
 
         // 5. Principal 생성 및 SecurityContext에 Authentication 주입
         JwtPrincipal principal = new JwtPrincipal(
-            empno,
-            roles.get(0),   // JwtPrincipal 생성자가 단일 role만 받을 경우 첫 번째로
-            name,
-            loginId,
-            password,
-            tel,
-            address,
-            zipCode,
-            email,
-            position,
-            department
+        		empno,roles.get(0),name,loginId,password,tel,address,zipCode,email,position,department
         );
 
         Authentication auth = new UsernamePasswordAuthenticationToken(principal, null, authorities);

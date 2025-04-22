@@ -84,6 +84,7 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 		return data;
 	} // create
 	
+	
 	@Override
 	public Board getById(Long id) {	// 단일 조회
 		log.debug("BoardServiceImpl -- getById({}) invoked", id);
@@ -102,6 +103,8 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 		}
 	} // getById
 	
+	
+	
 	@Override
 	public Board update(Long id, BoardDTO dto) {//수정 처리
 		log.debug("BoardServiceImpl -- update({}) invoked", dto);
@@ -119,6 +122,8 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 	      }
 	} // update
 
+	
+	
 	@Override
 	public Board deleteById(Long id) throws ServiceException { // 삭제 처리
 		log.debug("BoardServiceImpl -- deleteById({}) invoked", id);
@@ -139,7 +144,13 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 			throw new ServiceException("프로젝트 삭제 중 오류가 발생했습니다.", e);
 		}
 		return null;
-	} // delete
+	}
+
+
+	@Override
+	public Optional<Board> listFeedbacksForCurrentUser() {
+		return Optional.empty();
+	}
 	
 	
 }//end class

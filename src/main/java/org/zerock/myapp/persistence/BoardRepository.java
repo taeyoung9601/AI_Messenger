@@ -1,5 +1,6 @@
 package org.zerock.myapp.persistence;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Page;
@@ -43,6 +44,12 @@ public interface BoardRepository extends JpaRepository<Board, Long>, JpaSpecific
 	
 	public abstract Optional<Board> findByTitle(String title);
 	public abstract Optional<Board> findByEmployee (Employee employee);
+	
+	// 건의 전체 조회 (CEO용)
 	public abstract Optional<Board> findByType(Integer Type);
+	
+	 // 내 건의 조회 (type=2, empno 기준)
+    public abstract Optional<Board> findByTypeAndEmployee_Empno(Integer type, String empno);
+
 	
 } // end interface

@@ -51,7 +51,8 @@ public class FeedBackBoardController {
 
 		return list;
 	} // list
-
+	
+	
 	@PostMapping("/create")
 	Board create(@ModelAttribute BoardDTO dto) { // 등록 처리
 		log.debug("register() invoked.");

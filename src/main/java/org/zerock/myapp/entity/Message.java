@@ -61,6 +61,8 @@ public class Message implements Serializable {
 	@Column
 	private Date udtDate; // 수정일
 
+	@Column(nullable = false, length = 20)
+	private String type; // "MESSAGE", "JOIN", "LEAVE", "INVITE" 등
 
 	@ManyToOne
 	@JoinColumn(name="CHAT_ID")

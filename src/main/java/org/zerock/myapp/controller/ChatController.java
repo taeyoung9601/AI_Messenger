@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.ChatDTO;
 import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.ChatEmployee;
-import org.zerock.myapp.secutity.JwtAuthenticationFilter;
 import org.zerock.myapp.service.ChatService;
 
 import lombok.NoArgsConstructor;
@@ -39,7 +38,7 @@ public class ChatController {
 	List<ChatEmployee> myList(@PathVariable String empno) { // 리스트
 		log.debug("list() invoked.");
 		return this.chatService.findMyList(empno);
-	} // list
+	} // list	
 	
 	@PostMapping
 	Chat register(@ModelAttribute ChatDTO dto, @RequestParam String empno) { // 등록 처리

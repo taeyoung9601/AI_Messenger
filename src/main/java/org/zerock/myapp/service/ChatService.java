@@ -14,4 +14,7 @@ public interface ChatService {
 	public abstract Boolean update(ChatDTO dto, Long id);    	// 수정 처리
 	public abstract Chat deleteById(Long id,String empno);// 삭제 처리
 	
+	public abstract void inviteEmployee(Long chatId, String empno);
+	public abstract void leaveChat(Long chatId, String empno);
+	
 }//end interface

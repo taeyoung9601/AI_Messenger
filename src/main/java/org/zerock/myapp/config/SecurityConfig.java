@@ -64,9 +64,9 @@ public class SecurityConfig {
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
                 
-//                .authorizeHttpRequests(auth -> auth
-//                        .anyRequest().permitAll()
-//                ) // 테스트 용.
+                .authorizeHttpRequests(auth -> auth
+                        .anyRequest().permitAll()
+                ) // 테스트 용.
                 
 //             // 권한·인증 예외 처리
 //                .exceptionHandling(exception -> exception
@@ -94,75 +94,75 @@ public class SecurityConfig {
 //                    .permitAll()
 //                )
             
-                .authorizeHttpRequests(auth -> auth
-                	    
-                		  //SYSTEM_MANAGER는 모든 요청 허용
-//                	    .requestMatchers("/**").hasRole("SystemManager")
-                		
-                	    .requestMatchers(
-                	        "/auth/login",
-                	        "/employee/{empno}",
-                	        "/board/Notice",
-                	        "/board/Feedback/register",
-                	        "/project/status",
-                	        "/employee",
-                	        "/employee/**",
-                	        "/board/notice/list",
-                	        "/file/upload"
-                	    ).permitAll()
-                	    .requestMatchers(HttpMethod.GET, "/board/notice/{id}").permitAll()
-                	    .requestMatchers(HttpMethod.GET, "/board/Feedback/{id}").permitAll()
-                	    .requestMatchers(HttpMethod.PUT, "/board/Feedback/{id}").permitAll()
-                	    .requestMatchers(HttpMethod.DELETE, "/board/Feedback/{id}").permitAll()
-                	    .requestMatchers(HttpMethod.GET, "/department/**").permitAll()
-
-                	    // 인사담당자.
+//                .authorizeHttpRequests(auth -> auth
+//                	    
+//                		  //SYSTEM_MANAGER는 모든 요청 허용
+////                	    .requestMatchers("/**").hasRole("SystemManager")
+//                		
 //                	    .requestMatchers(
+//                	        "/auth/login",
+//                	        "/employee/{empno}",
+//                	        "/board/Notice",
+//                	        "/board/Feedback/register",
+//                	        "/project/status",
 //                	        "/employee",
-//                	        "/employee/**"
-//                	    ).hasRole("HireManager")
-
-                	    // 프로젝트.
-                	    .requestMatchers(
-                	        "/project",
-                	        "/project/**",
-                	        "/project/upComing"
-                	    ).hasAnyRole("DepartmentLeader", "TeamLeader" ,"SystemManager" , "CEO")
-                	    .requestMatchers(HttpMethod.GET, "/project/{id}").hasAnyRole("DepartmentLeader", "TeamLeader" , "SystemManager" , "CEO")
-                	    .requestMatchers(HttpMethod.DELETE, "/work/{id}").hasAnyRole("DepartmentLeader", "TeamLeader" , "SystemManager" , "CEO")
-
-                	    // 업무.
-                	    .requestMatchers(
-                	        "/work",
-                	        "/work/**"
-                	    ).hasAnyRole("Employee", "TeamLeader", "DepartmentLeader" , "SystemManager")
-                	    .requestMatchers(HttpMethod.GET, "/work/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "SystemManager")
-                	    .requestMatchers(HttpMethod.PUT, "/work/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "SystemManager")
-                	    .requestMatchers(HttpMethod.DELETE, "/work/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "SystemManager")
-
-                	    // 게시판.
-                	    .requestMatchers(HttpMethod.GET, "/board/Notice/register").hasAnyRole("Employee", "TeamLeader","DepartmentLeader","CEO", "SystemManager")
-                	    .requestMatchers(HttpMethod.PUT, "/board/Notice/{id}").hasAnyRole("Employee", "TeamLeader","DepartmentLeader","CEO", "SystemManager")
-                	    .requestMatchers(HttpMethod.DELETE, "/board/Notice/{id}").hasAnyRole( "TeamLeader","DepartmentLeader","CEO", "SystemManager")
-
-                	    // 채팅.
-                	    .requestMatchers(HttpMethod.POST, "/chat").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
-                	    .requestMatchers(HttpMethod.GET, "/chat/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
-                	    .requestMatchers(HttpMethod.PUT, "/chat/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
-                	    .requestMatchers(HttpMethod.GET, "/list/{empno}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
-                	    .requestMatchers(HttpMethod.DELETE, "/chat/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
-                	    .requestMatchers(HttpMethod.GET, "/message").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
-                	    .requestMatchers(HttpMethod.POST, "/message/{id}/summarize").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
-
-                	    // CEO
-                	    .requestMatchers(HttpMethod.GET, "/board/Feedback").hasAnyRole("CEO", "SystemManager")
-
-                	   
-                	    
-                	    
-                	    .anyRequest().authenticated()
-//                	    .anyRequest().permitAll()
-                	)
+//                	        "/employee/**",
+//                	        "/board/notice/list",
+//                	        "/file/upload"
+//                	    ).permitAll()
+//                	    .requestMatchers(HttpMethod.GET, "/board/notice/{id}").permitAll()
+//                	    .requestMatchers(HttpMethod.GET, "/board/Feedback/{id}").permitAll()
+//                	    .requestMatchers(HttpMethod.PUT, "/board/Feedback/{id}").permitAll()
+//                	    .requestMatchers(HttpMethod.DELETE, "/board/Feedback/{id}").permitAll()
+//                	    .requestMatchers(HttpMethod.GET, "/department/**").permitAll()
+//
+//                	    // 인사담당자.
+////                	    .requestMatchers(
+////                	        "/employee",
+////                	        "/employee/**"
+////                	    ).hasRole("HireManager")
+//
+//                	    // 프로젝트.
+//                	    .requestMatchers(
+//                	        "/project",
+//                	        "/project/**",
+//                	        "/project/upComing"
+//                	    ).hasAnyRole("DepartmentLeader", "TeamLeader" ,"SystemManager" , "CEO")
+//                	    .requestMatchers(HttpMethod.GET, "/project/{id}").hasAnyRole("DepartmentLeader", "TeamLeader" , "SystemManager" , "CEO")
+//                	    .requestMatchers(HttpMethod.DELETE, "/work/{id}").hasAnyRole("DepartmentLeader", "TeamLeader" , "SystemManager" , "CEO")
+//
+//                	    // 업무.
+//                	    .requestMatchers(
+//                	        "/work",
+//                	        "/work/**"
+//                	    ).hasAnyRole("Employee", "TeamLeader", "DepartmentLeader" , "SystemManager")
+//                	    .requestMatchers(HttpMethod.GET, "/work/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "SystemManager")
+//                	    .requestMatchers(HttpMethod.PUT, "/work/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "SystemManager")
+//                	    .requestMatchers(HttpMethod.DELETE, "/work/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "SystemManager")
+//
+//                	    // 게시판.
+//                	    .requestMatchers(HttpMethod.GET, "/board/Notice/register").hasAnyRole("Employee", "TeamLeader","DepartmentLeader","CEO", "SystemManager")
+//                	    .requestMatchers(HttpMethod.PUT, "/board/Notice/{id}").hasAnyRole("Employee", "TeamLeader","DepartmentLeader","CEO", "SystemManager")
+//                	    .requestMatchers(HttpMethod.DELETE, "/board/Notice/{id}").hasAnyRole( "TeamLeader","DepartmentLeader","CEO", "SystemManager")
+//
+//                	    // 채팅.
+//                	    .requestMatchers(HttpMethod.POST, "/chat").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
+//                	    .requestMatchers(HttpMethod.GET, "/chat/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
+//                	    .requestMatchers(HttpMethod.PUT, "/chat/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
+//                	    .requestMatchers(HttpMethod.GET, "/list/{empno}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
+//                	    .requestMatchers(HttpMethod.DELETE, "/chat/{id}").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
+//                	    .requestMatchers(HttpMethod.GET, "/message").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
+//                	    .requestMatchers(HttpMethod.POST, "/message/{id}/summarize").hasAnyRole("Employee", "TeamLeader", "DepartmentLeader", "CEO", "SystemManager")
+//
+//                	    // CEO
+//                	    .requestMatchers(HttpMethod.GET, "/board/Feedback").hasAnyRole("CEO", "SystemManager")
+//
+//                	   
+//                	    
+//                	    
+//                	    .anyRequest().authenticated()
+////                	    .anyRequest().permitAll()
+//                	)
 
 //                .sessionManagement()
 //                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)

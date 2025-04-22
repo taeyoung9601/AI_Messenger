@@ -3,6 +3,7 @@ package org.zerock.myapp.handler;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
@@ -36,6 +37,8 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
     @Autowired private final MessageService messageService;
     @Autowired private EmployeeRepository employeeRepository;
 
+    private final Set<WebSocketSession> sessions = new HashSet<>();
+    
     private final Map<Long, Set<WebSocketSession>> chatRoomSessions = new ConcurrentHashMap<>();
 
     private final Map<String, Set<WebSocketSession>> userSessions = new ConcurrentHashMap<>();
@@ -90,6 +93,11 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
 
                 for (String targetEmpno : invitedEmpnos) {
                     try {
+                    	WebSocketSession targetSession = findSessionByEmpno(targetEmpno);
+                        if (targetSession != null) {
+                            // 2. chatRoomSessions에 추가
+                            chatRoomSessions.computeIfAbsent(chatId, k -> new HashSet<>()).add(targetSession);
+                        }
                         Employee target = employeeRepository.findById(targetEmpno)
                             .orElseThrow(() -> new NoSuchElementException("사원 정보 없음: " + targetEmpno));
 
@@ -106,7 +114,7 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
                 }
 
                 MessageDTO systemMsg = new MessageDTO();
-                systemMsg.setType("SYSTEM");
+                systemMsg.setType("INVITE");
                 systemMsg.setDetail(invitedEmpnos.size() + "명이 초대되었습니다"); //  content
                 systemMsg.setChatId(messageDTO.getChatId());
                 log.debug("브로드캐스트 메시지: {}", systemMsg.getDetail());
@@ -231,5 +239,15 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
                      .orElseThrow(() -> 
                          new IllegalArgumentException("empno 파라미터 형식이 잘못되었습니다"));
     }// getEmpnoFromSession
+    
+    public WebSocketSession findSessionByEmpno(String empno) {
+        for (WebSocketSession session : sessions) { // sessions: 현재 연결된 모든 세션의 Set
+            Object sessionEmpno = session.getAttributes().get("empno");
+            if (empno.equals(sessionEmpno)) {
+                return session;
+            }
+        }
+        return null; // 찾는 세션이 없으면 null 반환
+    }
     
 }

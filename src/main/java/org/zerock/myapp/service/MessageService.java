@@ -10,4 +10,4 @@ public interface MessageService {
 	public abstract Message saveMessage(MessageDTO dto);			// 메세지 저장
 	public abstract String summarizeMessage(Long id, String start, String end); // 메세지 요약
 	
-}//end interface
+}//end interface 

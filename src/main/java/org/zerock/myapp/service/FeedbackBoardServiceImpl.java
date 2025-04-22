@@ -21,43 +21,64 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 
-@Service("FeedbackBoardService")
-public class FeedbackServiceImpl implements BoardService {
+@Service
+public class FeedbackBoardServiceImpl implements FeedbackBoardService {
     @Autowired BoardRepository dao;
     @Autowired EmployeeRepository edao;
 	
 	@PostConstruct
     void postConstruct(){
-        log.debug("FeedbackServiceImpl -- postConstruct() invoked");
+        log.debug("FeedbackBoardServiceImpl -- postConstruct() invoked");
         log.debug("dao: {}", dao);
     }//postConstruct
 
 
 	@Override
 	public Page<Board> getSearchList(BoardDTO dto, Pageable paging) {	//검색 있는 전체 리스트
-		log.debug("BoardServiceImpl -- getSearchList(()) invoked", dto);
+		log.debug("FeedbackBoardServiceImpl -- getSearchList(()) invoked", dto);
 		
 		if(dto.getSearchWord() != null && dto.getSearchWord().length() == 0) dto.setSearchWord(null);
 		if(dto.getSearchText() != null && dto.getSearchText().length() == 0) dto.setSearchText(null);
-
-		if (dto.getSearchText() == null) {
-			// 검색 리스트: 활성화상태(true)
-			return this.dao.findByEnabledAndType(true, dto.getType(), paging);
-
-		} 
-		else if (dto.getSearchText() != null) {
-			return switch (dto.getSearchWord()) {
-			case "name" -> this.dao.findByEnabledAndTypeAndTitleContaining(true, dto.getType(), dto.getSearchText(), paging);
-			default -> throw new IllegalArgumentException("swich_1 - Invalid search word: " + dto.getSearchWord());
-			};
-
+		
+		
+		if(dto.getPosition() == 4) {
+			//CEO
+			if (dto.getSearchText() == null) {
+				// 검색 리스트: 활성화상태(true)
+				return this.dao.findByEnabledAndType(true, dto.getType(), paging);
+			} 
+			else if (dto.getSearchText() != null) {
+				return switch (dto.getSearchWord()) {
+						case "title" -> this.dao.findByEnabledAndTypeAndTitleContaining(true, dto.getType(), dto.getSearchText(), paging);
+						case "author" -> this.dao.findByEnabledAndTypeAndEmployee_NameContaining(true, dto.getType(), dto.getSearchText(), paging);
+						default -> throw new IllegalArgumentException("swich_1 - Invalid search word: " + dto.getSearchWord());
+					};
+			}
 		}
+		else {
+			//일반 직원
+			if (dto.getSearchText() == null) {
+				// 검색 리스트: 활성화상태(true)
+				return this.dao.findByEnabledAndTypeAndEmployee_Empno(true, dto.getType(), dto.getAuthorEmpno(), paging);
+
+			} 
+			else if (dto.getSearchText() != null) {
+				return switch (dto.getSearchWord()) {
+						case "title" -> this.dao.findByEnabledAndTypeAndTitleContainingAndEmployee_Empno(true, dto.getType(), dto.getSearchText(), dto.getAuthorEmpno(), paging);
+						case "author" -> this.dao.findByEnabledAndTypeAndEmployee_EmpnoAndNameContaining(true, dto.getType(), dto.getSearchText(), dto.getAuthorEmpno(), paging);
+						default -> throw new IllegalArgumentException("swich_1 - Invalid search word: " + dto.getSearchWord());
+					};
+			}
+		}
+
+		
+		
 		return null;
 	} // getSearchList
 	
 	@Override
 	public Board create(BoardDTO dto) {	//등록 처리
-		log.debug("BoardServiceImpl -- create({}) invoked", dto);
+		log.debug("FeedbackBoardServiceImpl -- create({}) invoked", dto);
 		
 		Board data = new Board();//dao.save(dto);
 		try {
@@ -84,7 +105,7 @@ public class FeedbackServiceImpl implements BoardService {
 	
 	@Override
 	public Board getById(Long id) {	// 단일 조회
-		log.debug("BoardServiceImpl -- getById({}) invoked", id);
+		log.debug("FeedbackBoardServiceImpl -- getById({}) invoked", id);
 		
 		//값이 존재하면 반환하고, 없으면 new Course()와 같은 기본값을 반환합니다.
 		Optional<Board> optional = dao.findById(id);
@@ -104,7 +125,7 @@ public class FeedbackServiceImpl implements BoardService {
 	
 	@Override
 	public Board update(Long id, BoardDTO dto) {//수정 처리
-		log.debug("BoardServiceImpl -- update({}) invoked", dto);
+		log.debug("FeedbackBoardServiceImpl -- update({}) invoked", dto);
 
 		Board post = dao.findById(dto.getId())
 	            .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 게시글입니다."));
@@ -121,7 +142,7 @@ public class FeedbackServiceImpl implements BoardService {
 
 	@Override
 	public Board deleteById(Long id) throws ServiceException { // 삭제 처리
-		log.debug("BoardServiceImpl -- deleteById({}) invoked", id);
+		log.debug("FeedbackBoardServiceImpl -- deleteById({}) invoked", id);
 
 		try {
 			Optional<Board> optionalBoard = this.dao.findById(id);

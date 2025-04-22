@@ -6,7 +6,7 @@ import org.zerock.myapp.domain.BoardDTO;
 import org.zerock.myapp.entity.Board;
 import org.zerock.myapp.exception.ServiceException;
 
-public interface BoardService {
+public interface FeedbackBoardService {
 
 
 	public abstract Page<Board> getSearchList(BoardDTO dto, Pageable paging); // 전체 조회(검색)

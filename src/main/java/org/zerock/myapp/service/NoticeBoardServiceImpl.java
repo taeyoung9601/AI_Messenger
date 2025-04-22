@@ -21,8 +21,8 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @NoArgsConstructor
 
-@Service("NoticeBoardService")
-public class NoticeBoardServiceImpl implements BoardService {
+@Service
+public class NoticeBoardServiceImpl implements NoticeBoardService {
     @Autowired BoardRepository dao;
     @Autowired EmployeeRepository edao;
 	

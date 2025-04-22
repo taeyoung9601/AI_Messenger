@@ -1,7 +1,6 @@
 package org.zerock.myapp.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -18,7 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.BoardDTO;
 import org.zerock.myapp.entity.Board;
 import org.zerock.myapp.exception.ServiceException;
-import org.zerock.myapp.service.BoardService;
+import org.zerock.myapp.service.NoticeBoardService;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -36,8 +35,7 @@ import lombok.extern.slf4j.Slf4j;
 public class NoticeBoardController {
 	
 	@Autowired  
-	@Qualifier("NoticeBoardService")
-	private BoardService service;
+	private NoticeBoardService service;
 	
 	
 	@GetMapping

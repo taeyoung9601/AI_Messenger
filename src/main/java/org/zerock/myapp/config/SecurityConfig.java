@@ -127,9 +127,9 @@ public class SecurityConfig {
                 	        "/project",
                 	        "/project/**",
                 	        "/project/upComing"
-                	    ).hasAnyRole("DepartmentLeader", "TeamLeader" ,"SystemManager")
-                	    .requestMatchers(HttpMethod.GET, "/project/{id}").hasAnyRole("DepartmentLeader", "TeamLeader" , "SystemManager")
-                	    .requestMatchers(HttpMethod.DELETE, "/work/{id}").hasAnyRole("DepartmentLeader", "TeamLeader" , "SystemManager")
+                	    ).hasAnyRole("DepartmentLeader", "TeamLeader" ,"SystemManager" , "CEO")
+                	    .requestMatchers(HttpMethod.GET, "/project/{id}").hasAnyRole("DepartmentLeader", "TeamLeader" , "SystemManager" , "CEO")
+                	    .requestMatchers(HttpMethod.DELETE, "/work/{id}").hasAnyRole("DepartmentLeader", "TeamLeader" , "SystemManager" , "CEO")
 
                 	    // 업무.
                 	    .requestMatchers(
@@ -160,8 +160,8 @@ public class SecurityConfig {
                 	   
                 	    
                 	    
-//                	    .anyRequest().authenticated()
-                	    .anyRequest().permitAll()
+                	    .anyRequest().authenticated()
+//                	    .anyRequest().permitAll()
                 	)
 
 //                .sessionManagement()

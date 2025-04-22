@@ -8,12 +8,15 @@ import java.util.Optional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.ProjectDTO;
 import org.zerock.myapp.entity.Project;
 import org.zerock.myapp.exception.ServiceException;
 import org.zerock.myapp.persistence.EmployeeRepository;
 import org.zerock.myapp.persistence.ProjectRepository;
+import org.zerock.myapp.secutity.JwtPrincipal;
 import org.zerock.myapp.secutity.JwtProvider;
 import org.zerock.myapp.util.DateTimeUtils;
 
@@ -114,6 +117,11 @@ public class ProjectServiceImpl implements ProjectService {
 		log.debug("\t+ ProjectServiceImpl -- create({}) invoked", dto);
 
 		try {
+	        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+	        JwtPrincipal principal = (JwtPrincipal) auth.getPrincipal();
+	        String empno = principal.getEmpno();
+	        
+	        
 			Project project = new Project();
 			
 			project.setName(dto.getName());
@@ -122,7 +130,7 @@ public class ProjectServiceImpl implements ProjectService {
 			project.setStatus(dto.getStatus());
 			project.setDetail(dto.getDetail());
 			project.setPjtManager(this.empDao.findById(dto.getManagerEmpno()).orElse(null));
-			project.setPjtCreator(this.empDao.findById(dto.getCreatorEmpno()).orElse(null));
+			project.setPjtCreator(this.empDao.findById(empno).orElse(null));
 
 			Project result = this.dao.save(project);
 

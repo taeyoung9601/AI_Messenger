@@ -17,5 +17,4 @@ public interface FeedbackBoardService {
 	public abstract Board getById(Long id);    // 단일 조회
 	public abstract Board update(Long id, BoardDTO dto);    	// 수정 처리
 	public abstract Board deleteById(Long id) throws ServiceException;// 삭제 처리
-	public abstract Optional<Board> listFeedbacksForCurrentUser();
 }//end interface

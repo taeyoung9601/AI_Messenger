@@ -10,6 +10,7 @@ import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.stereotype.Repository;
 import org.zerock.myapp.entity.Board;
 import org.zerock.myapp.entity.Employee;
+import org.zerock.myapp.entity.Project;
 
 
 /**
@@ -42,14 +43,8 @@ public interface BoardRepository extends JpaRepository<Board, Long>, JpaSpecific
 	
 	
 	
-	public abstract Optional<Board> findByTitle(String title);
-	public abstract Optional<Board> findByEmployee (Employee employee);
 	
-	// 건의 전체 조회 (CEO용)
-	public abstract Optional<Board> findByType(Integer Type);
-	
-	 // 내 건의 조회 (type=2, empno 기준)
-    public abstract Optional<Board> findByTypeAndEmployee_Empno(Integer type, String empno);
+	public abstract Optional<Board> findByEnabledAndId(Boolean enabled, Long id);
 
 	
 } // end interface

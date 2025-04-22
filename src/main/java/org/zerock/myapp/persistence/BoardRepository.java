@@ -37,7 +37,7 @@ public interface BoardRepository extends JpaRepository<Board, Long>, JpaSpecific
 	public abstract Page<Board> findByEnabledAndTypeAndTitleContainingAndEmployee_Empno(Boolean enabled, Integer type, String Title, String empno, Pageable paging);
 	
 	//게시판 별 유효한 전체 게시물 + 작성자
-	public abstract Page<Board> findByEnabledAndTypeAndEmployee_EmpnoAndNameContaining(Boolean enabled, Integer type, String empno, String name, Pageable paging);
+	public abstract Page<Board> findByEnabledAndTypeAndEmployee_EmpnoAndEmployee_NameContaining(Boolean enabled, Integer type, String empno, String name, Pageable paging);
 	
 	
 	

@@ -1,6 +1,8 @@
 package org.zerock.myapp.handler;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
@@ -12,7 +14,9 @@ import org.springframework.web.socket.TextMessage;
 import org.springframework.web.socket.WebSocketSession;
 import org.springframework.web.socket.handler.TextWebSocketHandler;
 import org.zerock.myapp.domain.MessageDTO;
+import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.entity.Message;
+import org.zerock.myapp.persistence.EmployeeRepository;
 import org.zerock.myapp.service.MessageService;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,73 +24,116 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
-
 @Slf4j
 @RequiredArgsConstructor
-
 @Component
 public class WebSocketChatHandler extends TextWebSocketHandler {
-	
-	@Autowired private final MessageService messageService;
-	
+    
+	@Autowired private ObjectMapper objectMapper;
+    @Autowired private final MessageService messageService;
+    @Autowired private EmployeeRepository employeeRepository;
+
     private final Map<Long, Set<WebSocketSession>> chatRoomSessions = new ConcurrentHashMap<>();
+
+    private final Map<String, Set<WebSocketSession>> userSessions = new ConcurrentHashMap<>();
     
     public Map<Long, Set<WebSocketSession>> getChatRoomSessions() {
         return this.chatRoomSessions;
     }
-    
-    @Override
-    public void afterConnectionEstablished(WebSocketSession session) {
-    	log.debug("afterConnectionEstablished({}) invoked.", session);
-    	log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 1. messageService:{}, this:{}", this.messageService, this);
-    	
-        // 쿼리파라미터에서 채팅방 ID 추출
-        Long chatId = getChatIdFromSession(session);
-//        String empno = getEmpnoFromToken(session);  // JWT에서 추출 (또는 파라미터에서)
 
-//        session.getAttributes().put("empno", empno);	세션에 empno 정보 추가 
+    @Override
+    public void afterConnectionEstablished(WebSocketSession session) throws Exception {
+        log.debug("afterConnectionEstablished({}) invoked.", session);
         
+        Long chatId = getChatIdFromSession(session);
+        String empno = getEmpnoFromSession(session); // 새로 추가
+
+        // 채팅방 세션 등록
         chatRoomSessions.computeIfAbsent(chatId, k -> ConcurrentHashMap.newKeySet()).add(session);
-    } // afterConnectionEstablished
+        
+        // 사용자 세션 관리
+        userSessions.computeIfAbsent(empno, k -> ConcurrentHashMap.newKeySet()).add(session);
+    }// afterConnectionEstablished
 
-    
     @Override
-    protected void handleTextMessage(WebSocketSession session, TextMessage message)  {
-    	log.debug("handleTextMessage({}, {}) invoked.", session, message);
-    	log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 2. messageService:{}, this:{}", this.messageService, this);
-    	
-    	 try {
-    	        // 1. JSON 문자열을 MessageDTO 객체로 변환
-    	        ObjectMapper objectMapper = new ObjectMapper();
-    	        MessageDTO messageDTO = objectMapper.readValue(message.getPayload(), MessageDTO.class);
+    protected void handleTextMessage(WebSocketSession session, TextMessage message) {
+        log.debug("handleTextMessage({}, {}) invoked.", session, message);
+        
+        try {
+            // 1. JSON 문자열을 MessageDTO 객체로 변환
+            ObjectMapper objectMapper = new ObjectMapper();
+            MessageDTO messageDTO = objectMapper.readValue(message.getPayload(), MessageDTO.class);
+            
+            // 2. chatId 추출 (쿼리에서 파싱하거나 DTO에 포함되어 있어야 함)
+            Long chatId = getChatIdFromSession(session);
+            
+            // empno로 사원 정보 가져오기
+            Employee employee = this.employeeRepository.findById(messageDTO.getEmpno()).get();
 
-    	        // 2. chatId 추출 (쿼리에서 파싱하거나 DTO에 포함되어 있어야 함)
-    	        Long chatId = getChatIdFromSession(session);
-
-    	        // 3. 메시지 저장
-    	        Message savedMessage = messageService.saveMessage(messageDTO); // 저장 후 DTO 반환
-
-    	        // 4. 다시 JSON으로 변환
-    	        String savedJson = objectMapper.writeValueAsString(savedMessage);
-
-    	        // 5. 해당 채팅방 모든 세션에 브로드캐스트
-    	        Set<WebSocketSession> sessions = chatRoomSessions.get(chatId);
-    	        if (sessions != null) {
-    	            for (WebSocketSession s : sessions) {
-    	                s.sendMessage(new TextMessage(savedJson));
-    	            }
-    	        }
-    	    } catch (IOException e) {
-    	        e.printStackTrace();
-    	    }
+            //DTO에 사원 정보 넣기
+            messageDTO.setEmployee(employee);
+            
+            // 3. 메시지 타입에 따른 처리
+            switch (messageDTO.getType()) {
+	            case "invite":
+	                String targetEmpno = messageDTO.getEmpno();
+	                
+	                // 1. 초대 대상자 조회
+	                Employee target = employeeRepository.findById(targetEmpno)
+	                    .orElseThrow(() -> new RuntimeException("User not found"));
+	                
+	                // 2. 초대 메시지 생성
+	                MessageDTO inviteMsg = new MessageDTO();
+	                inviteMsg.setType("INVITE");
+	                inviteMsg.setChatId(messageDTO.getChatId());
+	                inviteMsg.setDetail(messageDTO.getDetail());
+	                inviteMsg.setEmployee(messageDTO.getEmployee());
+	                
+	                // 3. 대상자에게만 전송
+	                sendToUser(targetEmpno, inviteMsg);
+	                
+	                // 4. 현재 채팅방에 알림
+	                sendSystemMessage(chatId, 
+	                    target.getName() + " 님을 초대했습니다", 
+	                    "SYSTEM");
+	                break;
+                case "leave":
+                    // 퇴장 메시지 처리
+                	 String empno = messageDTO.getEmpno();
+                	    Long chatRoomId = messageDTO.getChatId();
+                	    
+                	    // 1. 세션 제거
+                	    chatRoomSessions.getOrDefault(chatRoomId, Collections.emptySet())
+                	        .removeIf(s -> {
+                	            try {
+                	                return getEmpnoFromSession(s) == empno;
+                	            } catch (Exception e) {
+                	                return false;
+                	            }
+                	        });
+                	    
+                	    // 2. 시스템 알림
+                	    sendSystemMessage(chatId, 
+                	        messageDTO.getEmployee().getName() + " 님이 퇴장하셨습니다", 
+                	        "LEAVE");
+                	    break;
+                case "message":
+                    // 일반 채팅 메시지 처리
+                    broadcastToChatRoom(chatId, messageDTO);
+                    break;
+                default:
+                    log.warn("알 수 없는 메시지 타입: {}", messageDTO.getType());
+            }
+            Message savedMessage = this.messageService.saveMessage(messageDTO);
+        } catch (IOException e) {
+            log.error("메시지 처리 중 오류 발생", e);
+        }
     } // handleTextMessage
 
-    
     @Override
-    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) {
-    	log.debug("afterConnectionClosed({}, {}) invoked.", session, status);
-    	log.info(">>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>> 3. messageService:{}, this:{}", this.messageService, this);
-    	
+    public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+        log.debug("afterConnectionClosed({}, {}) invoked.", session, status);
+
         Long chatId = getChatIdFromSession(session);
         Set<WebSocketSession> sessions = chatRoomSessions.get(chatId);
         if (sessions != null) {
@@ -94,21 +141,77 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
         }
     } // afterConnectionClosed
 
-    
     private Long getChatIdFromSession(WebSocketSession session) {
-    	log.debug("getChatIdFromSession({}) invoked.", session);
-    	
-        String query = session.getUri().getQuery(); // 예: "chatId=3"
+        String query = session.getUri().getQuery();
         
-        if (query == null || !query.startsWith("chatId=")) {
-            throw new IllegalArgumentException("chatId 파라미터가 유효하지 않습니다: " + query);
+        if (query == null || !query.contains("chatId=")) {
+            throw new IllegalArgumentException("chatId 파라미터가 존재하지 않습니다: " + query);
         }
-
+        
         try {
-            return Long.parseLong(query.split("=")[1]);
+            return Arrays.stream(query.split("&"))
+                        .filter(param -> param.startsWith("chatId="))
+                        .findFirst()
+                        .map(param -> Long.parseLong(param.split("=")[1]))
+                        .orElseThrow(() -> new IllegalArgumentException("chatId 파라미터 누락"));
         } catch (NumberFormatException e) {
-            throw new IllegalArgumentException("chatId가 숫자가 아닙니다: " + query);
+            throw new IllegalArgumentException("chatId는 숫자 형식이어야 합니다: " + query);
         }
     }// getChatIdFromSession
+
     
-} // end class
+    public void broadcastToChatRoom(Long chatId, MessageDTO messageDTO) {
+        Set<WebSocketSession> sessions = chatRoomSessions.get(chatId);
+        if (sessions != null) {
+            try {
+                String messageJson = new ObjectMapper().writeValueAsString(messageDTO);
+                for (WebSocketSession session : sessions) {
+                    session.sendMessage(new TextMessage(messageJson));
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            } // try
+        } // if
+    }// broadcastToChatRoom
+    
+    
+    private void sendToUser(String empno, MessageDTO messageDTO) {
+        userSessions.getOrDefault(empno, Collections.emptySet())
+            .forEach(session -> {
+                if(session.isOpen()) {
+                    try {
+                        String json = objectMapper.writeValueAsString(messageDTO);
+                        session.sendMessage(new TextMessage(json));
+                    } catch (IOException e) {
+                        log.error("메시지 전송 실패: {}", e.getMessage());
+                    }// try
+                }// if
+            });// forEach
+    }// sendToUser
+    
+    
+    private void sendSystemMessage(Long chatId, String detail, String type) {
+        MessageDTO systemMsg = new MessageDTO();
+        systemMsg.setType(type);
+        systemMsg.setChatId(chatId);
+        systemMsg.setDetail(detail);
+        
+        broadcastToChatRoom(chatId, systemMsg);
+    }// sendSystemMessage
+    
+    private String getEmpnoFromSession(WebSocketSession session) {
+        String query = session.getUri().getQuery();
+        
+        if (query == null || !query.contains("empno=")) {
+            throw new IllegalArgumentException("empno 파라미터가 존재하지 않습니다: " + query);
+        }
+        
+        return Arrays.stream(query.split("&"))
+                     .filter(param -> param.startsWith("empno="))
+                     .findFirst()
+                     .map(param -> param.split("=")[1])
+                     .orElseThrow(() -> 
+                         new IllegalArgumentException("empno 파라미터 형식이 잘못되었습니다"));
+    }// getEmpnoFromSession
+    
+}

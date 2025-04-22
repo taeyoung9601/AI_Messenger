@@ -7,7 +7,9 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.zerock.myapp.domain.MessageDTO;
+import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.entity.Message;
+import org.zerock.myapp.handler.WebSocketChatHandler;
 import org.zerock.myapp.persistence.ChatRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
 import org.zerock.myapp.persistence.MessageRepository;
@@ -28,10 +30,9 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class MessageServiceImpl implements MessageService {
-    @Autowired MessageRepository messageRepository;
+    @Autowired private MessageRepository messageRepository;
     @Autowired private ChatRepository chatRepository;
 	@Autowired private EmployeeRepository employeeRepository;
-    
 	
 	@PostConstruct
     void postConstruct(){
@@ -49,9 +50,7 @@ public class MessageServiceImpl implements MessageService {
 				.orElseThrow(() -> new IllegalArgumentException("사원이 존재하지 않습니다.")));
 		message.setChat(chatRepository.findById(dto.getChatId())
                 .orElseThrow(() -> new IllegalArgumentException("채팅방이 존재하지 않습니다.")));
-//		message.setChat(dto.getChat()); / 어떤 방법이 맞는지 궁금
-//		message.setCrtDate(LocalDateTime.now());
-//		message.setCrtDate(dto.getCrtDateAsLocalDateTime());
+		message.setType(dto.getType());
 		return this.messageRepository.save(message);
 	} // saveMessage
 
@@ -62,7 +61,6 @@ public class MessageServiceImpl implements MessageService {
 		return this.messageRepository.findByChatIdOrderByCrtDate(chatId);
 		
 	} // getByChatId
-
 
 	@Override
 	public String summarizeMessage(Long id, String start, String end) {

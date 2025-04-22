@@ -229,7 +229,7 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employee.setEmail(dto.getEmail()); // 이메일 _ front
 			
 			
-			String newPassword = dto.getPassword();
+//			String newPassword = dto.getPassword();
 
 			if (newPassword != null && !newPassword.isEmpty()) {
 			    employee.setPassword(bcrypt.encode(newPassword));

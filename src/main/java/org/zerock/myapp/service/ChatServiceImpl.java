@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.web.socket.WebSocketSession;
 import org.zerock.myapp.domain.ChatDTO;
+import org.zerock.myapp.domain.MessageDTO;
 import org.zerock.myapp.entity.Chat;
 import org.zerock.myapp.entity.ChatEmployee;
 import org.zerock.myapp.entity.ChatEmployeePK;
@@ -196,4 +197,38 @@ public class ChatServiceImpl implements ChatService {
 		}
 	} // deleteById  // 로그인한 본인이 퇴장 처리 (본인의 사번과 채팅방 id를 넘겨줘야함)
 	
+	
+	@Override
+    // 초대 처리
+    public void inviteEmployee(Long chatId, String empno) {
+        Employee employee = employeeRepository.findById(empno)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        // 초대 메시지 생성
+        MessageDTO inviteMessage = new MessageDTO();
+        inviteMessage.setDetail(employee.getName() + "님이 초대되었습니다.");
+        inviteMessage.setType("INVITE");
+        inviteMessage.setChatId(chatId);
+        inviteMessage.setEmpno(empno);
+
+        // WebSocket을 통해 초대 메시지 전송
+        webSocketChatHandler.broadcastToChatRoom(chatId, inviteMessage);
+    }
+
+	@Override
+    // 퇴장 처리
+    public void leaveChat(Long chatId, String empno) {
+        Employee employee = employeeRepository.findById(empno)
+                .orElseThrow(() -> new RuntimeException("Employee not found"));
+
+        // 퇴장 메시지 생성
+        MessageDTO leaveMessage = new MessageDTO();
+        leaveMessage.setDetail(employee.getName() + "님이 채팅방을 떠났습니다.");
+        leaveMessage.setType("LEAVE");
+        leaveMessage.setChatId(chatId);
+        leaveMessage.setEmpno(empno);
+
+        // WebSocket을 통해 퇴장 메시지 전송
+        webSocketChatHandler.broadcastToChatRoom(chatId, leaveMessage);
+    }
 }//end class

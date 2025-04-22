@@ -151,8 +151,8 @@ public class SecurityConfig {
                 	   
                 	    
                 	    
-                	    .anyRequest().authenticated()
-//                	    .anyRequest().permitAll()
+//                	    .anyRequest().authenticated()
+                	    .anyRequest().permitAll()
                 	)
 
 //                .sessionManagement()

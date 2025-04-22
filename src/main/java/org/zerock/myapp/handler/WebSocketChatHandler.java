@@ -3,7 +3,10 @@ package org.zerock.myapp.handler;
 import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.Map;
+import java.util.NoSuchElementException;
+import java.util.Optional;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -68,56 +71,71 @@ public class WebSocketChatHandler extends TextWebSocketHandler {
             Long chatId = getChatIdFromSession(session);
             
             // empno로 사원 정보 가져오기
-            Employee employee = this.employeeRepository.findById(messageDTO.getEmpno()).get();
+            Optional<Employee> optEmployee = employeeRepository.findById(messageDTO.getEmpno());
+            if (optEmployee.isEmpty()) {
+                throw new RuntimeException("사원 정보 없음: " + messageDTO.getEmpno());
+            }
+            Employee employee = optEmployee.get();
 
             //DTO에 사원 정보 넣기
             messageDTO.setEmployee(employee);
             
             // 3. 메시지 타입에 따른 처리
             switch (messageDTO.getType()) {
-	            case "invite":
-	                String targetEmpno = messageDTO.getEmpno();
-	                
-	                // 1. 초대 대상자 조회
-	                Employee target = employeeRepository.findById(targetEmpno)
-	                    .orElseThrow(() -> new RuntimeException("User not found"));
-	                
-	                // 2. 초대 메시지 생성
-	                MessageDTO inviteMsg = new MessageDTO();
-	                inviteMsg.setType("INVITE");
-	                inviteMsg.setChatId(messageDTO.getChatId());
-	                inviteMsg.setDetail(messageDTO.getDetail());
-	                inviteMsg.setEmployee(messageDTO.getEmployee());
-	                
-	                // 3. 대상자에게만 전송
-	                sendToUser(targetEmpno, inviteMsg);
-	                
-	                // 4. 현재 채팅방에 알림
-	                sendSystemMessage(chatId, 
-	                    target.getName() + " 님을 초대했습니다", 
-	                    "SYSTEM");
-	                break;
-                case "leave":
+            case "INVITE":
+                List<String> invitedEmpnos = messageDTO.getInvitedEmpnos();
+                if (invitedEmpnos == null || invitedEmpnos.isEmpty()) {
+                    throw new IllegalArgumentException("초대 대상자가 지정되지 않았습니다");
+                }
+
+                for (String targetEmpno : invitedEmpnos) {
+                    try {
+                        Employee target = employeeRepository.findById(targetEmpno)
+                            .orElseThrow(() -> new NoSuchElementException("사원 정보 없음: " + targetEmpno));
+
+                        MessageDTO inviteMsg = new MessageDTO();
+                        inviteMsg.setType("INVITE");
+                        inviteMsg.setChatId(messageDTO.getChatId());
+                        inviteMsg.setDetail(target.getName() + " 님을 초대했습니다"); // content로 변경
+                        inviteMsg.setEmpno(target.getEmpno()); // 객체 대신 empno만
+
+                        sendToUser(targetEmpno, inviteMsg);
+                    } catch (Exception e) {
+                        log.error("{} 초대 실패: {}", targetEmpno, e.getMessage());
+                    }
+                }
+
+                MessageDTO systemMsg = new MessageDTO();
+                systemMsg.setType("SYSTEM");
+                systemMsg.setDetail(invitedEmpnos.size() + "명이 초대되었습니다"); //  content
+                systemMsg.setChatId(messageDTO.getChatId());
+                log.debug("브로드캐스트 메시지: {}", systemMsg.getDetail());
+                broadcastToChatRoom(chatId, systemMsg);
+
+                break;
+                
+                case "LEAVE":
                     // 퇴장 메시지 처리
-                	 String empno = messageDTO.getEmpno();
-                	    Long chatRoomId = messageDTO.getChatId();
-                	    
-                	    // 1. 세션 제거
-                	    chatRoomSessions.getOrDefault(chatRoomId, Collections.emptySet())
-                	        .removeIf(s -> {
-                	            try {
-                	                return getEmpnoFromSession(s) == empno;
-                	            } catch (Exception e) {
-                	                return false;
-                	            }
-                	        });
-                	    
-                	    // 2. 시스템 알림
-                	    sendSystemMessage(chatId, 
-                	        messageDTO.getEmployee().getName() + " 님이 퇴장하셨습니다", 
-                	        "LEAVE");
-                	    break;
-                case "message":
+                	String empno = messageDTO.getEmpno();
+            	    Long chatRoomId = messageDTO.getChatId();
+            	    
+            	    // 1. 세션 제거
+            	    chatRoomSessions.getOrDefault(chatRoomId, Collections.emptySet())
+            	        .removeIf(s -> {
+            	            try {
+            	                return getEmpnoFromSession(s) == empno;
+            	            } catch (Exception e) {
+            	                return false;
+            	            }
+            	        });
+            	    
+            	    // 2. 시스템 알림
+            	    sendSystemMessage(chatId, 
+            	        messageDTO.getEmployee().getName() + " 님이 퇴장하셨습니다", 
+            	        "LEAVE");
+            	    break;
+            	    
+                case "MESSAGE":
                     // 일반 채팅 메시지 처리
                     broadcastToChatRoom(chatId, messageDTO);
                     break;

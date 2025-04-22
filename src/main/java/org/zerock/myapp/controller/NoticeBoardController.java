@@ -5,7 +5,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
@@ -18,8 +17,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.zerock.myapp.domain.BoardDTO;
 import org.zerock.myapp.entity.Board;
 import org.zerock.myapp.exception.ServiceException;
-import org.zerock.myapp.secutity.JwtPrincipal;
-import org.zerock.myapp.service.BoardService;
+import org.zerock.myapp.service.NoticeBoardService;
 
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

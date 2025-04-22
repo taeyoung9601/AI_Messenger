@@ -223,10 +223,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employee.setDepartment(department); // 부서 _ front
 			employee.setEmail(dto.getEmail()); // 이메일 _ front
 
-			if (newPassword1 != null && !newPassword1.isEmpty()) {
-			    employee.setPassword(bcrypt.encode(newPassword1));
+			if (newPassword != null && !newPassword.isEmpty()) {
+			    employee.setPassword(bcrypt.encode(newPassword));
 			} else {
-			    employee.setPassword(newPassword1);
+			    employee.setPassword(newPassword);
 			} // 비밀번호가 빈값일시 기본 값 유지 & 새로운 값이 있을 시 새로운 값으로 대치 
 
 			employee.setTel(dto.getTel()); // 전화번호 _ front

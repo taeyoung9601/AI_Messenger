@@ -68,7 +68,7 @@ public class FeedbackBoardServiceImpl implements FeedbackBoardService {
 			else if (dto.getSearchText() != null) {
 				return switch (dto.getSearchWord()) {
 						case "title" -> this.dao.findByEnabledAndTypeAndTitleContainingAndEmployee_Empno(true, dto.getType(), dto.getSearchText(), dto.getAuthorEmpno(), paging);
-						case "author" -> this.dao.findByEnabledAndTypeAndEmployee_EmpnoAndNameContaining(true, dto.getType(), dto.getSearchText(), dto.getAuthorEmpno(), paging);
+						case "author" -> this.dao.findByEnabledAndTypeAndEmployee_EmpnoAndEmployee_NameContaining(true, dto.getType(), dto.getSearchText(), dto.getAuthorEmpno(), paging);
 						default -> throw new IllegalArgumentException("swich_1 - Invalid search word: " + dto.getSearchWord());
 					};
 			}

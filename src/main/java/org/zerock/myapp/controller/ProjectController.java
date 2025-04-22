@@ -40,7 +40,7 @@ public class ProjectController {
 	
 	@GetMapping
 	Page<Project> list(
-			ProjectDTO dto,
+			@ModelAttribute ProjectDTO dto,
 			@RequestParam(name = "currPage", required = false, defaultValue = "1") Integer currPage, // 페이지 시작 값은 0부터
 			@RequestParam(name = "pageSize", required = false, defaultValue = "4") Integer pageSize // 기본 페이지 사이즈 8
 		) { // 리스트
@@ -75,7 +75,7 @@ public class ProjectController {
 	} // listStatus
 	
 	@PostMapping
-	Project register(ProjectDTO dto) throws ServiceException, ParseException { // 등록 처리
+	Project register(@ModelAttribute ProjectDTO dto) throws ServiceException, ParseException { // 등록 처리
 		log.debug("register() invoked.");
 		log.debug("dto: {}", dto);
 				
@@ -95,7 +95,7 @@ public class ProjectController {
 	} // read
 	
 	@PutMapping(path = "/{id}")
-	Project update(@PathVariable Long id, ProjectDTO dto) throws ServiceException, ParseException {  // 수정 처리
+	Project update(@PathVariable Long id, @ModelAttribute ProjectDTO dto) throws ServiceException, ParseException {  // 수정 처리
 		log.debug("update({}) invoked.",id);
 
 		Project data = this.service.update(id, dto);	

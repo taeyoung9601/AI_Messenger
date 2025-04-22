@@ -40,7 +40,7 @@ public class NoticeBoardController {
 	
 	@GetMapping
 	Page<Board> list(
-			 BoardDTO dto,
+			@ModelAttribute BoardDTO dto,
 			@RequestParam(name = "currPage", required = false, defaultValue = "1") Integer currPage, // 페이지 시작 값은 0부터
 			@RequestParam(name = "pageSize", required = false, defaultValue = "10") Integer pageSize // 기본 페이지 사이즈 8
 		
@@ -59,7 +59,7 @@ public class NoticeBoardController {
 	} // list
 	
 	@PostMapping("/create")
-	Board create(BoardDTO dto) { // 등록 처리
+	Board create(@ModelAttribute BoardDTO dto) { // 등록 처리
 		log.debug("register() invoked.");
 		
 		Board result = this.service.create(dto);

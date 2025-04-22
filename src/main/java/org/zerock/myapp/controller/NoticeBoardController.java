@@ -49,7 +49,7 @@ public class NoticeBoardController {
 		
 		dto.setType(1); // 공지
 		
-		Pageable paging = PageRequest.of(currPage-1, pageSize, Sort.by("crtDate").descending());	// Pageable 설정
+		Pageable paging = PageRequest.of(currPage-1, pageSize, Sort.by("crtDate", "id").descending());	// Pageable 설정
 		
 		Page<Board> list = this.service.getSearchList(dto, paging); 
 		

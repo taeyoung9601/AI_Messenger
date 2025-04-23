@@ -14,8 +14,5 @@ import org.zerock.myapp.entity.UpFile;
 
 @Repository
 public interface FileRepository extends JpaRepository<UpFile, Long>, JpaSpecificationExecutor<UpFile> {
-
-	public abstract UpFile save(MultipartFile file);
-	
-
+	;;
 } // end interface

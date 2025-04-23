@@ -32,14 +32,10 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class EmployeeServiceImpl implements EmployeeService {
-	@Autowired
-	EmployeeRepository dao;
-	@Autowired
-	DepartmentRepository departmentRepository;
-	@Autowired
-	BCryptPasswordEncoder bcrypt;
-	@Autowired
-	FileServiceImpl fileservice;
+	@Autowired EmployeeRepository dao;
+	@Autowired DepartmentRepository departmentRepository;
+	@Autowired BCryptPasswordEncoder bcrypt;
+	@Autowired FileServiceImpl fileservice;
 	
 
 	@PostConstruct
@@ -122,14 +118,12 @@ public class EmployeeServiceImpl implements EmployeeService {
 		log.debug("EmployeeServiceImpl -- create({}) invoked", dto);
 
 		try {
-			Department department = departmentRepository.findById(dto.getDeptId())
+			Department department = this.departmentRepository.findById(dto.getDeptId())
 					.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 부서 ID입니다."));
 
 			Employee employee = new Employee();
 			String prefix = getRolePrefixFromPosition(dto.getPosition());
 			String empno = generateEmpno(prefix, dto.getCrtDate());
-
-//
 
 			employee.setEmpno(empno); // 사번
 			employee.setName(dto.getName()); // 사원 이름 _ front
@@ -144,27 +138,10 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employee.setZipCode(dto.getZipCode()); // 사원 우편번호 _ front
 			employee.setEnabled(true); // 0 - 비활성화, 1- 유효
 
-			Employee result = dao.save(employee);
+			Employee result = this.dao.save(employee);
 			
-			fileservice.save(file);
-			
-			
+			if(file != null) this.fileservice.save(file, result);
 
-			
-			// 기존 파일을 DB에서 가져와 수정하는 방식 추천
-//			UpFile fileEntity = fileRepo.findById();
-//			    .orElseThrow(() -> new IllegalArgumentException("파일 정보를 찾을 수 없습니다."));
-//
-//			String originalName = fileEntity.getOriginal();
-//			String extension = originalName.substring(originalName.lastIndexOf('.') + 1);
-//
-//			fileEntity.setUuid(employee.getEmpno() + "." + extension);
-//			log.debug("filedto.getId() = {}", filedto.getId());
-//			log.debug("Updated UUID = {}", fileEntity.getUuid());
-//			fileRepo.save(fileEntity);
-			
-			
-			
 			return true; // db에 저장.
 		} catch (Exception e) {
 			throw new IllegalArgumentException("회원가입에 실패했습니다. 다시 시도해 주세요.", e);
@@ -236,14 +213,14 @@ public class EmployeeServiceImpl implements EmployeeService {
 	} // getById
 
 	@Override
-	public Boolean update(String empno, EmployeeDTO dto) {// 수정 처리
-		log.debug("EmployeeServiceImpl -- update({}) invoked", dto);
+	public Boolean update(String empno, EmployeeDTO dto, MultipartFile file) {// 수정 처리
+		log.debug("EmployeeServiceImpl -- update({},{},{}) invoked",empno, dto,file);
 
 		try {
-			Department department = departmentRepository.findById(dto.getDeptId())
+			Department department = this.departmentRepository.findById(dto.getDeptId())
 					.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 부서 ID입니다."));
 
-			Employee employee = dao.findById(dto.getEmpno())
+			Employee employee = this.dao.findById(dto.getEmpno())
 					.orElseThrow(() -> new IllegalArgumentException("존재하지 않는 사원입니다."));
 
 			String newPassword = dto.getPassword();
@@ -254,19 +231,20 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 			if (newPassword != null && !newPassword.isEmpty()) {
 			    employee.setPassword(bcrypt.encode(newPassword));
-			} else {
-			    employee.setPassword(newPassword);
 			} // 비밀번호가 빈값일시 기본 값 유지 & 새로운 값이 있을 시 새로운 값으로 대치 
 
 			employee.setTel(dto.getTel()); // 전화번호 _ front
 			employee.setAddress(dto.getAddress()); // 사원 주소 _ front
 			employee.setZipCode(dto.getZipCode()); // 사원 우편번호 _ front
 
-			dao.save(employee);
+			Employee result = this.dao.save(employee);
+			
+			if(file != null) this.fileservice.save(file, result);
+			
 			return true; // db에 저장.
 		} catch (Exception e) {
 			throw new IllegalArgumentException("사원 정보 수정에 실패했습니다. 다시 시도해 주세요.");
-		}
+		} // try-catch
 	} // update
 
 	@Override

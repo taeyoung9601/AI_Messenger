@@ -14,13 +14,13 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.domain.EmployeeHierarchyDTO;
-import org.zerock.myapp.domain.FileDTO;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.persistence.DepartmentRepository;
 import org.zerock.myapp.service.EmployeeService;
@@ -82,11 +82,11 @@ public class EmployeeController {
 	@PostMapping("/register")
 	ResponseEntity<?> register(
 			@ModelAttribute EmployeeDTO dto,
-			MultipartFile file					
+			@RequestParam(required = false) MultipartFile file					
 			) { // 등록 처리
 		log.debug("register() invoked.");
 
-		this.service.create(dto);
+		this.service.create(dto, file);
 
 		return ResponseEntity.ok("사원등록 완료");
 	} // register
@@ -109,10 +109,13 @@ public class EmployeeController {
 
 	@PutMapping(path = "/{empno}")
 	ResponseEntity<?> update( // 수정 처리
-			@PathVariable String empno, @ModelAttribute EmployeeDTO dto) {
+			@PathVariable String empno, 
+			@ModelAttribute EmployeeDTO dto,
+			@RequestParam(required = false) MultipartFile file
+			) {
 		log.debug("update({}) invoked.", empno);
 
-		this.service.update(empno, dto);
+		this.service.update(empno, dto, file);
 
 		return ResponseEntity.ok("사원정보 수정 완료");
 	} // update

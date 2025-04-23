@@ -13,6 +13,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.entity.UpFile;
 import org.zerock.myapp.persistence.FileRepository;
 
@@ -24,7 +25,6 @@ import lombok.extern.slf4j.Slf4j;
 
 @Service
 public class FileServiceImpl implements FileService {
-    
 	@Autowired FileRepository dao;
 
 
@@ -32,43 +32,52 @@ public class FileServiceImpl implements FileService {
     private String filePath; 
     
 
-    
     @Override
-    public UpFile save(MultipartFile file) {
-    	  System.out.println("🔥🔥🔥 FileServiceImpl.save() 진입함!");
-    	    log.info("🔥🔥🔥 파일 저장 메서드 실행됨");
-    	
+    public Boolean save(MultipartFile file, Employee emloyee) {
+	  	log.debug("🔥🔥🔥 FileServiceImpl.save() 진입함!");
+	
         // 디렉토리 확인 & 생성
         File dir = new File(filePath);
+        
         if (!dir.exists()) {
             dir.mkdirs();
-        }
+        } // if
+    
+        String originalName = file.getOriginalFilename();
+        String extension = originalName.substring(originalName.lastIndexOf('.') + 1);
+        String uuidFileName = UUID.randomUUID().toString() + '.' + extension;
+
+        UpFile upfile = new UpFile();
         
-	        String originalName = file.getOriginalFilename();
-	        String extension = originalName.substring(originalName.lastIndexOf('.') + 1);
-	        String uuidFileName = UUID.randomUUID().toString() + '.' + extension;
-	
-	        UpFile upfile = new UpFile();
-	        
-	        upfile.setOriginal(originalName);
-	        upfile.setUuid(uuidFileName);
-	        upfile.setPath(filePath);
-	        upfile.setEnabled(true);
-	        
-	        log.info("filePath: {}", filePath);
-	        
-	        dao.save(upfile);
+        upfile.setOriginal(originalName);
+        upfile.setUuid(uuidFileName);
+        upfile.setPath(filePath);
+        upfile.setEnabled(true);
+        upfile.setEmployee(emloyee);
+        
+        log.info("filePath: {}", filePath);
+        
+        try {
+	        this.dao.save(upfile);
 	        
 	        // 저장할 파일 경로 생성
-	        File dest = new File(filePath, uuidFileName);
+	        File dest = new File(filePath+"/"+emloyee.getEmpno()+"."+extension);
 
-	        try {
-            file.transferTo(dest);
+	        // 파일이 이미 존재하면 삭제
+	        if (dest.exists()) {
+	            boolean deleted = dest.delete();
+	            if (!deleted) {
+	                log.warn("기존 파일 삭제 실패: {}",dest.getAbsolutePath());
+	            } // if
+	        } // if
+	        
+        	file.transferTo(dest);	
+        	return true;
         } catch (IOException e) {
-        	System.out.println(e.getMessage());
-        }
-			return upfile;
-    }
+        	log.info(e.getMessage());
+        	return false;
+        } // try-catch
+    } // save
    
 
     @Override

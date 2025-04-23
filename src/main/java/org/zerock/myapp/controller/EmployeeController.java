@@ -17,11 +17,12 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.multipart.MultipartFile;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.domain.EmployeeHierarchyDTO;
+import org.zerock.myapp.domain.FileDTO;
 import org.zerock.myapp.entity.Employee;
 import org.zerock.myapp.persistence.DepartmentRepository;
-import org.zerock.myapp.secutity.JwtPrincipal;
 import org.zerock.myapp.service.EmployeeService;
 
 import lombok.NoArgsConstructor;
@@ -79,7 +80,10 @@ public class EmployeeController {
 //	}
 
 	@PostMapping("/register")
-	ResponseEntity<?> register(@ModelAttribute EmployeeDTO dto) { // 등록 처리
+	ResponseEntity<?> register(
+			@ModelAttribute EmployeeDTO dto,
+			MultipartFile file					
+			) { // 등록 처리
 		log.debug("register() invoked.");
 
 		this.service.create(dto);

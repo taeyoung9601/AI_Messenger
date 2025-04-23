@@ -5,8 +5,10 @@ import java.util.List;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.web.multipart.MultipartFile;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.domain.EmployeeHierarchyDTO;
+import org.zerock.myapp.domain.FileDTO;
 import org.zerock.myapp.entity.Employee;
 
 public interface EmployeeService {
@@ -23,7 +25,8 @@ public interface EmployeeService {
 
 	public String getRolePrefixFromPosition(Integer position);
 
-	public abstract Boolean create(EmployeeDTO dto); // 생성 처리
+	public abstract Boolean create(EmployeeDTO dto, MultipartFile file);
+
 
 	public abstract Employee getById(String id); // 단일 조회
 

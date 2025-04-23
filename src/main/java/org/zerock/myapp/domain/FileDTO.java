@@ -31,4 +31,12 @@ public class FileDTO {
 	private String searchWord; // 검색항목
 	private String searchText; // 검색문
 	
+	
+	public FileDTO(Long id, String original, String uuid, String path) {
+	    this.id = id;
+	    this.original = original;
+	    this.uuid = uuid;
+	    this.path = path;
+	}
+	
 } // end class

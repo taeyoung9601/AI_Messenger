@@ -16,7 +16,6 @@ import org.springframework.web.multipart.MultipartFile;
 import org.zerock.myapp.entity.UpFile;
 import org.zerock.myapp.persistence.FileRepository;
 
-import jakarta.annotation.PostConstruct;
 import lombok.extern.slf4j.Slf4j;
 
 
@@ -35,7 +34,7 @@ public class FileServiceImpl implements FileService {
 
     
     @Override
-    public void save(MultipartFile file) {
+    public UpFile save(MultipartFile file) {
     	  System.out.println("🔥🔥🔥 FileServiceImpl.save() 진입함!");
     	    log.info("🔥🔥🔥 파일 저장 메서드 실행됨");
     	
@@ -68,6 +67,7 @@ public class FileServiceImpl implements FileService {
         } catch (IOException e) {
         	System.out.println(e.getMessage());
         }
+			return upfile;
     }
    
 

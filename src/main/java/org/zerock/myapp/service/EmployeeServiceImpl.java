@@ -11,14 +11,19 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 import org.zerock.myapp.domain.EmployeeDTO;
 import org.zerock.myapp.domain.EmployeeHierarchyDTO;
+import org.zerock.myapp.domain.FileDTO;
 import org.zerock.myapp.entity.Department;
 import org.zerock.myapp.entity.Employee;
+import org.zerock.myapp.entity.UpFile;
 import org.zerock.myapp.persistence.DepartmentRepository;
 import org.zerock.myapp.persistence.EmployeeRepository;
+import org.zerock.myapp.persistence.FileRepository;
 
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -33,6 +38,9 @@ public class EmployeeServiceImpl implements EmployeeService {
 	DepartmentRepository departmentRepository;
 	@Autowired
 	BCryptPasswordEncoder bcrypt;
+	@Autowired
+	FileServiceImpl fileservice;
+	
 
 	@PostConstruct
 	void postConstruct() {
@@ -109,7 +117,8 @@ public class EmployeeServiceImpl implements EmployeeService {
 
 // ================= 회원가입 로직 =======================
 	@Override
-	public Boolean create(EmployeeDTO dto) { // 등록 처리
+	@Transactional
+	public Boolean create(EmployeeDTO dto, MultipartFile file) { // 등록 처리
 		log.debug("EmployeeServiceImpl -- create({}) invoked", dto);
 
 		try {
@@ -135,7 +144,27 @@ public class EmployeeServiceImpl implements EmployeeService {
 			employee.setZipCode(dto.getZipCode()); // 사원 우편번호 _ front
 			employee.setEnabled(true); // 0 - 비활성화, 1- 유효
 
-			dao.save(employee);
+			Employee result = dao.save(employee);
+			
+			fileservice.save(file);
+			
+			
+
+			
+			// 기존 파일을 DB에서 가져와 수정하는 방식 추천
+//			UpFile fileEntity = fileRepo.findById();
+//			    .orElseThrow(() -> new IllegalArgumentException("파일 정보를 찾을 수 없습니다."));
+//
+//			String originalName = fileEntity.getOriginal();
+//			String extension = originalName.substring(originalName.lastIndexOf('.') + 1);
+//
+//			fileEntity.setUuid(employee.getEmpno() + "." + extension);
+//			log.debug("filedto.getId() = {}", filedto.getId());
+//			log.debug("Updated UUID = {}", fileEntity.getUuid());
+//			fileRepo.save(fileEntity);
+			
+			
+			
 			return true; // db에 저장.
 		} catch (Exception e) {
 			throw new IllegalArgumentException("회원가입에 실패했습니다. 다시 시도해 주세요.", e);

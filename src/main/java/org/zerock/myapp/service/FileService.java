@@ -10,7 +10,7 @@ import org.zerock.myapp.entity.UpFile;
 public interface FileService {
 	
 	
-	public void save(MultipartFile file);
+	public UpFile save(MultipartFile file);
 	Resource getFile(String fileName);
 	
 }//end interface

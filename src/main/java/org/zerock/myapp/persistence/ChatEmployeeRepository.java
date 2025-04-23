@@ -23,7 +23,6 @@ public interface ChatEmployeeRepository extends JpaRepository<ChatEmployee, Chat
 	public abstract List<ChatEmployee> findByEnabledAndIdEmpno(Boolean b, String empno);
 	public abstract ChatEmployee findByIdChatIdAndIdEmpno(Long chatId, String empno);
 	
-	//게시판 별 유효한 전체 게시물 + 작성자
 	final String nativeSQL_board_empname = """
 			SELECT C.*, M.CRT_DATE AS lastMsg
 			FROM T_CHAT_EMPLOYEE C

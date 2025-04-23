@@ -31,27 +31,7 @@ public class FileController {
 	
 	private final FileService service;
 	
-	
-//	@PostMapping("/upload")
-//	public void upload(@RequestParam MultipartFile file) {
-//		log.info("📤 upload() 호출됨"); 
-//		service.save(file);
-//		return;
-//	};
-	
-	@PostMapping("/upload")
-	public ResponseEntity<Map<String, Object>> uploadFile(@RequestParam MultipartFile file) {
-	    // 파일 저장 로직...
-	    UpFile savedFile = service.save(file);
-
-	    Map<String, Object> result = new HashMap<>();
-	    result.put("id", savedFile.getId()); // 프론트에서 사용할 파일 ID
-	    result.put("uuid", savedFile.getUuid());
-	    log.debug("result: {}" , result);
-	    return ResponseEntity.ok(result);
-	}
-
-		
+			
 	
 	@GetMapping("/get/{file}")
 	public ResponseEntity<Resource> getFile(@PathVariable String file) {

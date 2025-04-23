@@ -71,14 +71,17 @@ public class NoticeBoardServiceImpl implements NoticeBoardService {
 	        String empno = principal.getEmpno();
 	        
 	        
+	        
 			Employee employee = this.edao.findById(empno)
 					.orElseThrow(() -> new IllegalArgumentException("유효하지 않은 사원 ID입니다."));
-			
+
+	        log.debug("empno:{} /position: {}", empno, employee.getPosition());
+	        
 			data.setEmployee(employee);//임시
 			data.setType(1);
 				
 			data.setTitle(dto.getTitle()); // 제목
-			data.setPosition(dto.getPosition());
+			data.setPosition(employee.getPosition());
 			data.setCount(0); // 조회수
 			data.setDetail(dto.getDetail()); // 내용
 			data.setEnabled(true);

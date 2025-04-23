@@ -50,7 +50,7 @@ public class Board implements Serializable {
 	@Column(nullable=false, length = 500)
 	private String title; // 제목
 	
-	@Column(nullable=false, length = 1)
+	@Column(nullable=false, length = 10)
 	private Integer position; // 작성자의 직급(작성당시)(팀원=1, 팀장=2, 부서장=3, CEO=4, 인사담당자=5, 시스템관리자=9)
 	
 	@Column(nullable=false)

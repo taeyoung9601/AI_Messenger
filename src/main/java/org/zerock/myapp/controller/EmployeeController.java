@@ -14,7 +14,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -54,7 +53,7 @@ public class EmployeeController {
 		log.debug("list() invoked.");
 		log.debug("dto: {}, currPage: {}, pageSize: {}", dto, currPage, pageSize);
 		
-		Pageable paging = PageRequest.of(currPage, pageSize, Sort.by("crtDate").descending());	// Pageable 설정
+		Pageable paging = PageRequest.of(currPage, pageSize, Sort.by("position").descending());	// Pageable 설정
 		Page<Employee> list = this.service.getSearchList(dto, paging);
 		
 		list.forEach(p -> log.info(p.toString()));
